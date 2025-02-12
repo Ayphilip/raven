@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { checkUser, getAllUsers, updateUser } from "../services/userServices";
+import { avatars } from "../Components/avatars";
 
 const UserContext = createContext();
 
@@ -23,9 +24,14 @@ export const UserProvider = ({ children }) => {
         }
     };
 
+    function getRandomBetween() {
+        return Math.random() * (avatars.length - 0) + 0;
+      }
+
     const addUser = async (userId, privyId, mode, username, name, profilePicture, cover, bio) => {
         try {
-            const userData = await checkUser(userId, privyId, mode, username, name, profilePicture, cover, bio);
+            var rands = getRandomBetween();
+            const userData = await checkUser(userId, privyId, mode, username, name, rands.toString(), cover, bio);
             fetchUsers();
             return userData;
         } catch (error) {

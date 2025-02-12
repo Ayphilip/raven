@@ -153,76 +153,15 @@ function Welcome() {
                                                     <ion-icon name="camera" class="text-2xl"></ion-icon>
                                                 </div>
                                             </li>
-                                            <li class="md:pr-3 pr-2 hover:scale-[1.15] hover:-rotate-2 duration-300">
+
+                                            {users.map(use => <li class="md:pr-3 pr-2 hover:scale-[1.15] hover:-rotate-2 duration-300">
                                                 <a href="assets/images/avatars/avatar-lg-1.jpg" data-caption="Caption 1">
                                                     <div class="md:w-16 md:h-16 w-12 h-12 relative md:border-4 border-2 shadow border-white rounded-full overflow-hidden dark:border-slate-700">
-                                                        <img src="assets/images/avatars/avatar-2.jpg" alt="" class="absolute w-full h-full object-cover" />
+                                                        <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="absolute w-full h-full object-cover" />
                                                     </div>
                                                 </a>
                                             </li>
-                                            <li class="md:pr-3 pr-2 hover:scale-[1.15] hover:-rotate-2 duration-300">
-                                                <a href="assets/images/avatars/avatar-lg-2.jpg" data-caption="Caption 1">
-                                                    <div class="md:w-16 md:h-16 w-12 h-12 relative md:border-4 border-2 shadow border-white rounded-full overflow-hidden dark:border-slate-700">
-                                                        <img src="assets/images/avatars/avatar-3.jpg" alt="" class="absolute w-full h-full object-cover" />
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li class="md:pr-3 pr-2 hover:scale-[1.15] hover:-rotate-2 duration-300">
-                                                <a href="assets/images/avatars/avatar-lg-4.jpg" data-caption="Caption 1">
-                                                    <div class="md:w-16 md:h-16 w-12 h-12 relative md:border-4 border-2 shadow border-white rounded-full overflow-hidden dark:border-slate-700">
-                                                        <img src="assets/images/avatars/avatar-5.jpg" alt="" class="absolute w-full h-full object-cover" />
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li class="md:pr-3 pr-2 hover:scale-[1.15] hover:-rotate-2 duration-300">
-                                                <a href="assets/images/avatars/avatar-lg-5.jpg" data-caption="Caption 1">
-                                                    <div class="md:w-16 md:h-16 w-12 h-12 relative md:border-4 border-2 shadow border-white rounded-full overflow-hidden dark:border-slate-700">
-                                                        <img src="assets/images/avatars/avatar-6.jpg" alt="" class="absolute w-full h-full object-cover" />
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li class="md:pr-3 pr-2 hover:scale-[1.15] hover:-rotate-2 duration-300">
-                                                <a href="assets/images/avatars/avatar-lg-1.jpg" data-caption="Caption 1">
-                                                    <div class="md:w-16 md:h-16 w-12 h-12 relative md:border-4 border-2 shadow border-white rounded-full overflow-hidden dark:border-slate-700">
-                                                        <img src="assets/images/avatars/avatar-7.jpg" alt="" class="absolute w-full h-full object-cover" />
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li class="md:pr-3 pr-2 hover:scale-[1.15] hover:-rotate-2 duration-300">
-                                                <a href="assets/images/avatars/avatar-lg-1.jpg" data-caption="Caption 1">
-                                                    <div class="md:w-16 md:h-16 w-12 h-12 relative md:border-4 border-2 shadow border-white rounded-full overflow-hidden dark:border-slate-700">
-                                                        <img src="assets/images/avatars/avatar-2.jpg" alt="" class="absolute w-full h-full object-cover" />
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li class="md:pr-3 pr-2 hover:scale-[1.15] hover:-rotate-2 duration-300">
-                                                <a href="assets/images/avatars/avatar-lg-2.jpg" data-caption="Caption 1">
-                                                    <div class="md:w-16 md:h-16 w-12 h-12 relative md:border-4 border-2 shadow border-white rounded-full overflow-hidden dark:border-slate-700">
-                                                        <img src="assets/images/avatars/avatar-3.jpg" alt="" class="absolute w-full h-full object-cover" />
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li class="md:pr-3 pr-2 hover:scale-[1.15] hover:-rotate-2 duration-300">
-                                                <a href="assets/images/avatars/avatar-lg-4.jpg" data-caption="Caption 1">
-                                                    <div class="md:w-16 md:h-16 w-12 h-12 relative md:border-4 border-2 shadow border-white rounded-full overflow-hidden dark:border-slate-700">
-                                                        <img src="assets/images/avatars/avatar-5.jpg" alt="" class="absolute w-full h-full object-cover" />
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li class="md:pr-3 pr-2 hover:scale-[1.15] hover:-rotate-2 duration-300">
-                                                <a href="assets/images/avatars/avatar-lg-5.jpg" data-caption="Caption 1">
-                                                    <div class="md:w-16 md:h-16 w-12 h-12 relative md:border-4 border-2 shadow border-white rounded-full overflow-hidden dark:border-slate-700">
-                                                        <img src="assets/images/avatars/avatar-6.jpg" alt="" class="absolute w-full h-full object-cover" />
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li class="md:pr-3 pr-2 hover:scale-[1.15] hover:-rotate-2 duration-300">
-                                                <a href="assets/images/avatars/avatar-lg-1.jpg" data-caption="Caption 1">
-                                                    <div class="md:w-16 md:h-16 w-12 h-12 relative md:border-4 border-2 shadow border-white rounded-full overflow-hidden dark:border-slate-700">
-                                                        <img src="assets/images/avatars/avatar-7.jpg" alt="" class="absolute w-full h-full object-cover" />
-                                                    </div>
-                                                </a>
-                                            </li>
+                                            )}
                                             <li class="md:pr-3 pr-2">
                                                 <div class="md:w-16 md:h-16 w-12 h-12 bg-slate-200/60 rounded-full dark:bg-dark2 animate-pulse"></div>
                                             </li>
@@ -410,51 +349,41 @@ function Welcome() {
                                     }
 
 
-                                    <div class="sm:p-4 p-2.5 flex items-center gap-4 text-xs font-semibold">
+                                    <div style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }} class="sm:p-4 p-2.5 flex items-center gap-4 text-xs font-semibold">
+
                                         <div>
                                             <div class="flex items-center gap-2.5">
                                                 <button type="button" class="button-icon text-red-500 bg-dark-100 dark:bg-slate-700"> <ion-icon class="text-lg" name="heart"></ion-icon> </button>
                                                 <a href="#">{tweet.likes.length}</a>
-                                            </div>
-                                            <div class="p-1 px-2 bg-white rounded-full drop-shadow-md w-[212px] dark:bg-slate-700 text-2xl"
-                                                uk-drop="offset:10;pos: top-left; animate-out: true; animation: uk-animation-scale-up uk-transform-origin-bottom-left">
-
-                                                <div class="flex gap-2" uk-scrollspy="target: > button; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
-                                                    <button type="button" class="text-red-600 hover:scale-125 duration-300"> <span> 👍 </span></button>
-                                                    <button type="button" class="text-red-600 hover:scale-125 duration-300"> <span> ❤️ </span></button>
-                                                    <button type="button" class="text-red-600 hover:scale-125 duration-300"> <span> 😂 </span></button>
-                                                    <button type="button" class="text-red-600 hover:scale-125 duration-300"> <span> 😯 </span></button>
-                                                    <button type="button" class="text-red-600 hover:scale-125 duration-300"> <span> 😢 </span></button>
-                                                </div>
-
-                                                <div class="w-2.5 h-2.5 absolute -bottom-1 left-3 bg-white rotate-45 hidden"></div>
                                             </div>
                                         </div>
                                         <div class="flex items-center gap-3">
                                             <button type="button" class="button-icon bg-slate-200/70 dark:bg-slate-700"> <ion-icon class="text-lg" name="chatbubble-ellipses"></ion-icon> </button>
                                             <span>{tweet.comments.length}</span>
                                         </div>
-                                        <button type="button" class="button-icon ml-auto"> <ion-icon class="text-xl" name="paper-plane-outline"></ion-icon> </button>
+                                        <div class="flex items-center gap-3">
+                                            <button type="button" class="button-icon bg-slate-200/70 dark:bg-slate-700"> <ion-icon name="repeat-outline" class="text-lg"></ion-icon> </button>
+                                            <span>{tweets.filter(tweet => tweet.parent === tweet.id).length}</span>
+                                        </div>
+                                        {/* <button type="button" class="button-icon ml-auto"> <ion-icon class="text-xl" name="paper-plane-outline"></ion-icon> </button> */}
                                         <button type="button" class="button-icon"> <ion-icon class="text-xl" name="share-outline"></ion-icon> </button>
                                     </div>
 
 
                                     <div class="sm:p-4 p-2.5 border-t border-gray-100 font-normal space-y-3 relative dark:border-slate-700/40">
 
-                                        <div class="flex items-start gap-3 relative">
-                                            <a href="timeline.html"> <img src="assets/images/avatars/avatar-2.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
-                                            <div class="flex-1">
-                                                <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> Steeve </a>
-                                                <p class="mt-0.5">What a beautiful photo! I love it. 😍 </p>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-start gap-3 relative">
-                                            <a href="timeline.html"> <img src="assets/images/avatars/avatar-3.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
-                                            <div class="flex-1">
-                                                <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> Monroe </a>
-                                                <p class="mt-0.5">   You captured the moment.😎 </p>
-                                            </div>
-                                        </div>
+                                        {tweet.comments.map(comms =>
+                                            users.filter(use => use.username === comms.userId).map(use =>
+
+                                                <div class="flex items-start gap-3 relative">
+                                                    <a href="timeline.html"> <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
+                                                    <div class="flex-1">
+                                                        <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> {use.name} </a>
+                                                        <p class="mt-0.5">{comms.comment}</p>
+                                                    </div>
+                                                </div>
+                                            )
+                                        )}
 
                                         <button type="button" class="flex items-center gap-1.5 text-gray-500 hover:text-blue-500 mt-2">
                                             <ion-icon name="chevron-down-outline" class="ml-auto duration-200 group-aria-expanded:rotate-180"></ion-icon>
@@ -466,7 +395,7 @@ function Welcome() {
 
                                     <div class="sm:px-4 sm:py-3 p-2.5 border-t border-gray-100 flex items-center gap-1 dark:border-slate-700/40">
 
-                                        <img src="assets/images/avatars/avatar-7.jpg" alt="" class="w-6 h-6 rounded-full" />
+                                        <img src={userDetails?.profilePicture ? avatars[parseInt(userDetails.profilePicture)] : avatars[0]} alt="" class="w-6 h-6 rounded-full" />
 
                                         <div class="flex-1 relative overflow-hidden h-10">
                                             <textarea placeholder="Add Comment...." rows="1" class="w-full resize-none !bg-transparent px-4 py-2 focus:!border-transparent focus:!ring-transparent"></textarea>
@@ -490,6 +419,8 @@ function Welcome() {
                                     </div>
 
                                 </div>)}
+
+                                {!tweets.length && <div>No Post or Tweet</div>}
 
                                 <div class="rounded-xl shadow-sm p-4 space-y-4 bg-slate-200/40 animate-pulse border1 dark:bg-dark2">
 

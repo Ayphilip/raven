@@ -10,7 +10,7 @@ import Welcome from './Pages/Welcome'
 import Mapscreen from './Pages/Mapscreen'
 import Login from './Pages/Login'
 import Profile from './Pages/Profile'
-import Vids from './asset/images/loads.mp4'
+import Vids from './asset/images/load.mp4'
 import { usePrivy } from '@privy-io/react-auth'
 
 function App() {

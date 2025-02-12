@@ -1,9 +1,15 @@
+import { avatars } from "../Components/avatars";
 import { db, doc, getDoc, setDoc, updateDoc, collection, getDocs } from "../Components/firebaseConfig";
+
+function getRandomBetween() {
+    return Math.random() * (avatars.length - 0) + 0;
+  }
 
 // CREATE User
 export const checkUser = async (userId, privyId, mode, username, name, profilePicture, cover, bio) => {
     const userRef = doc(db, "users", username);
     const snapshot = await getDoc(userRef);
+    
 
     if (snapshot.exists()) {
         return snapshot.data();
