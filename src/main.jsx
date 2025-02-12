@@ -6,42 +6,73 @@ import { Provider } from 'react-redux'
 import store from './store.js'
 import { PrivyProvider } from '@privy-io/react-auth'
 
+import '../src/assets/wets/style.css';
+import '../src/assets/wets/tailwind.css';
+import { AuthProvider } from './services/authenticationService.jsx'
+import { TweetProvider } from './context/tweetContext.jsx'
+import { UserProvider } from './context/userContext.jsx'
+
+// import store from './redux/store.js'
+
+
+
 
 
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
-    <PrivyProvider
-      appId="cm6dgl8ba00sh10xcnswn30yq"
-      config={{
-        "appearance": {
-          "accentColor": "#6A6FF5",
-          "theme": "#222224",
-          "showWalletLoginFirst": true,
-          "logo": "https://raw.githubusercontent.com/Ayphilip/appPics/refs/heads/main/logo.png",
-        },
-        "walletChainType": "solana-only",
-        "loginMethods": [
-          "wallet"
-        ],
-        "walletConnectCloudProjectId": '621eea0c4c9d0a7d4bd7d7d355524502',
-        "fundingMethodConfig": {
-          "moonpay": {
-            "useSandbox": true
+    <AuthProvider>
+      <PrivyProvider
+        appId="cm6dgl8ba00sh10xcnswn30yq"
+        config={{
+          "appearance": {
+            "accentColor": "#38CCCD",
+            "theme": "#f9f9ff",
+            "showWalletLoginFirst": false,
+            "logo": "https://raw.githubusercontent.com/Ayphilip/appPics/refs/heads/main/logo.png",
+            "walletChainType": "ethereum-only",
+            "walletList": [
+              "detected_wallets",
+              "phantom",
+              "solflare",
+              "backpack",
+              "okx_wallet"
+            ]
+          },
+          "loginMethods": [
+            "email",
+            "google",
+            "twitter",
+            "apple",
+            "wallet"
+          ],
+          "fundingMethodConfig": {
+            "moonpay": {
+              "useSandbox": true
+            }
+          },
+          "embeddedWallets": {
+            "createOnLogin": "all-users",
+            "requireUserPasswordOnCreate": false,
+            "showWalletUIs": true,
+            "ethereum": {
+              "createOnLogin": "users-without-wallets"
+            },
+            "solana": {
+              "createOnLogin": "off"
+            }
+          },
+          "mfa": {
+            "noPromptOnMfaRequired": false
           }
-        },
-        "embeddedWallets": {
-          "createOnLogin": "all-users",
-          "requireUserPasswordOnCreate": false,
-          "showWalletUIs": true
-        },
-        "mfa": {
-          "noPromptOnMfaRequired": false
-        }
-      }}
-    >
-
-      <App />
-    </PrivyProvider>
+        }}
+      >
+        <UserProvider>
+          <TweetProvider>
+            <App />
+          </TweetProvider>
+        </UserProvider>
+      </PrivyProvider>
+    </AuthProvider>
   </Provider>,
 )

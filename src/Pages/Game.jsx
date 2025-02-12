@@ -21,7 +21,7 @@ const GameInterface = () => {
 
     const [collapsed, setCollapsed] = useState(false);
 
-    const {id} = useParams();
+    const { id } = useParams();
 
 
 
@@ -102,9 +102,9 @@ const GameInterface = () => {
     return (
 
         ready && authenticated &&
-<>
-                <Sidebar />
-        <div id="">
+        <>
+            <Sidebar />
+            <div id="">
 
                 <div class="content-body">
 
@@ -216,7 +216,7 @@ const GameInterface = () => {
                                                                 </svg>
                                                             </td>
                                                             <td>
-                                                                <h6 class="fs-16 font-w600 mb-0"><a  class="text-black">XYZ Store ID</a></h6>
+                                                                <h6 class="fs-16 font-w600 mb-0"><a class="text-black">XYZ Store ID</a></h6>
                                                                 <span class="fs-14">Cashback</span>
                                                             </td>
                                                             <td>
@@ -233,7 +233,7 @@ const GameInterface = () => {
                                                                 </svg>
                                                             </td>
                                                             <td>
-                                                                <h6 class="fs-16 font-w600 mb-0"><a  class="text-black">Chef Renata</a></h6>
+                                                                <h6 class="fs-16 font-w600 mb-0"><a class="text-black">Chef Renata</a></h6>
                                                                 <span class="fs-14">Transfer</span>
                                                             </td>
                                                             <td>
@@ -251,7 +251,7 @@ const GameInterface = () => {
                                                                 </svg>
                                                             </td>
                                                             <td>
-                                                                <h6 class="fs-16 font-w600 mb-0"><a  class="text-black">Cindy Alexandro</a></h6>
+                                                                <h6 class="fs-16 font-w600 mb-0"><a class="text-black">Cindy Alexandro</a></h6>
                                                                 <span class="fs-14">Transfer</span>
                                                             </td>
                                                             <td>
@@ -269,7 +269,7 @@ const GameInterface = () => {
                                                                 </svg>
                                                             </td>
                                                             <td>
-                                                                <h6 class="fs-16 font-w600 mb-0"><a  class="text-black">Paipal</a></h6>
+                                                                <h6 class="fs-16 font-w600 mb-0"><a class="text-black">Paipal</a></h6>
                                                                 <span class="fs-14">Transfer</span>
                                                             </td>
                                                             <td>
@@ -286,7 +286,7 @@ const GameInterface = () => {
                                                                 </svg>
                                                             </td>
                                                             <td>
-                                                                <h6 class="fs-16 font-w600 mb-0"><a  class="text-black">Hawkins Jr.</a></h6>
+                                                                <h6 class="fs-16 font-w600 mb-0"><a class="text-black">Hawkins Jr.</a></h6>
                                                                 <span class="fs-14">Cashback</span>
                                                             </td>
                                                             <td>
@@ -319,7 +319,7 @@ const GameInterface = () => {
                                     </div>
                                     <div class="card-body">
 
-                                        <h4 class="mt-3 mb-3">Inside lobby<a  class="fs-16 float-end text-secondary font-w600"></a></h4>
+                                        <h4 class="mt-3 mb-3">Inside lobby<a class="fs-16 float-end text-secondary font-w600"></a></h4>
                                         <ul class="user-list">
                                             <li><img src="https://dompet.dexignlab.com/codeigniter/demo/public/assets/images/avatar/1.jpg" alt="" /></li>
                                             <li><img src="https://dompet.dexignlab.com/codeigniter/demo/public/assets/images/avatar/2.jpg" alt="" /></li>
@@ -336,7 +336,7 @@ const GameInterface = () => {
                                             <input class="form-control amount-input" placeholder='Ticket' title="Formatted number" id="input-format" />
                                             <div id="slider-format"></div>
                                         </div>
-                                        <a  class="btn btn-primary d-block btn-lg text-uppercase">Buy Ticket</a>
+                                        <a class="btn btn-primary d-block btn-lg text-uppercase">Buy Ticket</a>
                                     </div>
                                 </div>
                             </div>

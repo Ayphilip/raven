@@ -8,9 +8,28 @@ import GameInterface from './Pages/Game'
 import New from './Pages/New'
 import Welcome from './Pages/Welcome'
 import Mapscreen from './Pages/Mapscreen'
+import Login from './Pages/Login'
+import Profile from './Pages/Profile'
+import Vids from './asset/images/loads.mp4'
+import { usePrivy } from '@privy-io/react-auth'
 
 function App() {
   const [count, setCount] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const {ready} = usePrivy()
+
+  if (!ready) {
+    return <div>
+
+      <div style={{ position: 'fixed', width: 100 + '%', height: 100 + '%' }}>
+      </div>
+
+      <video style={{ width: 100 + 'vw', height: 100 + 'vh', zIndex: -1 }} autoPlay loop muted>
+        <source src={Vids} type="video/mp4" />
+
+      </video>
+    </div>
+  }
 
 
   return (
@@ -19,6 +38,7 @@ function App() {
       <body className=''>
         
 
+
         <Routes>
 
           <Route path='/welcome' Component={Mapscreen} />
@@ -26,9 +46,16 @@ function App() {
           <Route path='/game'>
             <Route path=':id' Component={GameInterface} />
           </Route>
-          <Route path='/' Component={Home} />
+          <Route path='/timeline'>
+            <Route path=':id' Component={Profile} />
+          </Route>
+          <Route path='/login' Component={Login} />
+          <Route path='/' Component={Welcome} />
+
+
+          {/* <Route path='/login' Component={Signin}/> */}
         </Routes>
-        
+
       </body>
     </BrowserRouter>
 
