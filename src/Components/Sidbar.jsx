@@ -13,6 +13,7 @@ import fly7 from "../asset/icons/market.png"
 import fly8 from "../asset/icons/blog.png"
 import fly9 from "../asset/icons/game.png"
 import fly10 from "../asset/icons/switch.png"
+import Logo from '../asset/images/logo.png'
 
 
 function Sidbar() {
@@ -31,14 +32,15 @@ function Sidbar() {
     }
     return (
         authenticate && <div>
-            <div id="site__sidebar" class="fixed top-0 left-0 z-[99] pt-[--m-top] overflow-hidden transition-transform xl:duration-500 max-xl:w-full max-xl:-translate-x-full">
+            <div id="site__sidebar" class="fixed top-0 left-0 z-[99] overflow-hidden transition-transform xl:duration-500 max-xl:w-full max-xl:-translate-x-full">
+                    <img src={Logo} style={{width: '20%'}}/>
 
 
                 <div class="p-2 max-xl:bg-white shadow-sm 2xl:w-72 sm:w-64 w-[80%] h-[calc(100vh-64px)] relative z-30 max-lg:border-r dark:max-xl:!bg-slate-700 dark:border-slate-700">
 
                     <div class="pr-4" data-simplebar>
 
-                        <nav id="side" style={{position: 'relative', height: '85vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
+                        <nav id="side" style={{position: 'relative', height: '80vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
 
                             <ul>
                                 <li class="active">
