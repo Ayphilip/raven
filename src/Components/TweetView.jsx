@@ -270,7 +270,7 @@ function TweetView({ tweets }) {
             </div>
         )}
 
-        <div class="hidden lg:p-20 uk- open" id="create-status" uk-modal="">
+        <div class="hidden lg:p-20 uk- open" id="create-status" uk-modal="bg-close: false">
 
             <div class="uk-modal-dialog tt relative overflow-auto mx-auto bg-white shadow-xl rounded-lg md:w-[520px] w-full dark:bg-dark2">
 
@@ -298,14 +298,6 @@ function TweetView({ tweets }) {
                     <button type="button" class="flex items-center gap-1.5 bg-teal-50 text-teal-600 rounded-full py-1 px-2 border-2 border-teal-100 dark:bg-teal-950 dark:border-teal-900">
                         <ion-icon name="videocam" class="text-base"></ion-icon>
                         Video
-                    </button>
-                    <button type="button" class="flex items-center gap-1.5 bg-orange-50 text-orange-600 rounded-full py-1 px-2 border-2 border-orange-100 dark:bg-yellow-950 dark:border-yellow-900">
-                        <ion-icon name="happy" class="text-base"></ion-icon>
-                        Feeling
-                    </button>
-                    <button type="button" class="flex items-center gap-1.5 bg-red-50 text-red-600 rounded-full py-1 px-2 border-2 border-rose-100 dark:bg-rose-950 dark:border-rose-900">
-                        <ion-icon name="location" class="text-base"></ion-icon>
-                        Check in
                     </button>
                     <button type="button" class="grid place-items-center w-8 h-8 text-xl rounded-full bg-secondery">
                         <ion-icon name="ellipsis-horizontal"></ion-icon>
