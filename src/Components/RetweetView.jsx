@@ -5,6 +5,7 @@ import formatTimestamp from './timeStamping';
 import { useLoginService } from '../services/authenticationService';
 import MediaViewer from './MediaViewer';
 import { avatars } from './avatars';
+import { renderContentWithMentions } from './CapsuleInstance';
 
 function RetweetView({ id, type }) {
     const { tweets, likeTweet, retweetTweet, fetchTweet, addTweet } = useTweets();
@@ -25,7 +26,7 @@ function RetweetView({ id, type }) {
             }
         };
 
-        if(id) getTweet();
+        if (id) getTweet();
 
 
         return () => {
@@ -34,27 +35,27 @@ function RetweetView({ id, type }) {
     }, [id])
 
     return (
-        tweet && 
-        <div style={{width: type === 'full' ? '100%' : '80%', justifySelf: 'flex-end'}} class="bg-white shadow-sm text-sm font-medium border1 dark:bg-dark1">
+        tweet &&
+        <div style={{ width: type === 'full' ? '100%' : '80%', justifySelf: 'flex-end' }} class="bg-white shadow-sm text-sm font-medium border1 dark:bg-dark1">
 
 
             {userDetails && <div class="flex gap-3 sm:p-4 p-2.5 text-sm font-medium">
                 {users.filter(use => use.username === tweet.userId).map(use => <>
-                    <a href={"/timeline/"+use.username}> <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-9 h-9 rounded-full" /> </a>
+                    <a href={"/timeline/" + use.username}> <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-9 h-9 rounded-full" /> </a>
                     <div class="flex-1">
-                        <a href={"/timeline/"+use.username}> <h4 class="text-black dark:text-white"> {userDetails.username === tweet.userId ? 'You' : use.name} </h4> </a>
+                        <a href={"/timeline/" + use.username}> <h4 class="text-black dark:text-white"> {userDetails.username === tweet.userId ? 'You' : use.name} </h4> </a>
                         <div class="text-xs text-gray-500 dark:text-white/80">{formatTimestamp(tweet.createdAt)}</div>
                     </div>
                 </>)}
 
-                
+
             </div>}
 
-            <a href={'/tweet/'+tweet.tweetId}>
+            <a href={'/tweet/' + tweet.tweetId}>
 
-            <div class="sm:px-4 p-2.5 pt-0">
-                <p class="font-normal"> {tweet.content} </p>
-            </div>
+                <div class="sm:px-4 p-2.5 pt-0">
+                    <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails ? userDetails.username : '')}</p>
+                </div>
             </a>
 
 
