@@ -1,6 +1,7 @@
 import { usePrivy } from '@privy-io/react-auth';
 import React, { useEffect } from 'react'
-import Img from '../asset/images/Welcome.jpg';
+import Img from '../asset/images/Welcome1.png';
+import Img2 from '../asset/images/Welcome.jpg';
 import Logo from '../asset/images/logo.png';
 import { checkUser } from '../services/userServices';
 
@@ -18,14 +19,14 @@ function Login() {
 
     const navigate = useNavigate()
 
+    if (ready && authenticated) {
+        const response = initiateLoginUser(user);
+        // console.log(response)
+    }
+    if (ready && authenticated && userDetails) {
+        navigate('/')
+    }
     useEffect(() => {
-        if (ready && authenticated) {
-            const response = initiateLoginUser(user);
-            console.log(response)
-        }
-        if (ready && authenticated && userDetails) {
-            navigate('/')
-        }
 
         return () => {
 
@@ -59,7 +60,7 @@ function Login() {
 
                         <div class="text-center flex items-center gap-6">
                             <hr class="flex-1 border-slate-200 dark:border-slate-800" />
-                            Powered by Privy.io
+                            Authentication by Privy.io
                             <hr class="flex-1 border-slate-200 dark:border-slate-800" />
                         </div>
 
@@ -86,19 +87,19 @@ function Login() {
                             <div class="absolute bottom-0 w-full uk-tr ansition-slide-bottom-small z-10">
                                 <div class="max-w-xl w-full mx-auto pb-32 px-5 z-30 relative" uk-scrollspy="target: > *; cls: uk-animation-scale-up; delay: 100 ;repeat: true" >
                                     <img class="w-12" src={Logo} alt="Socialite html template" />
-                                    <h4 class="!text-white text-2xl font-semibold mt-7" uk-slideshow-parallax="y: 600,0,0">  Connect With Friends </h4>
-                                    <p class="!text-white text-lg mt-7 leading-8" uk-slideshow-parallax="y: 800,0,0;"> This phrase is more casual and playful. It suggests that you are keeping your friends updated on what’s happening in your life.</p>
+                                    <h4 class="!text-white text-2xl font-semibold mt-7" uk-slideshow-parallax="y: 600,0,0">  Celestia Mammothon </h4>
+                                    <p class="!text-white text-lg mt-7 leading-8" uk-slideshow-parallax="y: 800,0,0;"></p>
                                 </div>
                             </div>
                             <div class="w-full h-96 bg-gradient-to-t from-black absolute bottom-0 left-0"></div>
                         </li>
                         <li class="w-full">
-                            <img src={Img} alt="" class="w-full h-full object-cover uk-animation-kenburns uk-animation-reverse uk-transform-origin-center-left" />
+                            <img src={Img2} alt="" class="w-full h-full object-cover uk-animation-kenburns uk-animation-reverse uk-transform-origin-center-left" />
                             <div class="absolute bottom-0 w-full uk-tr ansition-slide-bottom-small z-10">
                                 <div class="max-w-xl w-full mx-auto pb-32 px-5 z-30 relative" uk-scrollspy="target: > *; cls: uk-animation-scale-up; delay: 100 ;repeat: true" >
                                     <img class="w-12" src={Logo} alt="Socialite html template" />
-                                    <h4 class="!text-white text-2xl font-semibold mt-7" uk-slideshow-parallax="y: 800,0,0">  Connect With Friends </h4>
-                                    <p class="!text-white text-lg mt-7 leading-8" uk-slideshow-parallax="y: 800,0,0;"> This phrase is more casual and playful. It suggests that you are keeping your friends updated on what’s happening in your life.</p>
+                                    <h4 class="!text-white text-2xl font-semibold mt-7" uk-slideshow-parallax="y: 800,0,0">  Web3 Social Upgrade </h4>
+                                    <p class="!text-white text-lg mt-7 leading-8" uk-slideshow-parallax="y: 800,0,0;"> The hive, X clone application.</p>
                                 </div>
                             </div>
                             <div class="w-full h-96 bg-gradient-to-t from-black absolute bottom-0 left-0"></div>

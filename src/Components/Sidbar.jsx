@@ -12,19 +12,25 @@ import fly6 from "../asset/icons/group.png"
 import fly7 from "../asset/icons/market.png"
 import fly8 from "../asset/icons/blog.png"
 import fly9 from "../asset/icons/game.png"
+import fly10 from "../asset/icons/switch.png"
 
 
 function Sidbar() {
     const { ready, login, logout, authenticated, user } = usePrivy();
-    const { userDetails, initiateLoginUser, userlogoutService, loading } = useLoginService();
+    const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate } = useLoginService();
 
     const navigate = useNavigate();
 
-    if (ready && !authenticated || !userDetails) {
+    const logoutUser = () => {
+        userlogoutService()
+        logout()
+    }
+
+    if (ready && !authenticated || !authenticate) {
         navigate('/login')
     }
     return (
-        <div>
+        authenticate && <div>
             <div id="site__sidebar" class="fixed top-0 left-0 z-[99] pt-[--m-top] overflow-hidden transition-transform xl:duration-500 max-xl:w-full max-xl:-translate-x-full">
 
 
@@ -32,7 +38,7 @@ function Sidbar() {
 
                     <div class="pr-4" data-simplebar>
 
-                        <nav id="side">
+                        <nav id="side" style={{position: 'relative', height: '85vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
 
                             <ul>
                                 <li class="active">
@@ -48,15 +54,15 @@ function Sidbar() {
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="video.html">
-                                        <img src={fly3} alt="messages" class="w-6" />
-                                        <span> video </span>
+                                    <a href="event.html">
+                                        <img src={fly4} alt="messages" class="w-6" />
+                                        <span> Notification </span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="event.html">
-                                        <img src={fly4} alt="messages" class="w-6" />
-                                        <span> event </span>
+                                    <a href="video.html">
+                                        <img src={fly3} alt="messages" class="w-6" />
+                                        <span> Treasure Hunt </span>
                                     </a>
                                 </li>
                                 <li>
@@ -71,35 +77,30 @@ function Sidbar() {
                                         <span> Groups </span>
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="market.html">
-                                        <img src={fly7} alt="market" class="w-7 -ml-1" />
-                                        <span> market </span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="blog.html">
-                                        <img src={fly8} alt="blog" class="w-6" />
-                                        <span> blog </span>
-                                    </a>
-                                </li>
                                 
-                                <li class="" id="show__more">
-                                    <a href={"/timeline/" + userDetails.username}>
-
-                                        <div class="p-4 py-5 flex items-center gap-4">
-                                            <img src={userDetails?.profilePicture ? avatars[parseInt(userDetails.profilePicture)] : avatars[0]} alt="" class="w-10 h-10 rounded-full shadow" />
-                                            <div class="flex-1">
-                                                <h4 class="text-sm font-small text-black">{userDetails.name}</h4>
-                                                <div class="text-sm mt-1 text-blue-600 font-light dark:text-white/70">{userDetails.username.slice(0, 6)}...
-                                                {userDetails.username.slice(-4)}</div>
-                                            </div>
-                                        </div>
+                                <li>
+                                    <a onClick={logoutUser}>
+                                        <img src={fly10} alt="blog" class="w-6" />
+                                        <span> Logout </span>
                                     </a>
+                                </li>
+
+                                <li class="" id="show__more">
                                 </li>
 
 
                             </ul>
+                            {userDetails && <a href={"/timeline/" + userDetails.username}>
+
+                                <div class="p-1 py-2 flex items-center gap-4">
+                                    <img src={userDetails?.profilePicture ? avatars[parseInt(userDetails.profilePicture)] : avatars[0]} alt="" class="w-15 h-10 rounded-full shadow" />
+                                    <div class="flex-1">
+                                        <h6 class="text-sm font-small text-black">{userDetails.name}</h6>
+                                        <div class="text-sm mt-1 text-blue-600 font-light dark:text-white/70">{userDetails.username.slice(0, 6)}...
+                                            {userDetails.username.slice(-4)}</div>
+                                    </div>
+                                </div>
+                            </a>}
 
 
 

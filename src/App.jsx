@@ -12,6 +12,7 @@ import Login from './Pages/Login'
 import Profile from './Pages/Profile'
 import Vids from './asset/images/load.mp4'
 import { usePrivy } from '@privy-io/react-auth'
+import TweetPage from './Pages/TweetPage'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -35,7 +36,7 @@ function App() {
   return (
 
     <BrowserRouter>
-      <body className=''>
+      
         
 
 
@@ -45,6 +46,9 @@ function App() {
           <Route path='/newgame' Component={New} />
           <Route path='/game'>
             <Route path=':id' Component={GameInterface} />
+          </Route>
+          <Route path='/tweet'>
+            <Route path=':id' Component={TweetPage} />
           </Route>
           <Route path='/timeline'>
             <Route path=':id' Component={Profile} />
@@ -56,7 +60,7 @@ function App() {
           {/* <Route path='/login' Component={Signin}/> */}
         </Routes>
 
-      </body>
+      
     </BrowserRouter>
 
   )

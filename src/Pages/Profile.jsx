@@ -6,20 +6,26 @@ import Sidbar from '../Components/Sidbar'
 import { usePrivy } from '@privy-io/react-auth'
 import { useLoginService } from '../services/authenticationService'
 import { getAllUsers } from '../services/userServices'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { avatars } from '../Components/avatars'
 import Img from '../asset/images/Welcome.jpg';
 import { useTweets } from '../context/tweetContext'
 import { useUsers } from '../context/userContext'
 import formatTimestamp from '../Components/timeStamping'
 import MediaViewer from '../Components/MediaViewer'
+import TweetView from '../Components/TweetView'
 
 function Profile() {
     const { ready, login, logout, authenticated, user } = usePrivy();
     const { userDetails, initiateLoginUser, userlogoutService, loading } = useLoginService();
 
     const { tweets, likeTweet, retweetTweet, addTweet } = useTweets();
-    const { users, addUser, modifyUser } = useUsers();
+    const { users, addUser, modifyUser, addFollow, removeFollow, fetchUser } = useUsers();
+
+    const [userInfo, setUserInfo] = useState(null)
+    const [stat, setStat] = useState(false)
+
+    const params = useParams();
 
     // const [users, setUsers] = useState(null)
 
@@ -28,7 +34,41 @@ function Profile() {
         navigate('/login')
     }
 
+    const saveFollow = (userId, user2Id) => {
+        
+        var hive = addFollow(userId, user2Id)
+        if (hive){
+            setStat(true)
+        }else{
+            setStat(false)
+        }
+    }
+
+    const exitFollow = (userId, user2Id) => {
+        
+        var hive = removeFollow(userId, user2Id)
+        if (hive){
+            setStat(true)
+        }else{
+            setStat(false)
+        }
+    }
+
     useEffect(() => {
+
+        const getTweet = async () => {
+            console.log(params.id)
+            try {
+                const fetchedTweet = await fetchUser(params.id); // Wait for the promise to resolve
+                console.log(fetchedTweet)
+                setUserInfo(fetchedTweet); // Store the resolved tweet
+            } catch (error) {
+                console.error('Error fetching:', error);
+            }
+            setStat(false)
+        };
+
+        if (params.id) getTweet();
 
         // let allUsers = getAllUsers()
         // setUsers(allUsers)
@@ -37,10 +77,10 @@ function Profile() {
         return () => {
 
         }
-    }, [])
+    }, [params.id, stat])
 
     return (
-        userDetails && <div>
+        userInfo && <div>
             <div id='wrapper'>
 
 
@@ -76,14 +116,15 @@ function Profile() {
 
                                     <div class="relative lg:h-48 lg:w-48 w-28 h-28 mb-4 z-10">
                                         <div class="relative overflow-hidden rounded-full md:border-[6px] border-gray-100 shrink-0 dark:border-slate-900 shadow">
-                                            <img src={userDetails?.profilePicture ? avatars[parseInt(userDetails.profilePicture)] : avatars[0]} alt="" class="h-full w-full object-cover inset-0" />
+                                            <img src={userInfo?.profilePicture ? avatars[parseInt(userInfo.profilePicture)] : avatars[0]} alt="" class="h-full w-full object-cover inset-0" />
                                         </div>
                                         <button type="button" class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white shadow p-1.5 rounded-full sm:flex hidden"> <ion-icon name="camera" class="text-2xl md hydrated" role="img" aria-label="camera"></ion-icon></button>
                                     </div>
 
-                                    <h3 class="md:text-3xl text-base font-bold text-black dark:text-white"> {userDetails.name} </h3>
+                                    <h3 class="md:text-3xl text-base font-bold text-black dark:text-white"> {userInfo.name} </h3>
 
-                                    <p class="mt-2 text-gray-500 dark:text-white/80">ID: {userDetails?.userId}</p>
+                                    <p class="mt-2 text-gray-500 dark:text-white/80">ID: {userInfo?.username}</p>
+                                    
 
                                     <p class="mt-2 max-w-xl text-sm md:font-normal font-light text-center hidden"> I love beauty and emotion. 🥰 I’m passionate about photography and learning. 📚 I explore genres and styles. 🌈 I think photography is storytelling. 😊</p>
 
@@ -93,12 +134,17 @@ function Profile() {
 
                             <div class="flex items-center justify-between mt-3 border-t border-gray-100 px-2 max-lg:flex-col dark:border-slate-700"
                                 uk-sticky="offset:50; cls-active: bg-white/80 shadow rounded-b-2xl z-50 backdrop-blur-xl dark:!bg-slate-700/80; animation:uk-animation-slide-top ; media: 992">
-
+                                    
                                 <div class="flex items-center gap-2 text-sm py-2 pr-1 max-md:w-full lg:order-2">
-                                    <button class="button bg-primary flex items-center gap-2 text-white py-2 px-3.5 max-md:flex-1">
+                                    {userInfo.userId === userDetails.userId ? <button class="button bg-primary flex items-center gap-2 text-white py-2 px-3.5 max-md:flex-1">
                                         <ion-icon name="add-circle" class="text-xl"></ion-icon>
                                         <span class="text-sm"> Add Your Story  </span>
-                                    </button>
+                                    </button> : userInfo.followers.some(fol => fol === userDetails.username) ? <button  class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
+                                        <span class="text-sm"> Following  </span>
+                                    </button> : <button onClick={() => saveFollow(userInfo.username, userDetails?.username)} class="button bg-primary flex items-center gap-2 text-white py-2 px-3.5 max-md:flex-1">
+                                        <ion-icon name="add-circle" class="text-xl"></ion-icon>
+                                        <span class="text-sm"> Follow  </span>
+                                    </button>}
 
                                     <button type="submit" class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
                                         <ion-icon name="search" class="text-xl" />
@@ -110,7 +156,7 @@ function Profile() {
                                         </button>
                                         <div class="w-[240px]" uk-dropdown="pos: bottom-right; animation: uk-animation-scale-up uk-transform-origin-top-right; animate-out: true; mode: click;offset:10">
                                             <nav>
-                                                <a href="#"> <ion-icon class="text-xl" name="pricetags-outline"></ion-icon> Unfollow </a>
+                                            {userInfo.followers.some(fol => fol === userDetails.username) && <a onClick={() => exitFollow(userInfo.username, userDetails?.username)} > <ion-icon class="text-xl" name="pricetags-outline"></ion-icon> Unfollow </a>}
                                                 <a href="#"> <ion-icon class="text-xl" name="time-outline"></ion-icon>  Mute story </a>
                                                 <a href="#"> <ion-icon class="text-xl" name="flag-outline"></ion-icon>  Report </a>
                                                 <a href="#"> <ion-icon class="text-xl" name="share-outline"></ion-icon> Share profile </a>
@@ -123,20 +169,14 @@ function Profile() {
 
                                 <nav class="flex gap-0.5 rounded-xl -mb-px text-gray-600 font-medium text-[15px]  dark:text-white max-md:w-full max-md:overflow-x-auto">
                                     <a href="#" class="inline-block  py-3 leading-8 px-3.5 border-b-2 border-blue-600 text-blue-600">Timeline</a>
-                                    <a href="#" class="inline-block py-3 leading-8 px-3.5">Friend <span class="text-xs pl-2 font-normal lg:inline-block hidden">2,680</span></a>
-                                    <a href="#" class="inline-block py-3 leading-8 px-3.5">Photo</a>
-                                    <a href="#" class="inline-block py-3 leading-8 px-3.5">Photo</a>
-                                    <a href="#" class="inline-block py-3 leading-8 px-3.5">Photo</a>
-                                    <a href="#" class="inline-block py-3 leading-8 px-3.5">Video</a>
-                                    <a href="#" class="inline-block py-3 leading-8 px-3.5">Group</a>
-
-                                    <div>
+                                    
+                                    {userDetails && userDetails.username === userInfo.username && <div>
                                         <a href="#" class="inline-flex items-center gap-2 py-3 leading-8 px-3">
                                             More <ion-icon name="chevron-down"></ion-icon>
                                         </a>
                                         <div class="md:w-[240px] w-screen" uk-dropdown="pos: bottom-right; animation: uk-animation-scale-up uk-transform-origin-top-right; animate-out: true; mode: click;offset:-4">
                                             <nav class="text-[15px]">
-                                                <a href="#"> Likes </a>
+                                                <a href="#"> Treasure Hunt </a>
                                                 <a href="#"> Music </a>
                                                 <a href="#"> Events </a>
                                                 <a href="#"> Books </a>
@@ -145,7 +185,7 @@ function Profile() {
                                                 <a href="#"> Manage Sections  </a>
                                             </nav>
                                         </div>
-                                    </div>
+                                    </div>}
 
                                 </nav>
 
@@ -157,9 +197,9 @@ function Profile() {
 
 
 
-                            <div class="flex-1 xl:space-y-6 space-y-3">
+                            <div class="flex-1">
 
-                                <div class="bg-white rounded-xl shadow-sm p-4 space-y-4 text-sm font-medium border1 dark:bg-dark2">
+                                {userDetails && userDetails.username === userInfo.username && <div class="bg-white shadow-sm p-4 space-y-4 text-sm font-medium border1 dark:bg-dark2">
 
                                     <div class="flex items-center gap-3">
                                         <div class="flex-1 bg-slate-100 hover:bg-opacity-80 transition-all rounded-lg cursor-pointer dark:bg-dark3" uk-toggle="target: #create-status">
@@ -183,141 +223,14 @@ function Profile() {
                                         </div>
                                     </div>
 
-                                </div>
+                                </div>}
 
-                                {!tweets.filter(tweet => tweet.userId === userDetails.username).length && <div>No Post or Tweet</div>}
-
-
-                                {tweets.filter(tweet => tweet.userId === userDetails.username).map(tweet => <div class="bg-white rounded-xl shadow-sm text-sm font-medium border1 dark:bg-dark2">
+                                {!tweets.filter(tweet => tweet.userId === userInfo.username).length && <div>No Post or Tweet</div>}
 
 
-                                    <div class="flex gap-3 sm:p-4 p-2.5 text-sm font-medium">
-                                        {users.filter(use => use.username === tweet.userId).map(use => <>
-                                            <a href="timeline.html"> <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-9 h-9 rounded-full" /> </a>
-                                            <div class="flex-1">
-                                                <a href="timeline.html"> <h4 class="text-black dark:text-white"> {userDetails.username === tweet.userId ? 'You' : use.name} </h4> </a>
-                                                <div class="text-xs text-gray-500 dark:text-white/80">{formatTimestamp(tweet.createdAt)}</div>
-                                            </div>
-                                        </>)}
-
-                                        <div class="-mr-1">
-                                            <button type="button" class="button-icon w-8 h-8"> <ion-icon class="text-xl" name="ellipsis-horizontal"></ion-icon> </button>
-                                            <div class="w-[245px]" uk-dropdown="pos: bottom-right; animation: uk-animation-scale-up uk-transform-origin-top-right; animate-out: true; mode: click">
-                                                <nav>
-                                                    <a href="#"> <ion-icon class="text-xl shrink-0" name="bookmark-outline"></ion-icon>  Add to favorites </a>
-                                                    <a href="#"> <ion-icon class="text-xl shrink-0" name="notifications-off-outline"></ion-icon> Mute Notification </a>
-                                                    <a href="#"> <ion-icon class="text-xl shrink-0" name="flag-outline"></ion-icon>  Report this post </a>
-                                                    <a href="#"> <ion-icon class="text-xl shrink-0" name="share-outline"></ion-icon>  Share your profile </a>
-                                                    <hr />
-                                                    <a href="#" class="text-red-400 hover:!bg-red-50 dark:hover:!bg-red-500/50"> <ion-icon class="text-xl shrink-0" name="stop-circle-outline"></ion-icon>  Unfollow </a>
-                                                </nav>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="sm:px-4 p-2.5 pt-0">
-                                        <p class="font-normal"> {tweet.content} </p>
-                                    </div>
-
-
-                                    {tweet.media.length > 1 ?
-                                        <div class="relative uk-visible-toggle sm:px-4" tabindex="-1" uk-slideshow="animation: push;ratio: 4:3">
-
-                                            <ul class="uk-slideshow-items overflow-hidden rounded-xl" uk-lightbox="animation: fade">
-                                                {tweet?.media.map(med =>
-                                                    <li class="w-full">
-                                                        <a class="inline" href={med} data-caption={tweet.content}>
-                                                            <MediaViewer fileUrl={med} />
-                                                        </a>
-                                                    </li>
-
-                                                )}
-
-                                            </ul>
-
-                                            <a class="nav-prev left-6" href="#" uk-slideshow-item="previous"> <ion-icon name="chevron-back" class="text-2xl"></ion-icon> </a>
-                                            <a class="nav-next right-6" href="#" uk-slideshow-item="next"> <ion-icon name="chevron-forward" class="text-2xl"></ion-icon></a>
-
-                                        </div>
-                                        :
-                                        <a href="#preview_modal" uk-toggle>
-                                            <div class="relative w-full lg:h-96 h-full sm:px-4">
-                                                <MediaViewer fileUrl={tweet.media} />
-                                            </div>
-                                        </a>
-                                    }
-
-
-                                    <div style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }} class="sm:p-4 p-2.5 flex items-center gap-4 text-xs font-semibold">
-
-                                        <div>
-                                            <div class="flex items-center gap-2.5">
-                                                <button type="button" class="button-icon text-red-500 bg-dark-100 dark:bg-slate-700"> <ion-icon class="text-lg" name="heart"></ion-icon> </button>
-                                                <a href="#">{tweet.likes.length}</a>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-center gap-3">
-                                            <button type="button" class="button-icon bg-slate-200/70 dark:bg-slate-700"> <ion-icon class="text-lg" name="chatbubble-ellipses"></ion-icon> </button>
-                                            <span>{tweet.comments.length}</span>
-                                        </div>
-                                        <div class="flex items-center gap-3">
-                                            <button type="button" class="button-icon bg-slate-200/70 dark:bg-slate-700"> <ion-icon name="repeat-outline" class="text-lg"></ion-icon> </button>
-                                            <span>{tweets.filter(tweet => tweet.parent === tweet.id).length}</span>
-                                        </div>
-                                        {/* <button type="button" class="button-icon ml-auto"> <ion-icon class="text-xl" name="paper-plane-outline"></ion-icon> </button> */}
-                                        <button type="button" class="button-icon"> <ion-icon class="text-xl" name="share-outline"></ion-icon> </button>
-                                    </div>
-
-
-                                    <div class="sm:p-4 p-2.5 border-t border-gray-100 font-normal space-y-3 relative dark:border-slate-700/40">
-
-                                        {tweet.comments.map(comms =>
-                                            users.filter(use => use.username === comms.userId).map(use =>
-
-                                                <div class="flex items-start gap-3 relative">
-                                                    <a href="timeline.html"> <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
-                                                    <div class="flex-1">
-                                                        <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> {use.name} </a>
-                                                        <p class="mt-0.5">{comms.comment}</p>
-                                                    </div>
-                                                </div>
-                                            )
-                                        )}
-
-                                        <button type="button" class="flex items-center gap-1.5 text-gray-500 hover:text-blue-500 mt-2">
-                                            <ion-icon name="chevron-down-outline" class="ml-auto duration-200 group-aria-expanded:rotate-180"></ion-icon>
-                                            More Comment
-                                        </button>
-
-                                    </div>
-
-
-                                    <div class="sm:px-4 sm:py-3 p-2.5 border-t border-gray-100 flex items-center gap-1 dark:border-slate-700/40">
-
-                                        <img src={userDetails?.profilePicture ? avatars[parseInt(userDetails.profilePicture)] : avatars[0]} alt="" class="w-6 h-6 rounded-full" />
-
-                                        <div class="flex-1 relative overflow-hidden h-10">
-                                            <textarea placeholder="Add Comment...." rows="1" class="w-full resize-none !bg-transparent px-4 py-2 focus:!border-transparent focus:!ring-transparent"></textarea>
-
-                                            <div class="!top-2 pr-2" uk-drop="pos: bottom-right; mode: click">
-                                                <div class="flex items-center gap-2" uk-scrollspy="target: > svg; cls: uk-animation-slide-right-small; delay: 100 ;repeat: true">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 fill-sky-600">
-                                                        <path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" clip-rule="evenodd" />
-                                                    </svg>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 fill-pink-600">
-                                                        <path d="M3.25 4A2.25 2.25 0 001 6.25v7.5A2.25 2.25 0 003.25 16h7.5A2.25 2.25 0 0013 13.75v-7.5A2.25 2.25 0 0010.75 4h-7.5zM19 4.75a.75.75 0 00-1.28-.53l-3 3a.75.75 0 00-.22.53v4.5c0 .199.079.39.22.53l3 3a.75.75 0 001.28-.53V4.75z" />
-                                                    </svg>
-                                                </div>
-                                            </div>
-
-
-                                        </div>
-
-
-                                        <button type="submit" class="text-sm rounded-full py-1.5 px-3.5 bg-secondery"> Replay</button>
-                                    </div>
-
-                                </div>)}
+                                {tweets.filter(tweet => tweet.userId === userInfo.username).map(tweet => 
+                                <TweetView tweets={tweets.filter(tweet => tweet.userId === userInfo.username)} />
+                            )}
 
                                 <div class="rounded-xl shadow-sm p-4 space-y-4 bg-slate-200/40 animate-pulse border1 dark:bg-dark2">
 
@@ -391,7 +304,7 @@ function Profile() {
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12.75 19.5v-.75a7.5 7.5 0 00-7.5-7.5H4.5m0-6.75h.75c7.87 0 14.25 6.38 14.25 14.25v.75M6 18.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
                                                 </svg>
-                                                <div>  Followed By <span class="font-semibold text-black dark:text-white"> {userDetails.followers.length} People </span> </div>
+                                                <div>  Followed By <span class="font-semibold text-black dark:text-white"> {userInfo.followers.length} People </span> </div>
                                             </li>
 
                                         </ul>
@@ -435,14 +348,14 @@ function Profile() {
 
                                         <div class="flex items-ce justify-between text-black dark:text-white">
                                             <h3 class="font-bold text-lg"> Friends
-                                                <span class="block text-sm text-gray-500 mt-0. font-normal dark:text-white"> {userDetails.followers.length} Friends </span>
+                                                <span class="block text-sm text-gray-500 mt-0. font-normal dark:text-white"> {userInfo.followers.length} Friends </span>
                                             </h3>
                                             <a href="#" class="text-sm text-blue-500">Find Friend</a>
                                         </div>
 
                                         <div class="grid grid-cols-3 gap-2 gap-y-5 text-center text-sm mt-4 mb-2">
 
-                                            {users?.length && users?.map(fol => <div key={fol}>
+                                            {users?.filter(use => userInfo.followers.includes(use.username)).length && users?.filter(use => userInfo.followers.includes(use.username))  .map(fol => <div key={fol}>
                                                 <div class="relative w-full aspect-square rounded-lg overflow-hidden">
                                                     <img src={fol?.profilePicture ? avatars[parseInt(fol.profilePicture)] : avatars[0]} alt="" class="object-cover w-full h-full inset-0" />
                                                 </div>

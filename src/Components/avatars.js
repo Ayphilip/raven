@@ -47,5 +47,9 @@ const view = [
     'Only me'
 ]
 
+const highlightMentions = (text) => {
+    return text.replace(/@(\w+)/g, `<span class="mention">@$1</span>`);
+};
 
-export {avatars, view};
+
+export { avatars, view, highlightMentions };

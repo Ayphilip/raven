@@ -1,16 +1,23 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import Cookies from "js-cookie";
-import { checkUser } from "./userServices";
+import { checkUser, handleBookmark } from "./userServices";
 import { usePrivy } from "@privy-io/react-auth";
+import axios from "axios";
+import { useAddress } from '@chopinframework/react'
+import { useUsers } from "../context/userContext";
+import { avatars } from "../Components/avatars";
+
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [userDetails, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [authenticated, setAuthenticated] = useState(false);
+    const [authenticate, setAuthenticated] = useState(false);
+    // const { addUser } = useUsers();
 
     const { ready, logout, user } = usePrivy();
+
 
     useEffect(() => {
         const storedUser = Cookies.get("userDetails");
@@ -22,8 +29,19 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const genId = async () => {
-        return crypto.randomUUID();
+        // var oracle = new Oracle;
+        // var Id = await oracle.notarize(() =>crypto.randomUUID())
+        // var id = await Oracle.notarize(() =>crypto.randomUUID())
+        var id = crypto.randomUUID()
+        // var addr = await useAddress().
+        // console.log(addr.address)
+
+        return id;
     };
+
+    function getRandomBetween() {
+        return Math.random() * (avatars.length - 0) + 0;
+      }
 
     async function initiateLoginUser(user) {
         setLoading(true);
@@ -32,8 +50,17 @@ export const AuthProvider = ({ children }) => {
 
         var name = getRandomCryptoUsername();
 
+        const responses = await axios.get('/_chopin/login')
+        var chopinData = responses.data;
 
-        const response = await checkUser(initId, user.id, "privy", user.wallet.address, name, "", "", "");
+        var rands = getRandomBetween();
+
+
+
+        const response = await checkUser(initId, user.id, "privy", user.wallet.address, name, rands.toString(), "", "");
+
+        const combineResponse = { ...response, ...chopinData }
+        console.log(combineResponse)
         if (response) {
             login(response);
         } else {
@@ -43,16 +70,49 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
     }
 
+    const useBookmark = async (userId, user2Id) => {
+        try {
+            // First, await the API call to ensure success before updating state
+            
+            setUser(prevUser => {
+                if (!prevUser) return { bookmark: [user2Id] }; // Ensure `prevUser` is defined
+                
+                const updatedUser = {
+                    ...prevUser,
+                    bookmark: Array.isArray(prevUser?.bookmark)
+                        ? prevUser?.bookmark?.includes(user2Id)
+                            ? prevUser?.bookmark?.filter(id => id !== user2Id) // Unlike
+                            : [...prevUser?.bookmark, user2Id] // Like
+                        : [user2Id] // Initialize if undefined
+                };
+                
+                // ✅ Store updated user in cookies inside `setUser`
+                Cookies.set("userDetails", JSON.stringify(updatedUser));
+                // console.log(updatedUser)
+    
+                return updatedUser; // Return the updated state
+            });
+            
+            await handleBookmark(userId, user2Id);
+        } catch (error) {
+            console.error("Error Handling Bookmark:", error);
+        }
+    };
+    
+    
+    
+
     const login = (userData) => {
         setUser(userData);
         setAuthenticated(true);
         Cookies.set("userDetails", JSON.stringify(userData), { expires: 7 });
+        window.location.reload()
     };
 
     const userlogoutService = async () => {
         console.log('Here')
+        await logout
         setAuthenticated(false);
-        logout
         Cookies.remove("userDetails");
         setUser(null);
     };
@@ -97,7 +157,7 @@ export const AuthProvider = ({ children }) => {
 
 
     return (
-        <AuthContext.Provider value={{ initiateLoginUser, userlogoutService, userDetails, loading }}>
+        <AuthContext.Provider value={{ initiateLoginUser, userlogoutService, useBookmark, authenticate, userDetails, loading }}>
             {children}
         </AuthContext.Provider>
     );

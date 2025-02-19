@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-import { 
-    createTweet, 
-    getTweet, 
-    getAllTweet, 
-    likeTweets, 
-    retweet 
+import {
+    createTweet,
+    getTweet,
+    getAllTweet,
+    retweet,
+    likesTweets
 } from "../services/tweetServices";
 
 const TweetContext = createContext();
@@ -13,6 +13,7 @@ const TweetContext = createContext();
 export const TweetProvider = ({ children }) => {
     const [tweets, setTweets] = useState([]);
     const [loading, setLoading] = useState(false);
+
 
     useEffect(() => {
         fetchTweets();
@@ -23,6 +24,21 @@ export const TweetProvider = ({ children }) => {
         try {
             const allTweets = await getAllTweet();
             setTweets(allTweets);
+        } catch (error) {
+            console.error("Error fetching tweets:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+    const fetchTweet = async (id) => {
+        setLoading(true);
+        try {
+            const allTweets = await getTweet(id);
+            // console.log(allTweets)
+            // setTweet(allTweets);
+            return allTweets
         } catch (error) {
             console.error("Error fetching tweets:", error);
         } finally {
@@ -41,8 +57,20 @@ export const TweetProvider = ({ children }) => {
 
     const likeTweet = async (tweetId, userId) => {
         try {
-            await likeTweets(tweetId, userId);
-            fetchTweets();
+            // fetchTweets();
+            setTweets(prevTweets =>
+                prevTweets.map(tweet =>
+                    tweet.tweetId === tweetId
+                        ? {
+                            ...tweet,
+                            likes: tweet.likes.includes(userId)
+                                ? tweet.likes.filter(id => id !== userId) // Unlike
+                                : [...tweet.likes, userId] // Like
+                        }
+                        : tweet
+                )
+            );
+            await likesTweets(tweetId, userId);
         } catch (error) {
             console.error("Error liking tweet:", error);
         }
@@ -51,14 +79,25 @@ export const TweetProvider = ({ children }) => {
     const retweetTweet = async (tweetId, userId) => {
         try {
             await retweet(tweetId, userId);
-            fetchTweets();
+            setTweets(prevTweets =>
+                prevTweets.map(tweet =>
+                    tweet.tweetId === tweetId
+                        ? {
+                            ...tweet,
+                            retweets: tweet.retweets.includes(userId)
+                                ? tweet.retweets.filter(id => id !== userId) // Unlike
+                                : [...tweet.retweets, userId] // Like
+                        }
+                        : tweet
+                )
+            );
         } catch (error) {
             console.error("Error retweeting:", error);
         }
     };
 
     return (
-        <TweetContext.Provider value={{ tweets, loading, addTweet, likeTweet, retweetTweet }}>
+        <TweetContext.Provider value={{ tweets, loading, addTweet, likeTweet, fetchTweet, retweetTweet }}>
             {children}
         </TweetContext.Provider>
     );
