@@ -11,7 +11,7 @@ const renderContentWithMentions = (text, users, me) => {
     return text.split(mentionRegex).map((part, index, arr) => {
         if (index % 3 === 1) {
             const userId = arr[index + 1];
-            console.log(userId)
+            // console.log(userId)
             const user = users.find((u) => u.username === userId); // ✅ Find user by ID
             // const user = users.find((u) => u.username === username);
 

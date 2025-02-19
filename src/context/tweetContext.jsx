@@ -79,6 +79,8 @@ export const TweetProvider = ({ children }) => {
     const retweetTweet = async (tweetId, userId) => {
         try {
             await retweet(tweetId, userId);
+            // console.log(tweetId)
+            // console.log(userId)
             setTweets(prevTweets =>
                 prevTweets.map(tweet =>
                     tweet.tweetId === tweetId

@@ -12,6 +12,7 @@ import { avatars } from '../Components/avatars';
 import formatTimestamp from '../Components/timeStamping';
 import MediaViewer from '../Components/MediaViewer';
 import Sid2bar from '../Components/Sid2bar';
+import { renderContentWithMentions } from '../Components/CapsuleInstance';
 
 function TweetPage() {
 
@@ -58,7 +59,7 @@ function TweetPage() {
         return () => {
 
         }
-    }, [ready, params, params.id, tweets])
+    }, [ready, params, params.id, tweets, retweetTweet])
     return (
         !tweet ? <div>Loading...</div> : <div>
             <div>
@@ -119,7 +120,7 @@ function TweetPage() {
 
 
                                     <div class="sm:px-4 p-2.5 pt-0">
-                                        <p class="font-normal"> {tweet.content} </p>
+                                    <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails? userDetails.username : '')}</p>
                                     </div>
 
 

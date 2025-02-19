@@ -146,7 +146,8 @@ export const retweet = async (tweetId, userId) => {
     const data = {
       userId: userId,
       parent: tweetId,
-      visibility: '1'
+      visibility: '1',
+      mentions: []
     };
 
     if (tweetData.retweets.includes(userId)) {

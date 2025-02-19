@@ -75,7 +75,7 @@ function TweetView({ tweets }) {
                     </div>
                 </div>
 
-                {/* <a href={'/tweet/' + tweet.tweetId}> */}
+                <a href={'/tweet/' + tweet.tweetId}>
 
                     <div class="sm:px-4 p-2.5 pt-0">
                         <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails? userDetails.username : '')}</p>
@@ -110,7 +110,7 @@ function TweetView({ tweets }) {
                             </a>
                         )
                     )}
-                {/* </a> */}
+                </a>
 
 
                 {tweet.parent !== 'original' && <RetweetView id={tweet.parent} />}
