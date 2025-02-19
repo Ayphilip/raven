@@ -47,9 +47,20 @@ const view = [
     'Only me'
 ]
 
+const handleMentionClick = (event) => {
+    const mention = event.target.closest(".mention");
+    if (mention) {
+      const userId = mention.getAttribute("data-id");
+      console.log("Clicked on:", userId);
+      window.location.href = `/timeline/${userId}`; // Navigate to user profile page
+    }
+  };
+
 const highlightMentions = (text) => {
     return text.replace(/@(\w+)/g, `<span class="mention">@$1</span>`);
 };
 
 
-export { avatars, view, highlightMentions };
+
+
+export { avatars, view };

@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import { useUsers } from '../context/userContext';
 import { useLoginService } from '../services/authenticationService';
-import { avatars, highlightMentions } from './avatars';
+import { avatars } from './avatars';
 import formatTimestamp from './timeStamping';
 import RetweetView from './RetweetView';
 import MediaViewer from './MediaViewer';
 import { useTweets } from '../context/tweetContext';
 import { motion } from "motion/react"
+import { Tooltip } from 'react-tooltip';
+import { renderContentWithMentions } from './CapsuleInstance';
 
 function TweetView({ tweets }) {
     const { users, addUser, modifyUser } = useUsers();
@@ -73,10 +75,10 @@ function TweetView({ tweets }) {
                     </div>
                 </div>
 
-                <a href={'/tweet/' + tweet.tweetId}>
+                {/* <a href={'/tweet/' + tweet.tweetId}> */}
 
                     <div class="sm:px-4 p-2.5 pt-0">
-                        <p class="font-normal" dangerouslySetInnerHTML={{ __html: highlightMentions(tweet.content) }}/>
+                        <p class="font-normal">{renderContentWithMentions(tweet.content, users)}</p>
                     </div>
 
 
@@ -108,7 +110,7 @@ function TweetView({ tweets }) {
                             </a>
                         )
                     )}
-                </a>
+                {/* </a> */}
 
 
                 {tweet.parent !== 'original' && <RetweetView id={tweet.parent} />}
@@ -135,7 +137,7 @@ function TweetView({ tweets }) {
 
 
                     <div class="flex items-center gap-3">
-                    <button type="button" class={tweet?.retweets?.includes(userDetails && userDetails?.username) ? "button-icon text-green-500 bg-slate-200/70 dark:bg-slate-700" : "button-icon bg-slate-200/70 dark:bg-slate-700"}> <ion-icon name="repeat-outline" class="text-lg"></ion-icon> </button>
+                        <button type="button" class={tweet?.retweets?.includes(userDetails && userDetails?.username) ? "button-icon text-green-500 bg-slate-200/70 dark:bg-slate-700" : "button-icon bg-slate-200/70 dark:bg-slate-700"}> <ion-icon name="repeat-outline" class="text-lg"></ion-icon> </button>
                         <div class="p-2 bg-white rounded-lg shadow-lg text-black font-medium border border-slate-100 w-60 dark:bg-slate-700"
                             uk-drop="offset:10;pos: bottom-left; reveal-left;animate-out: true; animation: uk-animation-scale-up uk-transform-origin-bottom-left ; mode:click">
 
@@ -360,6 +362,8 @@ function TweetView({ tweets }) {
             </div>
 
         </div>
+
+        
     </>
     )
 }

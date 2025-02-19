@@ -224,7 +224,7 @@ function Welcome() {
                                             <Mention
                                                 trigger="@"
                                                 data={userList}
-                                                displayTransform={(id, display) => display}
+                                                displayTransform={(id, display) => `${display}`}
                                                 renderSuggestion={(suggestion) => (
                                                     <span style={{ padding: "2px", cursor: "pointer" }} className='w-full !text-black placeholder:!text-black !bg-white !border-transparent focus:!border-transparent focus:!ring-transparent !font-small !text-xl dark:!text-white dark:placeholder:!text-white dark:!bg-slate-800'>
                                                         {suggestion.display}
