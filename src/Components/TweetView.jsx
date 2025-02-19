@@ -78,7 +78,7 @@ function TweetView({ tweets }) {
                 {/* <a href={'/tweet/' + tweet.tweetId}> */}
 
                     <div class="sm:px-4 p-2.5 pt-0">
-                        <p class="font-normal">{renderContentWithMentions(tweet.content, users)}</p>
+                        <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails? userDetails.username : '')}</p>
                     </div>
 
 
