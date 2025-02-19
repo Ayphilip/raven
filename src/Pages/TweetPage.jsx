@@ -78,7 +78,7 @@ function TweetPage() {
                         <div class="w-[680px] mx-auto">
 
 
-                            
+
 
 
                             <div class="md:max-w-[580px] mx-auto flex-1">
@@ -116,42 +116,42 @@ function TweetPage() {
                                         </div>
                                     </div>
 
-                                    <a href={'/tweet/' + tweet.tweetId}>
-
-                                        <div class="sm:px-4 p-2.5 pt-0">
-                                            <p class="font-normal"> {tweet.content} </p>
-                                        </div>
 
 
-                                        {Array.isArray(tweet.media) && tweet.media.length > 0 && (
-                                            tweet.media.length > 1 ? (
-                                                <div className="relative uk-visible-toggle sm:px-4" tabIndex="-1" uk-slideshow="animation: push; ratio: 4:3">
-                                                    <ul className="uk-slideshow-items overflow-hidden rounded-xl" uk-lightbox="animation: fade">
-                                                        {tweet.media.map((med, index) => (
-                                                            <li key={index} className="w-full">
-                                                                <a className="inline" href={med} data-caption={tweet.content}>
-                                                                    <MediaViewer fileUrl={med} />
-                                                                </a>
-                                                            </li>
-                                                        ))}
-                                                    </ul>
+                                    <div class="sm:px-4 p-2.5 pt-0">
+                                        <p class="font-normal"> {tweet.content} </p>
+                                    </div>
 
-                                                    <a className="nav-prev left-6" href="#" uk-slideshow-item="previous">
-                                                        <ion-icon name="chevron-back" className="text-2xl"></ion-icon>
-                                                    </a>
-                                                    <a className="nav-next right-6" href="#" uk-slideshow-item="next">
-                                                        <ion-icon name="chevron-forward" className="text-2xl"></ion-icon>
-                                                    </a>
-                                                </div>
-                                            ) : (
-                                                <a href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
-                                                    <div className="relative w-full lg:h-96 h-full sm:px-4">
-                                                        <MediaViewer fileUrl={tweet.media[0]} />
-                                                    </div>
+
+                                    {Array.isArray(tweet.media) && tweet.media.length > 0 && (
+                                        tweet.media.length > 1 ? (
+                                            <div className="relative uk-visible-toggle sm:px-4" tabIndex="-1" uk-slideshow="animation: push; ratio: 4:3">
+                                                <ul className="uk-slideshow-items overflow-hidden rounded-xl" uk-lightbox="animation: fade">
+                                                    {tweet.media.map((med, index) => (
+                                                        <li key={index} className="w-full">
+                                                            <a className="inline" href={med} data-caption={tweet.content}>
+                                                                <MediaViewer fileUrl={med} />
+                                                            </a>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+
+                                                <a className="nav-prev left-6" href="#" uk-slideshow-item="previous">
+                                                    <ion-icon name="chevron-back" className="text-2xl"></ion-icon>
                                                 </a>
-                                            )
-                                        )}
-                                    </a>
+                                                <a className="nav-next right-6" href="#" uk-slideshow-item="next">
+                                                    <ion-icon name="chevron-forward" className="text-2xl"></ion-icon>
+                                                </a>
+                                            </div>
+                                        ) : (
+                                            <a href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
+                                                <div className="relative w-full lg:h-96 h-full sm:px-4">
+                                                    <MediaViewer fileUrl={tweet.media[0]} />
+                                                </div>
+                                            </a>
+                                        )
+                                    )}
+
 
 
 
@@ -420,7 +420,7 @@ function TweetPage() {
                         </div>
 
 
-                        <Sid2bar/>
+                        <Sid2bar />
 
                     </div>
 
