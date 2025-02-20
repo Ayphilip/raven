@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { addFollower, checkUser, getAllUsers, getUser, handleBookmark, removeFollower, updateUser } from "../services/userServices";
 import { avatars } from "../Components/avatars";
+import axios from "axios";
 
 const UserContext = createContext();
 
@@ -16,14 +17,14 @@ export const UserProvider = ({ children }) => {
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const allUsers = await getAllUsers();
-            const userList = allUsers.map((doc) => ({
+            const allUsers = await axios.get('/api/users');
+            const userList = allUsers.data.map((doc) => ({
                 id: doc.username, // Firebase User ID
                 display: `@${doc.name}`, // Ensure display includes "@"
             }));
             // console.log("Users Data:", userList); // Debugging step
-            setUserList(userList);
-            setUsers(allUsers);
+            setUserList(userList.data);
+            setUsers(allUsers.data);
         } catch (error) {
             console.error("Error fetching users:", error);
         } finally {
@@ -36,7 +37,7 @@ export const UserProvider = ({ children }) => {
         try {
             const allUsers = await addFollower(userId, user2Id);
             // setUsers(allUsers);
-            return allUsers;
+            return allUsers.data;
         } catch (error) {
             console.error("Error fetching users:", error);
             return false
@@ -50,7 +51,7 @@ export const UserProvider = ({ children }) => {
         try {
             const allUsers = await removeFollower(userId, user2Id);
             // setUsers(allUsers);
-            return allUsers;
+            return allUsers.data;
         } catch (error) {
             console.error("Error fetching users:", error);
             return false
@@ -62,10 +63,10 @@ export const UserProvider = ({ children }) => {
     const fetchUser = async (id) => {
         setLoading(true);
         try {
-            const allTweets = await getUser(id);
-            console.log(allTweets)
+            const allTweets = await axios.get(`/api/users/${id}`);
+            // console.log(allTweets)
             // setTweet(allTweets);
-            return allTweets
+            return allTweets.data
         } catch (error) {
             console.error("Error fetching:", error);
         } finally {
@@ -80,9 +81,18 @@ export const UserProvider = ({ children }) => {
     const addUser = async (userId, privyId, mode, username, name, profilePicture, cover, bio) => {
         try {
             var rands = getRandomBetween();
-            const userData = await checkUser(userId, privyId, mode, username, name, rands.toString(), cover, bio);
+            const userData = await axios.post('/api/users', {
+                userId: userId, 
+                privyId: privyId, 
+                mode: mode, 
+                username: username, 
+                name: name, 
+                profilePicture: rands.toString(), 
+                cover: cover, 
+                bio: bio
+            });
             fetchUsers();
-            return userData;
+            return userData.data;
         } catch (error) {
             console.error("Error adding user:", error);
         }

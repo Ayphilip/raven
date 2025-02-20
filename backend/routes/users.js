@@ -12,7 +12,7 @@ import {
 const router = express.Router();
 
 // Create or check user
-router.post("/user", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     // const { userId, privyId, mode, username, name, profilePicture, cover, bio } = req.body;
     const user = await checkUser(req, res);
