@@ -50,6 +50,7 @@ function TweetView({ tweets }) {
         {tweets.map(tweet =>
 
             <div class="bg-white shadow-sm text-sm font-medium border1 dark:bg-dark1">
+                {tweet.retweets.includes(userDetails.username) && <span style={{ fontSize: '12px', padding: '3px', alignItems: 'center', justifyContent: 'center' }} className='p-1'><ion-icon name="return-up-back-outline"></ion-icon> you reposted</span>}
 
 
                 <div class="flex gap-3 sm:p-4 p-2.5 text-sm font-medium">
@@ -76,14 +77,24 @@ function TweetView({ tweets }) {
                     </div>
                 </div>
 
-                <a href={'/tweet/' + tweet.tweetId}>
+                <a href={'/tweet/' + tweet.id}>
 
                     <div class="sm:px-4 p-2.5 pt-0">
-                        <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails ? userDetails.username : '')}</p>
+                        <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails ? userDetails : '')}</p>
+                    </div>
+
+                    <div class="grid sm:grid-cols-2 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
+                        {tweet.media.map((med, index) => (
+                            <span key={index} className="w-full">
+                                <a className="inline" href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
+                                    <MediaViewer fileUrl={med} />
+                                </a>
+                            </span>
+                        ))}
                     </div>
 
 
-                    {Array.isArray(tweet.media) && tweet.media.length > 0 && (
+                    {/* {Array.isArray(tweet.media) && tweet.media.length > 0 && (
                         tweet.media.length > 1 ? (
                             <div className="relative uk-visible-toggle sm:px-4" tabIndex="-1" uk-slideshow="animation: push; ratio: 4:3">
                                 <ul className="uk-slideshow-items overflow-hidden rounded-xl" uk-lightbox="animation: fade">
@@ -110,7 +121,7 @@ function TweetView({ tweets }) {
                                 </div>
                             </a>
                         )
-                    )}
+                    )} */}
                 </a>
 
 
@@ -146,9 +157,9 @@ function TweetView({ tweets }) {
                                 <label>
 
                                     {tweet.retweets.includes(userDetails && userDetails?.username) ?
-                                        <div class=" relative flex items-center justify-between cursor-pointer rounded-md p-2 px-3 hover:bg-secondery peer-checked:[&_.active]:block dark:bg-dark3">
+                                        <div onClick={() => saveRetweet(tweet.tweetId)} class=" relative flex items-center justify-between cursor-pointer rounded-md p-2 px-3 hover:bg-secondery peer-checked:[&_.active]:block dark:bg-dark3">
                                             <div style={{ flexDirection: 'row', display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
-                                                <ion-icon name="cancel-outline" class='text-lg'></ion-icon>
+                                                <ion-icon name="repeat-outline" class='text-lg'></ion-icon>
                                                 <div class="text-sm"> Undo Repost </div>
                                             </div>
                                         </div> : <div onClick={() => saveRetweet(tweet.tweetId)} class=" relative flex items-center justify-between cursor-pointer rounded-md p-2 px-3 hover:bg-secondery peer-checked:[&_.active]:block dark:bg-dark3">
@@ -358,14 +369,14 @@ function TweetView({ tweets }) {
 
                         </div>
                     </div>
-                    
+
                     <div class="flex items-center gap-2">
                         {/* <label htmlFor="file-upload" className="flex items-center gap-1.5 bg-sky-50 text-sky-600 rounded-full py-1 px-2 border-2 border-sky-100 dark:bg-sky-950 dark:border-sky-900 cursor-pointer">
                                 <ion-icon name="image" className="text-base"></ion-icon>
                                 Image
                                 
                             </label> */}
-                        <button type="" onClick={()=>console.log('Here we are')} class="button bg-blue-500 text-white py-2 px-12 text-[14px]"> Create
+                        <button type="" onClick={() => console.log('Here we are')} class="button bg-blue-500 text-white py-2 px-12 text-[14px]"> Create
                         </button>
                     </div>
                 </div>

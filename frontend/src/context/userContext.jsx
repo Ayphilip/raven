@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { addFollower, checkUser, getAllUsers, getUser, handleBookmark, removeFollower, updateUser } from "../services/userServices";
 import { avatars } from "../Components/avatars";
 import axios from "axios";
 
@@ -35,7 +34,11 @@ export const UserProvider = ({ children }) => {
     const addFollow = async (userId, user2Id) => {
         setLoading(true);
         try {
-            const allUsers = await addFollower(userId, user2Id);
+            const allUsers = await axios.post('/api/users/follow', {
+                userId: userId,
+                user2Id: user2Id
+            })
+            // const allUsers = await addFollower(userId, user2Id);
             // setUsers(allUsers);
             return allUsers.data;
         } catch (error) {
@@ -49,7 +52,11 @@ export const UserProvider = ({ children }) => {
     const removeFollow = async (userId, user2Id) => {
         setLoading(true);
         try {
-            const allUsers = await removeFollower(userId, user2Id);
+            const allUsers = await axios.post('/api/users/unfollow', {
+                userId: userId,
+                user2Id: user2Id
+            })
+            // removeFollower(userId, user2Id);
             // setUsers(allUsers);
             return allUsers.data;
         } catch (error) {
@@ -82,13 +89,13 @@ export const UserProvider = ({ children }) => {
         try {
             var rands = getRandomBetween();
             const userData = await axios.post('/api/users', {
-                userId: userId, 
-                privyId: privyId, 
-                mode: mode, 
-                username: username, 
-                name: name, 
-                profilePicture: rands.toString(), 
-                cover: cover, 
+                userId: userId,
+                privyId: privyId,
+                mode: mode,
+                username: username,
+                name: name,
+                profilePicture: rands.toString(),
+                cover: cover,
                 bio: bio
             });
             fetchUsers();
@@ -102,7 +109,9 @@ export const UserProvider = ({ children }) => {
 
     const modifyUser = async (userId, data) => {
         try {
-            await updateUser(userId, data);
+            const response = await axios.put('/api/users/' + userId, data)
+            // await updateUser(userId, data);
+
             fetchUsers();
         } catch (error) {
             console.error("Error updating user:", error);

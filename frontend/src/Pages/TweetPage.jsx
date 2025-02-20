@@ -27,7 +27,7 @@ function TweetPage() {
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate, useBookmark } = useLoginService();
 
     const navigate = useNavigate()
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
 
     const [tweet, setTweet] = useState(null)
 
@@ -59,7 +59,7 @@ function TweetPage() {
         return () => {
 
         }
-    }, [ready, params, params.id, tweets, retweetTweet])
+    }, [tweets, retweetTweet])
     return (
         !tweet ? <div>Loading...</div> : <div>
             <div>
@@ -71,12 +71,22 @@ function TweetPage() {
                 <Sidbar />
 
 
-                <main id="site__main" class="2xl:ml-[--w-side]  xl:ml-[--w-side-sm] p-2.5 h-[calc(100vh-var(--m-top))] mt-[--m-top]">
+                <main id="site__main" class="2xl:ml-[--w-side]  xl:ml-[--w-side-sm] p-2.5 h-[calc(100vh)]">
 
 
                     <div class="lg:flex 2xl:gap-16 gap-12 max-w-[1065px] mx-auto" id="js-oversized">
 
                         <div class="w-[680px] mx-auto">
+
+                            <div class="page-heading">
+                                <div style={{ flexDirection: 'row', display: 'flex', alignItems: 'center' }}>
+                                    <button onClick={() => navigate(-1)}><ion-icon name="arrow-back-outline" class="text-xl"></ion-icon></button>
+                                    <div className='p-3'>
+                                        <h1 class="page-title"> Post </h1>
+
+                                    </div>
+                                </div>
+                            </div>
 
 
 
@@ -97,7 +107,7 @@ function TweetPage() {
                                         {users.filter(use => use.username === tweet.userId).map(use => <>
                                             <a href={"/timeline/" + use.id}> <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-9 h-9 rounded-full" /> </a>
                                             <div class="flex-1">
-                                                <a href={"/timeline/" + use.id}> <h4 class="text-black dark:text-white"> {userDetails && userDetails.username === tweet.userId ? 'You' : use.name} </h4> </a>
+                                                <a href={"/timeline/" + use.id}> <h4 class="text-black dark:text-white"> {userDetails && userDetails.username === tweet.userId && use.name} </h4> </a>
                                                 <div class="text-xs text-gray-500 dark:text-white/80">{formatTimestamp(tweet.createdAt)}</div>
                                             </div>
                                         </>)}
@@ -120,38 +130,19 @@ function TweetPage() {
 
 
                                     <div class="sm:px-4 p-2.5 pt-0">
-                                    <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails? userDetails.username : '')}</p>
+                                        <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails ? userDetails : '')}</p>
                                     </div>
 
 
-                                    {Array.isArray(tweet.media) && tweet.media.length > 0 && (
-                                        tweet.media.length > 1 ? (
-                                            <div className="relative uk-visible-toggle sm:px-4" tabIndex="-1" uk-slideshow="animation: push; ratio: 4:3">
-                                                <ul className="uk-slideshow-items overflow-hidden rounded-xl" uk-lightbox="animation: fade">
-                                                    {tweet.media.map((med, index) => (
-                                                        <li key={index} className="w-full">
-                                                            <a className="inline" href={med} data-caption={tweet.content}>
-                                                                <MediaViewer fileUrl={med} />
-                                                            </a>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-
-                                                <a className="nav-prev left-6" href="#" uk-slideshow-item="previous">
-                                                    <ion-icon name="chevron-back" className="text-2xl"></ion-icon>
+                                    <div class="grid sm:grid-cols-2 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
+                                        {tweet.media.map((med, index) => (
+                                            <span key={index} className="w-full">
+                                                <a className="inline" href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
+                                                    <MediaViewer fileUrl={med} />
                                                 </a>
-                                                <a className="nav-next right-6" href="#" uk-slideshow-item="next">
-                                                    <ion-icon name="chevron-forward" className="text-2xl"></ion-icon>
-                                                </a>
-                                            </div>
-                                        ) : (
-                                            <a href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
-                                                <div className="relative w-full lg:h-96 h-full sm:px-4">
-                                                    <MediaViewer fileUrl={tweet.media[0]} />
-                                                </div>
-                                            </a>
-                                        )
-                                    )}
+                                            </span>
+                                        ))}
+                                    </div>
 
 
 
@@ -230,7 +221,7 @@ function TweetPage() {
 
                                         <div>
                                             <div class="flex items-center gap-2.5">
-                                                <button onClick={() => likeTweet(tweet.tweetId, userDetails?.username)} type="button" class={tweet?.likes?.includes(userDetails && userDetails.username) ? "button-icon text-red-500 bg-dark-100 dark:bg-slate-700" : "button-icon text-secondary-500 bg-dark-100 dark:bg-slate-700"}> <ion-icon class="text-lg" name="heart"></ion-icon> </button>
+                                                <button onClick={() => likeTweet(tweet.id, userDetails?.username)} type="button" class={tweet?.likes?.includes(userDetails && userDetails.username) ? "button-icon text-red-500 bg-dark-100 dark:bg-slate-700" : "button-icon text-secondary-500 bg-dark-100 dark:bg-slate-700"}> <ion-icon class="text-lg" name="heart"></ion-icon> </button>
                                                 <motion.a
                                                     key={tweet?.likes?.length} // Key ensures animation triggers on change
                                                     initial={{ y: 5, opacity: 0 }}

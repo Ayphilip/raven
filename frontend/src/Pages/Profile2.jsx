@@ -61,7 +61,7 @@ function Profile2() {
             console.log(params.id)
             try {
                 const fetchedTweet = await fetchUser(params.id); // Wait for the promise to resolve
-                console.log(fetchedTweet)
+                // console.log(fetchedTweet)
                 setUserInfo(fetchedTweet); // Store the resolved tweet
             } catch (error) {
                 console.error('Error fetching:', error);
@@ -99,7 +99,7 @@ function Profile2() {
 
                                 <div class="page-heading">
                                     <div style={{ flexDirection: 'row', display: 'flex', alignItems: 'center' }}>
-                                        <button onClick={()=>navigate(-1)}><ion-icon name="arrow-back-outline" class="text-xl"></ion-icon></button>
+                                        <button onClick={() => navigate(-1)}><ion-icon name="arrow-back-outline" class="text-xl"></ion-icon></button>
                                         <div className='p-3'>
                                             <h1 class="page-title"> {userInfo.name} </h1>
                                             <span>{tweets.filter(tweet => tweet.userId === userInfo.username).length} posts</span>
@@ -151,6 +151,20 @@ function Profile2() {
                                         <span className='text-sm '>{userDetails.username.slice(0, 6)}...{userDetails.username.slice(-4)}</span>
                                         <p>{!userInfo.bio && <button class="button bg-black flex items-center gap-2 text-white py-2 px-3.5 max-md:flex-1">Add bio</button>}{userInfo.bio}</p>
                                         <p><h6>{userInfo.followers.length} Followers | {userInfo.following.length} Following</h6></p>
+                                        <p>
+                                            Followed by {(() => {
+                                                const filteredUsers = users.filter(user =>
+                                                    userDetails.following.includes(user.id) && userInfo.followers.includes(user.id)
+                                                );
+
+                                                const firstFour = filteredUsers.slice(0, 4).map(user => user.name);
+                                                const remainingCount = filteredUsers.length - 4;
+
+                                                return remainingCount > 0
+                                                    ? `${firstFour.join(", ")} and ${remainingCount} others`
+                                                    : firstFour.join(", ");
+                                            })()}
+                                        </p>
                                     </div>
 
                                     <nav class="nav__underline">
@@ -164,7 +178,7 @@ function Profile2() {
                                             <li> <a href="#"> My pages </a> </li>
 
                                         </ul>
-                                        
+
 
                                     </nav>
 
@@ -181,7 +195,7 @@ function Profile2() {
 
                                         {!tweets.filter(tweet => tweet.userId === userInfo.username).length && <div>No Post or Tweet</div>}
 
-
+                                        
                                         {tweets.filter(tweet => tweet.userId === userInfo.username).map(tweet =>
                                             <TweetView tweets={tweets.filter(tweet => tweet.userId === userInfo.username)} />
                                         )}

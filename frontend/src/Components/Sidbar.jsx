@@ -61,12 +61,12 @@ function Sidbar() {
                                         <span> Notification </span>
                                     </a>
                                 </li>
-                                <li>
+                                {/* <li>
                                     <a href="video.html">
                                         <img src={fly3} alt="messages" class="w-6" />
                                         <span> Treasure Hunt </span>
                                     </a>
-                                </li>
+                                </li> */}
                                 <li>
                                     <a href="pages.html">
                                         <img src={fly5} alt="pages" class="w-6" />

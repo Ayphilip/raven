@@ -1,12 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-
-import {
-    createTweet,
-    getTweet,
-    getAllTweet,
-    retweet,
-    likesTweets
-} from "../services/tweetServices";
+import axios from "axios";
 
 const TweetContext = createContext();
 
@@ -22,8 +15,9 @@ export const TweetProvider = ({ children }) => {
     const fetchTweets = async () => {
         setLoading(true);
         try {
-            const allTweets = await getAllTweet();
-            setTweets(allTweets);
+            const allTweets = await axios.get("/api/tweets")
+            // getAllTweet();
+            setTweets(allTweets.data);
         } catch (error) {
             console.error("Error fetching tweets:", error);
         } finally {
@@ -35,10 +29,10 @@ export const TweetProvider = ({ children }) => {
     const fetchTweet = async (id) => {
         setLoading(true);
         try {
-            const allTweets = await getTweet(id);
+            const allTweets = await axios.get("/api/tweets/" + id)
             // console.log(allTweets)
             // setTweet(allTweets);
-            return allTweets
+            return allTweets.data
         } catch (error) {
             console.error("Error fetching tweets:", error);
         } finally {
@@ -48,7 +42,15 @@ export const TweetProvider = ({ children }) => {
 
     const addTweet = async (data) => {
         try {
-            await createTweet(data);
+            console.log(data)
+            const response = await axios.post("/api/tweets", {
+                userId: data.userId,
+                content: data.content,
+                media: data.media,
+                parent: data.parent,
+                visibility: data.visibility,
+                mentions: data.mentionedUserIds
+            })
             fetchTweets();
         } catch (error) {
             console.error("Error creating tweet:", error);
@@ -70,7 +72,8 @@ export const TweetProvider = ({ children }) => {
                         : tweet
                 )
             );
-            await likesTweets(tweetId, userId);
+            const response = await axios.post("/api/tweets/like", { tweetId, userId })
+
         } catch (error) {
             console.error("Error liking tweet:", error);
         }
@@ -78,9 +81,8 @@ export const TweetProvider = ({ children }) => {
 
     const retweetTweet = async (tweetId, userId) => {
         try {
-            await retweet(tweetId, userId);
-            // console.log(tweetId)
-            // console.log(userId)
+            const response = await axios.post("/api/tweets/retweet", { tweetId, userId })
+
             setTweets(prevTweets =>
                 prevTweets.map(tweet =>
                     tweet.tweetId === tweetId

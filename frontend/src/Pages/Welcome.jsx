@@ -100,7 +100,7 @@ function Welcome() {
 
     const extractMentions = (text) => {
         const mentionedUsers = [];
-        userList.forEach((user) => {
+        userList?.forEach((user) => {
             if (text.includes(user.display)) {
                 mentionedUsers.push(user.id);
             }
@@ -116,10 +116,10 @@ function Welcome() {
         const mentionedUserIds = extractMentions(content);
         const data = {
             userId: userDetails.username,
-            content,
-            media,
+            content: content,
+            media: media,
             parent: 'original',
-            visibility,
+            visibility: visibility,
             mentions: mentionedUserIds
         }
         // console.log(data)

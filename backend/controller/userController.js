@@ -1,4 +1,4 @@
-import { db, doc, getDoc, setDoc, updateDoc, collection, getDocs, query, where, arrayRemove, arrayUnion } from "../config/firebaseConfig.js";
+import { db, doc, getDoc, setDoc, updateDoc, collection, getDocs, query, where, arrayRemove, arrayUnion, serverTimestamp } from "../config/firebaseConfig.js";
 
 // CREATE User
 export const checkUser = async (req, res) => {
@@ -12,7 +12,7 @@ export const checkUser = async (req, res) => {
         } else {
             const userData = {
                 userId, username, name, privyId, mode, cover, profilePicture, bio,
-                followers: [], following: [], bookmark: [], createdAt: new Date()
+                followers: [], following: [], bookmark: [], createdAt: serverTimestamp()
             };
             await setDoc(userRef, userData);
             const newSnapshot = await getDoc(userRef);

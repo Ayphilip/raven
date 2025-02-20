@@ -43,7 +43,7 @@ function RetweetView({ id, type }) {
                 {users.filter(use => use.username === tweet.userId).map(use => <>
                     <a href={"/timeline/" + use.username}> <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-9 h-9 rounded-full" /> </a>
                     <div class="flex-1">
-                        <a href={"/timeline/" + use.username}> <h4 class="text-black dark:text-white"> {userDetails.username === tweet.userId ? 'You' : use.name} </h4> </a>
+                        <a href={"/timeline/" + use.username}> <h4 class="text-black dark:text-white"> {userDetails.username === tweet.userId && use.name} </h4> </a>
                         <div class="text-xs text-gray-500 dark:text-white/80">{formatTimestamp(tweet.createdAt)}</div>
                     </div>
                 </>)}
@@ -59,34 +59,15 @@ function RetweetView({ id, type }) {
             </a>
 
 
-            {Array.isArray(tweet.media) && tweet.media.length > 0 && (
-                tweet.media.length > 1 ? (
-                    <div className="relative uk-visible-toggle sm:px-4" tabIndex="-1" uk-slideshow="animation: push; ratio: 4:3">
-                        <ul className="uk-slideshow-items overflow-hidden rounded-xl" uk-lightbox="animation: fade">
-                            {tweet.media.map((med, index) => (
-                                <li key={index} className="w-full">
-                                    <a className="inline" href={med} data-caption={tweet.content}>
-                                        <MediaViewer fileUrl={med} />
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-
-                        <a className="nav-prev left-6" href="#" uk-slideshow-item="previous">
-                            <ion-icon name="chevron-back" className="text-2xl"></ion-icon>
+            <div class="grid sm:grid-cols-2 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
+                {tweet.media.map((med, index) => (
+                    <span key={index} className="w-full">
+                        <a className="inline" href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
+                            <MediaViewer fileUrl={med} />
                         </a>
-                        <a className="nav-next right-6" href="#" uk-slideshow-item="next">
-                            <ion-icon name="chevron-forward" className="text-2xl"></ion-icon>
-                        </a>
-                    </div>
-                ) : (
-                    <a href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
-                        <div className="relative w-full lg:h-96 h-full sm:px-4">
-                            <MediaViewer fileUrl={tweet.media[0]} />
-                        </div>
-                    </a>
-                )
-            )}
+                    </span>
+                ))}
+            </div>
 
         </div>
     )

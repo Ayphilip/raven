@@ -54,41 +54,33 @@ router.put("/:username", async (req, res) => {
 });
 
 // Add follower
-router.post("/user/follow", async (req, res) => {
+router.post("/follow", async (req, res) => {
   try {
     const { userId, user2Id } = req.body;
-    const success = await addFollower(userId, user2Id);
-    if (success) {
-      res.status(200).json({ message: "Follower added successfully" });
-    } else {
-      res.status(400).json({ message: "Error adding follower" });
-    }
+    const success = await addFollower(req, res);
+    
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 // Remove follower
-router.post("/user/unfollow", async (req, res) => {
+router.post("/unfollow", async (req, res) => {
   try {
     const { userId, user2Id } = req.body;
-    const success = await removeFollower(userId, user2Id);
-    if (success) {
-      res.status(200).json({ message: "Follower removed successfully" });
-    } else {
-      res.status(400).json({ message: "Error removing follower" });
-    }
+    const success = await removeFollower(req, res);
+    
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 // Handle bookmark
-router.post("/user/bookmark", async (req, res) => {
+router.post("/bookmark", async (req, res) => {
   try {
     const { userId, user2Id } = req.body;
     await handleBookmark(req, res);
-    res.status(200).json({ message: "Bookmark updated successfully" });
+    // res.status(200).json({ message: "Bookmark updated successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
