@@ -57,9 +57,19 @@ export const AuthProvider = ({ children }) => {
 
 
 
-        const response = await checkUser(initId, user.id, "privy", user.wallet.address, name, rands.toString(), "", "");
+        const response = await axios.post('/api/users', {
+            userId: initId, 
+            privyId: user.id, 
+            mode: 'privy', 
+            username: user.wallet.address, 
+            name: name, 
+            profilePicture: rands.toString(), 
+            cover: "", 
+            bio: ""
+        });
+        
 
-        const combineResponse = { ...response, ...chopinData }
+        const combineResponse = { ...response.data, ...chopinData }
         console.log(combineResponse)
         if (response) {
             login(response);
