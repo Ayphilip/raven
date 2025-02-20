@@ -193,11 +193,11 @@ function Profile2() {
 
                                     <div class="gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
 
-                                        {!tweets.filter(tweet => tweet.userId === userInfo.username).length && <div>No Post or Tweet</div>}
+                                        {!tweets.filter(tweet => tweet.userId === userInfo.username || (tweet.retweets.includes(userInfo.username))).length && <div>No Post or Tweet</div>}
 
                                         
-                                        {tweets.filter(tweet => tweet.userId === userInfo.username).map(tweet =>
-                                            <TweetView tweets={tweets.filter(tweet => tweet.userId === userInfo.username)} />
+                                        {tweets.filter(tweet => tweet.userId === userInfo.username || (tweet.retweets.includes(userInfo.username))).map(tweet =>
+                                            <TweetView tweets={tweets.filter(tweet => (tweet.userId === userInfo.username )|| (tweet.retweets.includes(userInfo.username)))} />
                                         )}
 
 

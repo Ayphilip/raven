@@ -33,14 +33,14 @@ function Sidbar() {
     return (
         authenticate && <div>
             <div id="site__sidebar" class="fixed top-0 left-0 z-[0] overflow-hidden transition-transform xl:duration-500 max-xl:w-full max-xl:-translate-x-full">
-                    <img src={Logo} style={{width: '20%'}}/>
+                <img src={Logo} style={{ width: '20%' }} />
 
 
                 <div class="p-2 max-xl:bg-white shadow-sm 2xl:w-72 sm:w-64 w-[80%] h-[calc(100vh-64px)] relative z-30 max-lg:border-r dark:max-xl:!bg-slate-700 dark:border-slate-700">
 
                     <div class="pr-4" data-simplebar>
 
-                        <nav id="side" style={{position: 'relative', height: '80vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
+                        <nav id="side" style={{ position: 'relative', height: '80vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
 
                             <ul>
                                 <li class="active">
@@ -79,7 +79,7 @@ function Sidbar() {
                                         <span> Groups </span>
                                     </a>
                                 </li>
-                                
+
                                 <li>
                                     <a onClick={logoutUser}>
                                         <img src={fly10} alt="blog" class="w-6" />
@@ -87,11 +87,29 @@ function Sidbar() {
                                     </a>
                                 </li>
 
-                                <li class="" id="show__more">
-                                </li>
+
 
 
                             </ul>
+                            {/* <div class="p-1 py-2 flex items-center gap-4" style={{cursor: 'pointer'}} onClick={
+                                () => {
+                                    if(localStorage.theme === 'dark'){
+                                        localStorage.theme = 'light'
+                                        window.location.reload()
+                                    }else{
+                                        localStorage.theme = 'dark'
+                                        window.location.reload()
+                                    }
+                                }
+                            }>
+                                {localStorage.theme === 'dark'
+                                    ?
+                                    <span class="mdi mdi-weather-sunny"></span>
+                                    :
+                                    <span class="mdi mdi-weather-night"></span>
+                                }
+                                Switch Theme
+                            </div> */}
                             {userDetails && <a href={"/timeline/" + userDetails.username}>
 
                                 <div class="p-1 py-2 flex items-center gap-4">

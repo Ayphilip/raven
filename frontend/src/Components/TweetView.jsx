@@ -50,7 +50,26 @@ function TweetView({ tweets }) {
         {tweets.map(tweet =>
 
             <div class="bg-white shadow-sm text-sm font-medium border1 dark:bg-dark1">
-                {tweet.retweets.includes(userDetails.username) && <span style={{ fontSize: '12px', padding: '3px', alignItems: 'center', justifyContent: 'center' }} className='p-1'><ion-icon name="return-up-back-outline"></ion-icon> you reposted</span>}
+
+                {tweet.retweets.includes(userDetails.username) ? (
+                    <span style={{ fontSize: '12px', padding: '3px', alignItems: 'center', justifyContent: 'center' }} className='p-1'>
+                        <ion-icon name="return-up-back-outline"></ion-icon> You reposted
+                    </span>
+                ) : (
+                    (() => {
+                        // Find the user from `users` array who is in `tweet.retweets` and has the highest followersCount
+                        const topReposter = users
+                            .filter(user => tweet.retweets.includes(user.username)) // Get users who retweeted
+                            .reduce((max, user) => user.followersCount > max.followersCount ? user : max, { followersCount: 0 });
+
+                        return topReposter.username ? ( // Check if a valid user was found
+                            <span style={{ fontSize: '12px', padding: '3px', alignItems: 'center', justifyContent: 'center' }} className='p-1'>
+                                <ion-icon name="return-up-back-outline"></ion-icon> {topReposter.name} reposted
+                            </span>
+                        ) : null;
+                    })()
+                )}
+
 
 
                 <div class="flex gap-3 sm:p-4 p-2.5 text-sm font-medium">
