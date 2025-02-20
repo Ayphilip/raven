@@ -21,6 +21,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const storedUser = Cookies.get("userDetails");
+        console.log(storedUser)
         if (storedUser) {
             setUser(JSON.parse(storedUser));
             setAuthenticated(true);
@@ -70,9 +71,9 @@ export const AuthProvider = ({ children }) => {
         
 
         const combineResponse = { ...response.data, ...chopinData }
-        console.log(combineResponse)
+        // console.log(combineResponse)
         if (response) {
-            login(response);
+            login(response.data);
         } else {
             alert('Error')
         }

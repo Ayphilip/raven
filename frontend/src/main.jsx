@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 // import './index.css'
 import App from './App.jsx'
 import { Provider } from 'react-redux'
-import store from './store.js'
+// import store from './store.js'
 import { PrivyProvider } from '@privy-io/react-auth'
 
 import '../src/assets/wets/style.css';
@@ -12,15 +12,24 @@ import { AuthProvider } from './services/authenticationService.jsx'
 import { TweetProvider } from './context/tweetContext.jsx'
 import { UserProvider } from './context/userContext.jsx'
 
+import '../assets/js/simplebar.js'
+import '../assets/js/uikit.min.js'
+// import '../assets/js/script.js';
 // import store from './redux/store.js'
 
+
+// createRoot(document.getElementById('root')).render(
+//   <StrictMode>
+//     <App />
+//   </StrictMode>,
+// )
 
 
 
 
 
 createRoot(document.getElementById('root')).render(
-  <Provider store={store}>
+  <StrictMode>
     <AuthProvider>
       <PrivyProvider
         appId="cm6dgl8ba00sh10xcnswn30yq"
@@ -74,5 +83,5 @@ createRoot(document.getElementById('root')).render(
         </UserProvider>
       </PrivyProvider>
     </AuthProvider>
-  </Provider>,
+  </StrictMode>,
 )

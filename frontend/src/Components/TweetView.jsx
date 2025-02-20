@@ -9,9 +9,10 @@ import { useTweets } from '../context/tweetContext';
 import { motion } from "motion/react"
 import { Tooltip } from 'react-tooltip';
 import { renderContentWithMentions } from './CapsuleInstance';
+import { Mention, MentionsInput } from 'react-mentions';
 
 function TweetView({ tweets }) {
-    const { users, addUser, modifyUser } = useUsers();
+    const { users, userList, addUser, modifyUser } = useUsers();
     const { userDetails, initiateLoginUser, userlogoutService, loading, useBookmark } = useLoginService();
     const { likeTweet, retweetTweet, addTweet } = useTweets();
 
@@ -78,7 +79,7 @@ function TweetView({ tweets }) {
                 <a href={'/tweet/' + tweet.tweetId}>
 
                     <div class="sm:px-4 p-2.5 pt-0">
-                        <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails? userDetails.username : '')}</p>
+                        <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails ? userDetails.username : '')}</p>
                     </div>
 
 
@@ -270,12 +271,29 @@ function TweetView({ tweets }) {
             </div>
         )}
 
-        <div class="hidden lg:p-20 uk- open" id="create-status" uk-modal="bg-close: false">
+        <div class="hidden lg:p-20 z-[1] uk- open" id="create-status" uk-modal="">
 
             <div class="uk-modal-dialog tt relative overflow-auto mx-auto bg-white shadow-xl rounded-lg md:w-[520px] w-full dark:bg-dark2">
 
                 <div class="space-y-5 mt-3 p-2">
-                    <textarea class="w-full !text-black placeholder:!text-black !bg-white !border-transparent focus:!border-transparent focus:!ring-transparent !font-normal !text-xl   dark:!text-white dark:placeholder:!text-white dark:!bg-slate-800" name="" id="" placeholder="Add a comment"></textarea>
+                    <MentionsInput
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        placeholder='Add comment!'
+                        className="w-full !text-black placeholder:!text-black !bg-white !border-transparent focus:!border-transparent focus:!ring-transparent !font-small !text-sm dark:!text-white dark:placeholder:!text-white dark:!bg-slate-800"
+                        style={{ padding: "10px", width: "100%" }}
+                    >
+                        <Mention
+                            trigger="@"
+                            data={userList}
+                            displayTransform={(id, display) => `${display}`}
+                            renderSuggestion={(suggestion) => (
+                                <span style={{ padding: "2px", cursor: "pointer" }} className='w-full !text-black placeholder:!text-black !bg-white !border-transparent focus:!border-transparent focus:!ring-transparent !font-small !text-xl dark:!text-white dark:placeholder:!text-white dark:!bg-slate-800'>
+                                    {suggestion.display}
+                                </span>
+                            )}
+                        />
+                    </MentionsInput>
                 </div>
 
 
@@ -340,13 +358,14 @@ function TweetView({ tweets }) {
 
                         </div>
                     </div>
+                    
                     <div class="flex items-center gap-2">
                         {/* <label htmlFor="file-upload" className="flex items-center gap-1.5 bg-sky-50 text-sky-600 rounded-full py-1 px-2 border-2 border-sky-100 dark:bg-sky-950 dark:border-sky-900 cursor-pointer">
                                 <ion-icon name="image" className="text-base"></ion-icon>
                                 Image
                                 
                             </label> */}
-                        <button type="" onClick={justClick} class="button bg-blue-500 text-white py-2 px-12 text-[14px]"> Create
+                        <button type="" onClick={()=>console.log('Here we are')} class="button bg-blue-500 text-white py-2 px-12 text-[14px]"> Create
                         </button>
                     </div>
                 </div>
@@ -355,7 +374,7 @@ function TweetView({ tweets }) {
 
         </div>
 
-        
+
     </>
     )
 }

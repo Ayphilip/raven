@@ -7,10 +7,19 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(),
-    nodePolyfills({
-      // Whether to polyfill `global`, `process`, and `Buffer`.
-      // By default, all are true.
-      protocolImports: true,
-    }),
+  nodePolyfills({
+    // Whether to polyfill `global`, `process`, and `Buffer`.
+    // By default, all are true.
+    protocolImports: true,
+  }),
   ],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:4000', // Your backend server
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
 })
