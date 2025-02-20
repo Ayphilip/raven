@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import userRoutes from "./routes/users.js";
 import tweetRoutes from "./routes/tweets.js";
+import nftRoutes from "./routes/nfts.js";
 import { fileURLToPath } from "url"; // Import fileURLToPath from 'url'
 import { exec } from "child_process"; // Import child_process module
 import path from 'path'
@@ -17,6 +18,8 @@ app.use(express.json());
 // Use Routes
 app.use("/api/users", userRoutes);
 app.use("/api/tweets", tweetRoutes);
+app.use("/api/nfts", nftRoutes);
+
 
 const startFrontend = () => {
     console.log("Starting frontend...");
