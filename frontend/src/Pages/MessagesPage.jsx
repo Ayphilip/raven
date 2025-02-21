@@ -31,13 +31,7 @@ function MessagesPage() {
     const [newMessage, setNewMessage] = useState("");
 
     useEffect(() => {
-        socket.on("newMessage", (message) => {
-            setMessages((prev) => [...prev, message]);
-        });
 
-        return () => {
-            socket.off("newMessage");
-        };
     }, []);
 
     const sendMessage = () => {
@@ -72,11 +66,16 @@ function MessagesPage() {
             // console.log(response)
         }
 
+        socket.on("newMessage", (message) => {
+            setMessages((prev) => [...prev, message]);
+        });
+
         readTweet()
 
         return () => {
-
+            socket.off("newMessage");
         }
+        
     }, [tweets, retweetTweet])
     return (
         <div id='wrapper'>
