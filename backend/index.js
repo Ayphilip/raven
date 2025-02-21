@@ -10,6 +10,10 @@ import chatRoutes from "./routes/chat.js";
 import { fileURLToPath } from "url";
 import { exec } from "child_process";
 import path from "path";
+import { 
+    db, doc, getDoc, setDoc, updateDoc, Timestamp, collection, getDocs, query, where, orderBy, serverTimestamp,
+    arrayUnion
+} from "./config/firebaseConfig.js";
 
 // Define __dirname manually for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -37,50 +41,93 @@ app.use("/api/chats", chatRoutes);
 const activeUsers = new Map(); // { userId: socketId }
 
 // Socket.io Event Handling
-io.on("connection", (socket) => {
-    console.log(`⚡ New user connected: ${socket.id}`);
+io.on('connection', (socket) => {
+    // console.log('User connected:', socket.id);
 
-    // User joins with their userId
-    socket.on("join", (userId) => {
-        activeUsers.set(userId, socket.id);
-        console.log(`👤 User ${userId} connected`);
-    });
+    // Join a chat room based on chatId
+    socket.on('joinChat', async ({ userId, receiverId }) => {
+        const chatId = userId < receiverId ? `${userId}_${receiverId}` : `${receiverId}_${userId}`;
+        socket.join(chatId);
+        // console.log(`${socket.id} joined chat: ${chatId}`);
 
-    // Handle sending messages
-    socket.on("sendMessage", ({ senderId, receiverId, message }) => {
-        const receiverSocketId = activeUsers.get(receiverId);
-        if (receiverSocketId) {
-            io.to(receiverSocketId).emit("receiveMessage", { senderId, message });
+        try {
+            const chatRef = doc(db, 'chats', chatId);
+            const chatSnap = await getDoc(chatRef);
+
+            let messages = chatSnap.exists() ? chatSnap.data().messages || [] : [];
+
+            // Update "sent" messages to "delivered"
+            let updatedMessages = messages.map(msg =>
+                msg.receiverId === userId && msg.status === 'sent' ? { ...msg, status: 'delivered' } : msg
+            );
+
+            if (JSON.stringify(messages) !== JSON.stringify(updatedMessages)) {
+                await updateDoc(chatRef, { messages: updatedMessages });
+                messages = updatedMessages;
+            }
+
+            // Emit the updated chat history
+            io.to(chatId).emit('chatHistory', messages);
+        } catch (error) {
+            console.error('Error fetching chat history:', error);
+            socket.emit('error', { message: 'Failed to load chat history' });
         }
     });
 
-    // Mark message as seen
-    socket.on("markAsSeen", ({ senderId, receiverId }) => {
-        const senderSocketId = activeUsers.get(senderId);
-        if (senderSocketId) {
-            io.to(senderSocketId).emit("messageSeen", { receiverId });
+    // Handle sending a message
+    socket.on('sendMessage', async ({ senderId, receiverId, message }) => {
+        try {
+            const chatId = senderId < receiverId ? `${senderId}_${receiverId}` : `${receiverId}_${senderId}`;
+            const chatRef = doc(db, 'chats', chatId);
+
+            const newMessage = {
+                senderId,
+                receiverId,
+                message,
+                timestamp: Timestamp.now(),
+                status: "sent",
+            };
+
+            const chatSnap = await getDoc(chatRef);
+
+            if (chatSnap.exists()) {
+                await updateDoc(chatRef, {
+                    messages: arrayUnion(newMessage)
+                });
+            } else {
+                await setDoc(chatRef, { messages: [newMessage] }, { merge: true });
+            }
+
+            io.to(chatId).emit('newMessage', newMessage);
+        } catch (error) {
+            console.error('Error sending message:', error);
+            socket.emit('error', { message: 'Failed to send message' });
         }
     });
 
-    // Mark message as read
-    socket.on("markAsRead", ({ senderId, receiverId }) => {
-        const senderSocketId = activeUsers.get(senderId);
-        if (senderSocketId) {
-            io.to(senderSocketId).emit("messageRead", { receiverId });
-        }
+    // Handle real-time message updates
+    socket.on('subscribeToChat', ({ userId, receiverId }) => {
+        const chatId = userId < receiverId ? `${userId}_${receiverId}` : `${receiverId}_${userId}`;
+        const chatRef = doc(db, 'chats', chatId);
+
+        const unsubscribe = onSnapshot(chatRef, (doc) => {
+            if (doc.exists()) {
+                io.to(chatId).emit('chatHistory', doc.data().messages || []);
+            }
+        });
+
+        socket.on('disconnect', () => {
+            console.log('User disconnected:', socket.id);
+            unsubscribe();
+        });
     });
 
     // Handle disconnect
-    socket.on("disconnect", () => {
-        for (let [userId, socketId] of activeUsers.entries()) {
-            if (socketId === socket.id) {
-                activeUsers.delete(userId);
-                console.log(`❌ User ${userId} disconnected`);
-                break;
-            }
-        }
+    socket.on('disconnect', () => {
+        console.log('User disconnected:', socket.id);
     });
 });
+
 
 // Serve Frontend Static Files
 const frontendPath = path.join(__dirname, "../frontend/dist");

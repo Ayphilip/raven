@@ -109,14 +109,29 @@ export const UserProvider = ({ children }) => {
 
     const modifyUser = async (userId, data) => {
         try {
-            const response = await axios.put('/api/users/' + userId, data)
-            // await updateUser(userId, data);
-
+            // Send update request
+            const response = await axios.put(`/api/users/${userId}`, data);
+            
+            // Retrieve existing user data from cookies
+            const storedUser = Cookies.get("userDetails");
+            let existingUser = storedUser ? JSON.parse(storedUser) : {};
+    
+            // Merge old data with the updated response
+            const updatedUser = { ...existingUser, ...response.data };
+    
+            // Save updated user back to cookies
+            Cookies.set("userDetails", JSON.stringify(updatedUser), { expires: 7 });
+    
+            // Refresh user list
             fetchUsers();
+    
+            return true;
         } catch (error) {
             console.error("Error updating user:", error);
+            return false;
         }
     };
+    
 
     return (
         <UserContext.Provider value={{ users, userList, loading, addUser, fetchUser, addFollow, removeFollow, modifyUser }}>

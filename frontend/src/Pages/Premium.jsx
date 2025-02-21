@@ -5,6 +5,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import { useLoginService } from '../services/authenticationService';
 import { useNavigate, useParams } from 'react-router-dom';
 import Sidbar from '../Components/Sidbar';
+import { useOthers } from '../context/otherContext';
 
 function Premium() {
 
@@ -17,6 +18,7 @@ function Premium() {
 
     const { ready, login, logout, authenticated, user } = usePrivy();
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate, useBookmark } = useLoginService();
+    const {nft, ptoken, tokenBal, makeTransfer, loadingOthers} = useOthers()
 
     const navigate = useNavigate()
     // const dispatch = useDispatch()
@@ -24,6 +26,24 @@ function Premium() {
     const [tweet, setTweet] = useState(null)
 
     const params = useParams()
+
+    const transferFund = (amount) => {
+        const data = {
+            from: userDetails?.username,
+            amount: amount,
+            to: '',
+            symbol: ptoken
+        }
+        const response = makeTransfer(data)
+        if(response){
+            alert('Successfull')
+            const dats = {verfied: true}
+            const resp = modifyUser(userDetails?.username, dats)
+            if(resp){
+                window.location.reload()
+            }
+        }
+    }
 
 
     // const saveRetweet = (tweetId) => {
@@ -40,13 +60,7 @@ function Premium() {
 
 
     useEffect(() => {
-        const readTweet = async () => {
-            const response = await fetchTweet(params.id)
-            setTweet(response)
-            // console.log(response)
-        }
-
-        readTweet()
+        
 
         return () => {
 
@@ -64,7 +78,7 @@ function Premium() {
 
                     <div class="lg:py-20 py-12">
                         <div class="text-center">
-                            <ion-icon name="sparkles-sharp" class="text-5xl mb-6 text-sky-500 opacity-70 rotate-12"></ion-icon>
+                            {/* <ion-icon name="sparkles-sharp" class="text-5xl mb-6 text-sky-500 opacity-70 rotate-12"></ion-icon> */}
                             <h1 class="lg:text-5xl lg:font-bold md:text-3xl text-xl font-semibold bg-gradient-to-tr from-indigo-500 to-sky-400 bg-clip-text !text-transparent leading-relaxed">  Get Raven Verified</h1>
                             <p class="text-sm text-gray-500 mt-2 dark:text-white/80"> Exclusive features and benefits on Raven are accessible to you. </p>
                         </div>
@@ -77,14 +91,25 @@ function Premium() {
 
                                 <ul class="-ml-2 uk-slider-items w-[calc(100%+10px)]" style={{alignItems: 'center', justifyContent: 'center'}}>
 
+                                    
+
                                     <li class="lg:w-1/3 w-1/2 pr-[10px]">
                                         <label for="weekly">
+                                            {nft.filter(nf => nf.name === 'TESTNFT').map(nf => 
+                                                <img src={nf.base_uri} className=''/>
+                                            )}
                                             <input type="radio" name="radio-membership" id="weekly" class="peer appearance-none hidden" checked />
-                                            <div class="relative p-4 bg-white shadow -sm rounded-xl cursor-pointer peer-checked:[&_.active]:block dark:bg-dark3">
-                                                <div class="mb-4 text-sm"> Mint NFT</div>
-                                                <h2 class="text-3xl font-bold text-black relative px-2 dark:text-white"> <span class="text-sm absolute top-1.5 -left-1 font-normal text-gray-700">$</span> 5.00 </h2>
+                                            {tokenBal < 500 ? <div class="relative p-4 bg-white shadow -sm rounded-xl cursor-pointer peer-checked:[&_.active]:block dark:bg-dark3">
+                                                <div class="mb-4 text-sm"> Mint TESTNFT</div>
+                                                <h2 class="text-3xl font-bold text-black relative px-2 dark:text-white"> <span class="text-sm absolute top-1.5 -left-1 font-normal text-gray-700"></span> 500 {ptoken} </h2>
                                                 <ion-icon name="checkmark-circle" class="hidden active absolute top-0 right-0 m-4 text-2xl text-blue-600 uk-animation-scale-up"></ion-icon>
-                                            </div>
+                                            </div> : <div onClick={()=>transferFund(500)} class="relative p-4 bg-white shadow -sm rounded-xl cursor-pointer peer-checked:[&_.active]:block dark:bg-dark3">
+                                                <div class="mb-4 text-sm"> Mint TESTNFT</div>
+                                                <h2 class="text-3xl font-bold text-black relative px-2 dark:text-white"> <span class="text-sm absolute top-1.5 -left-1 font-normal text-gray-700"></span> 500 {ptoken} </h2>
+                                                <ion-icon name="checkmark-circle" class="hidden active absolute top-0 right-0 m-4 text-2xl text-blue-600 uk-animation-scale-up"></ion-icon>
+                                            </div>}
+                                            {loadingOthers && <div>Please wait, while your transaction is processing</div>}
+                                            {tokenBal < 500 && <p className='text-red-500'>Not Enough Token</p>}
                                         </label>
                                     </li>
                                 </ul>
@@ -96,111 +121,12 @@ function Premium() {
                         </div>
 
 
-
-                        <div class="grid md:grid-cols-3 grid-cols-2 gap-5 max-w-2xl mx-auto mt-10 hidden">
-
-                            <label for="monthly">
-                                <input type="radio" name="radio" id="monthly" class="peer appearance-none hidden" checked />
-                                <div class="relative p-4 bg-white shadow-sm rounded-xl cursor-pointer peer-checked:[&_.active]:block">
-                                    <div class="mb-4 text-sm"> Monthly </div>
-                                    <h2 class="text-3xl font-bold text-black relative px-2"> <span class="text-sm absolute top-1.5 -left-1 font-normal text-gray-700">$</span> 12.99 </h2>
-                                    <ion-icon name="checkmark-circle" class="hidden active absolute top-0 right-0 m-4 text-2xl text-blue-600 uk-animation-scale-up"></ion-icon>
-                                </div>
-                            </label>
-                            <label for="yearly">
-                                <input type="radio" name="radio" id="yearly" class="peer appearance-none hidden" />
-                                <div class="relative p-4 bg-white shadow-sm rounded-xl cursor-pointer peer-checked:[&_.active]:block">
-                                    <div class="mb-4 text-sm"> Yearly </div>
-                                    <h2 class="text-3xl font-bold text-black relative px-2"> <span class="text-sm absolute top-1.5 -left-1 font-normal text-gray-700">$</span> 32.99 </h2>
-                                    <ion-icon name="checkmark-circle" class="hidden active absolute top-0 right-0 m-4 text-2xl text-blue-600 uk-animation-scale-up"></ion-icon>
-                                </div>
-                            </label>
-                            <label for="forever">
-                                <input type="radio" name="radio" id="forever" class="peer appearance-none hidden" />
-                                <div class="relative p-4 bg-white shadow-sm rounded-xl cursor-pointer peer-checked:[&_.active]:block">
-                                    <div class="mb-4 text-sm"> Forever </div>
-                                    <h2 class="text-3xl font-bold text-black relative px-2"> <span class="text-sm absolute top-1.5 -left-1 font-normal text-gray-700">$</span> 92.99 </h2>
-                                    <ion-icon name="checkmark-circle" class="hidden active absolute top-0 right-0 m-4 text-2xl text-blue-600 uk-animation-scale-up"></ion-icon>
-                                </div>
-                            </label>
-
-                        </div>
-
-
-                        <div class="md:p-8 p-5 bg-white shadow-sm rounded-xl mt-16 dark:bg-dark3">
-
-                            <h1 class="text-base font-medium text-black dark:text-white">Why Choose Premium Membership </h1>
-
-                            <div class=" text-sm text-gray-500 grid md:grid-cols-2 grid-cols-3 gap-10 mt-8 dark:text-white/80">
-
-                                <div class="flex gap-5 max-md:items-center max-md:flex-col">
-                                    <ion-icon name="camera" class="flex shrink-0 p-2 text-2xl rounded-full bg-sky-100 text-sky-500 dark:bg-sky-500/20"></ion-icon>
-                                    <div>
-                                        <h5 class="text-black text-base font-medium dark:text-white"> Stories </h5>
-                                        <p class="mt-1 max-md:hidden"> Post moments your everyday life that disappear after 24 hours </p>
-                                    </div>
-                                </div>
-                                <div class="flex gap-5 max-md:items-center max-md:flex-col">
-                                    <ion-icon name="image" class="flex shrink-0 p-2 text-2xl rounded-full bg-teal-100 text-teal-500 dark:bg-teal-500/20"></ion-icon>
-                                    <div>
-                                        <h5 class="text-black text-base font-medium dark:text-white"> Images </h5>
-                                        <p class="mt-1 max-md:hidden"> You can upload Unlimited photes and share with your friends </p>
-                                    </div>
-                                </div>
-                                <div class="flex gap-5 max-md:items-center max-md:flex-col">
-                                    <ion-icon name="chatbox" class="flex shrink-0 p-2 text-2xl rounded-full bg-orange-100 text-orange-500 dark:bg-orange-500/20"></ion-icon>
-                                    <div>
-                                        <h5 class="text-black text-base font-medium dark:text-white"> Messages </h5>
-                                        <p class="mt-1 max-md:hidden"> Send photos, videos, and messages privately to your friends or groups </p>
-                                    </div>
-                                </div>
-
-                                <div class="flex gap-5 max-md:items-center max-md:flex-col">
-                                    <ion-icon name="videocam" class="flex shrink-0 p-2 text-2xl rounded-full bg-pink-100 text-pink-500 dark:bg-pink-500/20"></ion-icon>
-                                    <div>
-                                        <h5 class="text-black text-base font-medium dark:text-white"> Shorts </h5>
-                                        <p class="mt-1 max-md:hidden"> Create and share short, entertaining videos with music, filters, and effects </p>
-                                    </div>
-                                </div>
-
-                                <div class="flex gap-5 max-md:items-center max-md:flex-col">
-                                    <ion-icon name="compass" class="flex shrink-0 p-2 text-2xl rounded-full bg-purple-100 text-purple-500 dark:bg-purple-500/20"></ion-icon>
-                                    <div>
-                                        <h5 class="text-black text-base font-medium dark:text-white"> Explore </h5>
-                                        <p class="mt-1 max-md:hidden">  Discover content and creators based on their interests </p>
-                                    </div>
-                                </div>
-                                <div class="flex gap-5 max-md:items-center max-md:flex-col">
-                                    <ion-icon name="bookmark" class="flex shrink-0 p-2 text-2xl rounded-full bg-green-100 text-green-500 dark:bg-green-500/20"></ion-icon>
-                                    <div>
-                                        <h5 class="text-black text-base font-medium dark:text-white"> Bookmark </h5>
-                                        <p class="mt-1 max-md:hidden"> Create collections of saved posts based on themes, topics, or categories. </p>
-                                    </div>
-                                </div>
-                                <div class="flex gap-5 max-md:items-center max-md:flex-col">
-                                    <ion-icon name="shield" class="flex shrink-0 p-2 text-2xl rounded-full bg-red-100 text-red-500 dark:bg-red-500/20"></ion-icon>
-                                    <div>
-                                        <h5 class="text-black text-base font-medium dark:text-white"> Privacy  </h5>
-                                        <p class="mt-1 max-md:hidden"> Make your account visible only to people who follow you </p>
-                                    </div>
-                                </div>
-                                <div class="flex gap-5 max-md:items-center max-md:flex-col">
-                                    <ion-icon name="cart" class="flex shrink-0 p-2 text-2xl rounded-full bg-sky-100 text-sky-500 dark:bg-sky-500/20"></ion-icon>
-                                    <div>
-                                        <h5 class="text-black text-base font-medium dark:text-white"> Shopping </h5>
-                                        <p class="mt-1 max-md:hidden"> Browse and buy products from your favorite brands and creators</p>
-                                    </div>
-                                </div>
-
-
-                            </div>
-
-                        </div>
+                        
 
 
                         <div class="py-10 flex justify-between">
 
-                            <p class="max-w-xl mx-auto text-center text-sm text-gray-500dark:text-white/80"> Socialite Premium is the ultimate way to enhance your Socialite experience and connect with your passions. Try it free for 30 days and cancel anytime. </p>
+                            <p class="max-w-xl mx-auto text-center text-sm text-gray-500dark:text-white/80"> Raven Premium is the ultimate way to enhance your Raven experience and connect with your passions. </p>
 
                         </div>
 

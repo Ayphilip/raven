@@ -1,5 +1,21 @@
 import { db, doc, getDoc, setDoc, updateDoc, collection, getDocs, query, where } from "../config/firebaseConfig.js";
 
+
+export const getNfts = async (req, res) => {
+    try {
+
+        const tokenRef = collection(db, "nftCollections");
+        // const tokenData = { name, symbol, decimals, max_supply };
+        const snapshot = await getDocs(tokenRef);
+        let tokens = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        return res.status(200).json(tokens);
+    } catch (error) {
+        console.error("Error creating token:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+
 // CREATE Collection
 export const createCollection = async (req, res) => {
     try {

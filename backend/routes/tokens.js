@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  getToken,
   createToken,
   getMaxSupply,
   getTotalCirculatingSupply,
@@ -11,6 +12,14 @@ import {
 const router = express.Router();
 
 // Create Token
+router.get("/", async (req, res) => {
+  try{
+      await getToken(req, res);
+  }catch (error) {
+      res.status(500).json({ error: error.message });
+  }
+});
+
 router.post("/create", async (req, res) => {
     try{
         await createToken(req, res);

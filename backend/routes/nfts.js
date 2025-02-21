@@ -1,12 +1,22 @@
 
 import express from "express";
 import {
+    getNfts,
     createCollection,
     mintNFT,
     getOwner
 } from "../controller/nftController.js";
 
 const router = express.Router();
+
+router.get("/", async (req, res) => {
+    try{
+        await getNfts(req, res);
+    }catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+  });
+  
 
 // Create NFT Collection
 router.post("/collection", async (req, res) => {

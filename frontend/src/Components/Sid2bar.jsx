@@ -1,11 +1,15 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { avatars } from './avatars'
 import { useTweets } from '../context/tweetContext';
 import { useUsers } from '../context/userContext';
 import { usePrivy } from '@privy-io/react-auth';
 import { useLoginService } from '../services/authenticationService';
+import { useOthers } from '../context/otherContext';
 
 function Sid2bar() {
+
+    const [isMintAvailable, setIsMintAvailable] = useState(false);
+    const [timeLeft, setTimeLeft] = useState("");
 
     const { tweets, likeTweet, retweetTweet, addTweet } = useTweets();
     const { users, userList, addUser, modifyUser } = useUsers();
@@ -13,7 +17,54 @@ function Sid2bar() {
     const { ready, login, logout, authenticated, user } = usePrivy();
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate } = useLoginService();
 
+    const { ptoken, mintToken } = useOthers()
+
+    const handleMint = () => {
+        if (isMintAvailable) {
+            mintToken({
+                userId: userDetails?.username,
+                amount: 5,
+                symbol: ptoken
+            })
+            localStorage.setItem("lastMintTime", new Date().getTime());
+            setIsMintAvailable(false);
+            setTimeLeft("24:00:00"); // Reset countdown
+        }
+    };
+
+    const formatTime = (ms) => {
+        const hours = Math.floor(ms / (1000 * 60 * 60));
+        const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((ms % (1000 * 60)) / 1000);
+        return `${hours.toString().padStart(2, "0")}:${minutes
+            .toString()
+            .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+    };
+
     useEffect(() => {
+
+        const checkMintStatus = () => {
+            const lastMintTime = localStorage.getItem("lastMintTime");
+            if (!lastMintTime) {
+                setIsMintAvailable(true);
+                return;
+            }
+
+            const now = new Date().getTime();
+            const timeElapsed = now - parseInt(lastMintTime, 10);
+            const remainingTime = 24 * 60 * 60 * 1000 - timeElapsed;
+
+            if (remainingTime <= 0) {
+                setIsMintAvailable(true);
+                localStorage.removeItem("lastMintTime"); // Reset when time expires
+            } else {
+                setIsMintAvailable(false);
+                setTimeLeft(formatTime(remainingTime));
+                setTimeout(checkMintStatus, 1000); // Update countdown every second
+            }
+        };
+
+        checkMintStatus();
 
         return () => {
 
@@ -112,6 +163,8 @@ function Sid2bar() {
                     </div>
 
                 </div>
+
+
 
 
                 <div class="box p-5 px-6 border1 dark:bg-dark1 hidden">
@@ -243,6 +296,33 @@ function Sid2bar() {
 
                 </div>
 
+                <div className="box p-5 px-6 border1 dark:bg-dark1">
+                    <div className="flex items-baseline justify-between text-black dark:text-white">
+                        <h3 className="font-bold text-base">Daily Minting</h3>
+                    </div>
+
+                    <div className="side-list">
+                        <div className="side-list-item">
+                            <div className="flex-1">
+                                <h4 className="side-list-title">Daily Mint</h4>
+                                <div className="side-list-info">
+                                    Note this mints only the active token.
+                                </div>
+                            </div>
+                            <button
+                                onClick={handleMint}
+                                disabled={!isMintAvailable}
+                                className={`button ${isMintAvailable
+                                        ? "bg-primary-soft text-primary dark:text-white"
+                                        : "bg-primary-soft text-primary dark:text-white"
+                                    }`}
+                            >
+                                {isMintAvailable ? `Mint ${ptoken}` : `${timeLeft}`}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
 
                 <div class="box p-5 px-6 border1 dark:bg-dark2">
 
@@ -296,74 +376,8 @@ function Sid2bar() {
                 </div>
 
 
-                <div class="box p-5 px-6 border1 dark:bg-dark2">
-
-                    <div class="flex justify-between text-black dark:text-white">
-                        <h3 class="font-bold text-base"> Pro Members </h3>
-                    </div>
-
-                    <div class="relative capitalize font-normal text-sm mt-4 mb-2" tabindex="-1" uk-slider="autoplay: true;finite: true">
-
-                        <div class="overflow-hidden uk-slider-container">
-
-                            <ul class="-ml-2 uk-slider-items w-[calc(100%+0.5rem)]">
-
-                                <li class="w-1/2 pr-2">
-                                    <a href="timeline.html">
-                                        <div class="flex flex-col items-center shadow-sm p-2 rounded-xl border1">
-                                            <a href="timeline.html">
-                                                <div class="relative w-16 h-16 mx-auto mt-2">
-                                                    <img src="assets/images/avatars/avatar-5.jpg" alt="" class="h-full object-cover rounded-full shadow w-full" />
-                                                </div>
-                                            </a>
-                                            <div class="mt-5 text-center w-full">
-                                                <a href="timeline.html"> <h5 class="font-semibold"> Martin Gray</h5> </a>
-                                                <div class="text-xs text-gray-400 mt-0.5 font-medium"> 12K Followers</div>
-                                                <button type="button" class="bg-secondery block font-semibold mt-4 py-1.5 rounded-lg text-sm w-full border1"> Follow </button>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="w-1/2 pr-2">
-                                    <div class="flex flex-col items-center shadow-sm p-2 rounded-xl border1">
-                                        <a href="timeline.html">
-                                            <div class="relative w-16 h-16 mx-auto mt-2">
-                                                <img src="assets/images/avatars/avatar-4.jpg" alt="" class="h-full object-cover rounded-full shadow w-full" />
-                                            </div>
-                                        </a>
-                                        <div class="mt-5 text-center w-full">
-                                            <a href="timeline.html"> <h5 class="font-semibold"> Alexa Park</h5> </a>
-                                            <div class="text-xs text-gray-400 mt-0.5 font-medium"> 12K Followers</div>
-                                            <button type="button" class="bg-secondery block font-semibold mt-4 py-1.5 rounded-lg text-sm w-full border1"> Follow </button>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="w-1/2 pr-2">
-                                    <div class="flex flex-col items-center shadow-sm p-2 rounded-xl border1">
-                                        <a href="timeline.html">
-                                            <div class="relative w-16 h-16 mx-auto mt-2">
-                                                <img src="assets/images/avatars/avatar-4.jpg" alt="" class="h-full object-cover rounded-full shadow w-full" />
-                                            </div>
-                                        </a>
-                                        <div class="mt-5 text-center w-full">
-                                            <a href="timeline.html"> <h5 class="font-semibold"> James Lewis</h5> </a>
-                                            <div class="text-xs text-gray-400 mt-0.5 font-medium"> 15K Followers</div>
-                                            <button type="button" class="bg-secondery block font-semibold mt-4 py-1.5 rounded-lg text-sm w-full border1"> Follow </button>
-                                        </div>
-                                    </div>
-                                </li>
-
-
-                            </ul>
-
-                            <button type="button" class="absolute -translate-y-1/2 bg-slate-100 rounded-full top-1/2 -left-4 grid w-9 h-9 place-items-center dark:bg-dark3" uk-slider-item="previous"> <ion-icon name="chevron-back" class="text-2xl"></ion-icon></button>
-                            <button type="button" class="absolute -right-4 -translate-y-1/2 bg-slate-100 rounded-full top-1/2 grid w-9 h-9 place-items-center dark:bg-dark3" uk-slider-item="next"> <ion-icon name="chevron-forward" class="text-2xl"></ion-icon></button>
-
-                        </div>
-
-                    </div>
-
-
+                <div style={{ textAlign: 'center' }} class="text-xs align-center center font-medium flex flex-wrap gap-2 gap-y-0.5 p-2 mt-2">
+                    Raven X is a decentralized Twitter-like application built on Web3, leveraging the Celestia blockchain for storing tweets and user interactions.
                 </div>
 
 

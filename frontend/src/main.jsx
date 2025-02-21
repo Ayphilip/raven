@@ -14,6 +14,9 @@ import { UserProvider } from './context/userContext.jsx'
 
 import '../assets/js/simplebar.js'
 import '../assets/js/uikit.min.js'
+import { ChatProvider } from './context/chatContext.jsx'
+import { OtherProvider } from './context/otherContext.jsx'
+
 // import '../assets/js/script.js';
 // import store from './redux/store.js'
 
@@ -76,11 +79,16 @@ createRoot(document.getElementById('root')).render(
           }
         }}
       >
-        <UserProvider>
-          <TweetProvider>
-            <App />
-          </TweetProvider>
-        </UserProvider>
+        <OtherProvider>
+
+          <ChatProvider>
+            <UserProvider>
+              <TweetProvider>
+                <App />
+              </TweetProvider>
+            </UserProvider>
+          </ChatProvider>
+        </OtherProvider>
       </PrivyProvider>
     </AuthProvider>
   </StrictMode>,

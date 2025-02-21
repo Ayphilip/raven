@@ -15,6 +15,7 @@ import formatTimestamp from '../Components/timeStamping'
 import MediaViewer from '../Components/MediaViewer'
 import TweetView from '../Components/TweetView'
 import Sid2bar from '../Components/Sid2bar'
+import { useChats } from '../context/chatContext'
 
 function Profile2() {
     const { ready, login, logout, authenticated, user } = usePrivy();
@@ -22,6 +23,8 @@ function Profile2() {
 
     const { tweets, likeTweet, retweetTweet, addTweet } = useTweets();
     const { users, addUser, modifyUser, addFollow, removeFollow, fetchUser } = useUsers();
+
+    const { allChats, initializeChat } = useChats();
 
     const [userInfo, setUserInfo] = useState(null)
     const [stat, setStat] = useState(false)
@@ -114,12 +117,12 @@ function Profile2() {
 
                                         <div class="w-full bottom-0 absolute left-0 bg-gradient-to-t from-black/60 pt-20 z-10"></div>
 
-                                        <div class="absolute bottom-0 right-0 m-4 z-20">
+                                        {/* <div class="absolute bottom-0 right-0 m-4 z-20">
                                             <div class="flex items-center gap-3">
                                                 <button class="button bg-white/20 text-white flex items-center gap-2 backdrop-blur-small">Crop</button>
                                                 <button class="button bg-black/10 text-white flex items-center gap-2 backdrop-blur-small">Edit</button>
                                             </div>
-                                        </div>
+                                        </div> */}
 
                                     </div>
                                     <div class="p-3">
@@ -133,21 +136,25 @@ function Profile2() {
                                                 {/* <button type="button" class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white shadow p-1.5 rounded-full sm:flex hidden"> <ion-icon name="camera" class="text-2xl md hydrated" role="img" aria-label="camera"></ion-icon></button> */}
 
                                             </div>
-                                            {userInfo.userId === userDetails.userId ? <button class="button bg-black dark:bg-secondery dark:bg-dark2 flex items-center gap-2 text-white py-2 px-3.5 max-md:flex-1">
-                                                <ion-icon name="add-circle" class="text-xl"></ion-icon>
-                                                <span class="text-sm"> edit profile  </span>
-                                            </button> : userInfo.followers.some(fol => fol === userDetails.username) ? <button class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
-                                                <span class="text-sm"> Following  </span>
-                                            </button> : <button onClick={() => saveFollow(userInfo.username, userDetails?.username)} class="button bg-primary flex items-center gap-2 text-white py-2 px-3.5 max-md:flex-1">
-                                                <ion-icon name="add-circle" class="text-xl"></ion-icon>
-                                                <span class="text-sm"> Follow  </span>
-                                            </button>}
+                                            <div style={{ flexDirection: 'row', display: 'flex'}}>
+                                                {userDetails?.username !== userInfo.username && <button onClick={()=>initializeChat(userDetails?.username, userInfo.username)}><i className='mdi mdi-chat p-10'></i></button>}
+
+                                                {userInfo.userId === userDetails.userId ? <button class="button bg-black dark:bg-secondery dark:bg-dark2 flex items-center gap-2 text-white py-2 px-3.5 max-md:flex-1">
+                                                    <ion-icon name="add-circle" class="text-xl"></ion-icon>
+                                                    <span class="text-sm"> edit profile  </span>
+                                                </button> : userInfo.followers.some(fol => fol === userDetails.username) ? <button class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
+                                                    <span class="text-sm"> Following  </span>
+                                                </button> : <button onClick={() => saveFollow(userInfo.username, userDetails?.username)} class="button bg-primary flex items-center gap-2 text-white py-2 px-3.5 max-md:flex-1">
+                                                    <ion-icon name="add-circle" class="text-xl"></ion-icon>
+                                                    <span class="text-sm"> Follow  </span>
+                                                </button>}
+                                            </div>
                                         </div>
 
                                     </div>
 
                                     <div className='xl:space-y-6 space-y-3'>
-                                        <h1 className='text-xl '><strong>{userInfo.name} <ion-icon name="shield-checkmark-outline" class="text-blue-500 font-medium text-xl"></ion-icon></strong></h1>
+                                        <h1 className='text-xl '><strong>{userInfo.name} {userInfo?.verified && <ion-icon name="shield-checkmark-outline" class="text-blue-500 font-medium text-xl"></ion-icon>}</strong></h1>
                                         <span className='text-sm '>{userDetails.username.slice(0, 6)}...{userDetails.username.slice(-4)}</span>
                                         <p>{!userInfo.bio && <button class="button bg-black flex items-center gap-2 text-white py-2 px-3.5 max-md:flex-1">Add bio</button>}{userInfo.bio}</p>
                                         <p><h6>{userInfo.followers.length} Followers | {userInfo.following.length} Following</h6></p>
@@ -195,9 +202,9 @@ function Profile2() {
 
                                         {!tweets.filter(tweet => tweet.userId === userInfo.username || (tweet.retweets.includes(userInfo.username))).length && <div>No Post or Tweet</div>}
 
-                                        
+
                                         {tweets.filter(tweet => tweet.userId === userInfo.username || (tweet.retweets.includes(userInfo.username))).map(tweet =>
-                                            <TweetView tweets={tweets.filter(tweet => (tweet.userId === userInfo.username )|| (tweet.retweets.includes(userInfo.username)))} />
+                                            <TweetView tweets={tweets.filter(tweet => (tweet.userId === userInfo.username) || (tweet.retweets.includes(userInfo.username)))} />
                                         )}
 
 

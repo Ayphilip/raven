@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { avatars } from './avatars'
 import { usePrivy } from '@privy-io/react-auth';
 import { useLoginService } from '../services/authenticationService';
@@ -14,11 +14,15 @@ import fly8 from "../asset/icons/blog.png"
 import fly9 from "../asset/icons/game.png"
 import fly10 from "../asset/icons/switch.png"
 import Logo from '../asset/images/logo.png'
+import { useOthers } from '../context/otherContext';
+import Cookies from 'js-cookie'
 
 
 function Sidbar() {
     const { ready, login, logout, authenticated, user } = usePrivy();
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate } = useLoginService();
+    const {tokenBal, token, ptoken } = useOthers();
+    const [tkn, setTkn] = useState(ptoken)
 
     const navigate = useNavigate();
 
@@ -110,6 +114,18 @@ function Sidbar() {
                                 }
                                 Switch Theme
                             </div> */}
+
+
+                            <select value={tkn} onChange={(e) => {
+                                setTkn(e.target.value)
+                                Cookies.set("ptoken", e.target.value);
+                                window.location.reload()
+                            }} class="p-1 py-2 flex items-center gap-4">
+                                <option>Select Preferred Token</option>
+                                {token.map(tkn =>
+                                    <option value={tkn.id}>{tkn.name}({tkn.symbol})</option>
+                                )}
+                            </select>
                             {userDetails && <a href={"/timeline/" + userDetails.username}>
 
                                 <div class="p-1 py-2 flex items-center gap-4">
@@ -118,6 +134,7 @@ function Sidbar() {
                                         <h6 class="text-sm font-small text-black">{userDetails.name}</h6>
                                         <div class="text-sm mt-1 text-blue-600 font-light dark:text-white/70">{userDetails.username.slice(0, 6)}...
                                             {userDetails.username.slice(-4)}</div>
+                                        <div class="text-sm mt-1 text-blue-600 font-light dark:text-white/70">{tokenBal} {ptoken}</div>
                                     </div>
                                 </div>
                             </a>}
