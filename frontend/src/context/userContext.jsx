@@ -22,7 +22,7 @@ export const UserProvider = ({ children }) => {
                 display: `@${doc.name}`, // Ensure display includes "@"
             }));
             // console.log("Users Data:", userList); // Debugging step
-            setUserList(userList.data);
+            setUserList(userList);
             setUsers(allUsers.data);
         } catch (error) {
             console.error("Error fetching users:", error);

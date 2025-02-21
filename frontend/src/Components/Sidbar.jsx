@@ -50,7 +50,7 @@ function Sidbar() {
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="messages.html">
+                                    <a href="/chat">
                                         <img src={fly2} alt="messages" class="w-5" />
                                         <span> messages </span>
                                     </a>
@@ -61,12 +61,12 @@ function Sidbar() {
                                         <span> Notification </span>
                                     </a>
                                 </li>
-                                {/* <li>
-                                    <a href="video.html">
-                                        <img src={fly3} alt="messages" class="w-6" />
-                                        <span> Treasure Hunt </span>
+                                <li>
+                                    <a href="/premium">
+                                        <img src={fly3} alt="premium" class="w-6" />
+                                        <span> Premium </span>
                                     </a>
-                                </li> */}
+                                </li>
                                 <li>
                                     <a href="pages.html">
                                         <img src={fly5} alt="pages" class="w-6" />

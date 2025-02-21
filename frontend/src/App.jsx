@@ -14,11 +14,13 @@ import Vids from './asset/images/load.mp4'
 import { usePrivy } from '@privy-io/react-auth'
 import TweetPage from './Pages/TweetPage'
 import Profile2 from './Pages/Profile2'
+import Premium from './Pages/Premium'
+import MessagesPage from './Pages/MessagesPage'
 
 function App() {
   const [count, setCount] = useState(0)
   const [loading, setLoading] = useState(true)
-  const {ready} = usePrivy()
+  const { ready } = usePrivy()
 
   if (!ready) {
     return <div>
@@ -37,31 +39,33 @@ function App() {
   return (
 
     <BrowserRouter>
-      
-        
 
 
-        <Routes>
-
-          <Route path='/welcome' Component={Mapscreen} />
-          <Route path='/newgame' Component={New} />
-          <Route path='/game'>
-            <Route path=':id' Component={GameInterface} />
-          </Route>
-          <Route path='/tweet'>
-            <Route path=':id' Component={TweetPage} />
-          </Route>
-          <Route path='/timeline'>
-            <Route path=':id' Component={Profile2} />
-          </Route>
-          <Route path='/login' Component={Login} />
-          <Route path='/' Component={Welcome} />
 
 
-          {/* <Route path='/login' Component={Signin}/> */}
-        </Routes>
+      <Routes>
 
-      
+      <Route path='/chat' Component={MessagesPage} />
+        <Route path='/premium' Component={Premium} />
+        <Route path='/welcome' Component={Mapscreen} />
+        <Route path='/newgame' Component={New} />
+        <Route path='/game'>
+          <Route path=':id' Component={GameInterface} />
+        </Route>
+        <Route path='/tweet'>
+          <Route path=':id' Component={TweetPage} />
+        </Route>
+        <Route path='/timeline'>
+          <Route path=':id' Component={Profile2} />
+        </Route>
+        <Route path='/login' Component={Login} />
+        <Route path='/' Component={Welcome} />
+
+
+        {/* <Route path='/login' Component={Signin}/> */}
+      </Routes>
+
+
     </BrowserRouter>
 
   )

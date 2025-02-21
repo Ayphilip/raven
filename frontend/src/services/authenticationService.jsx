@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const storedUser = Cookies.get("userDetails");
-        console.log(storedUser)
+        // console.log(storedUser)
         if (storedUser) {
             setUser(JSON.parse(storedUser));
             setAuthenticated(true);
