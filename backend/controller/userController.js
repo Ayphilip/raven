@@ -12,7 +12,7 @@ export const checkUser = async (req, res) => {
         } else {
             const userData = {
                 userId, username, name, privyId, mode, cover, profilePicture, bio,
-                followers: [], following: [], bookmark: [], createdAt: serverTimestamp()
+                followers: [], following: [], bookmark: [], verified: false, createdAt: serverTimestamp()
             };
             await setDoc(userRef, userData);
             const newSnapshot = await getDoc(userRef);

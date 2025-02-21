@@ -5,6 +5,7 @@ import { Server } from "socket.io";
 import userRoutes from "./routes/users.js";
 import tweetRoutes from "./routes/tweets.js";
 import nftRoutes from "./routes/nfts.js";
+import tokenRoutes from "./routes/tokens.js"
 import chatRoutes from "./routes/chat.js";
 import { fileURLToPath } from "url";
 import { exec } from "child_process";
@@ -29,6 +30,7 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/tweets", tweetRoutes);
 app.use("/api/nfts", nftRoutes);
+app.use("/api/tokens", tokenRoutes);
 app.use("/api/chats", chatRoutes);
 
 // Store Active Users
