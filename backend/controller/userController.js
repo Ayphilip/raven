@@ -11,7 +11,7 @@ export const checkUser = async (req, res) => {
             return res.status(200).json(snapshot.data());
         } else {
             const userData = {
-                userId, username, name, privyId, mode, cover, profilePicture, bio,
+                userId, username, name, privyId, mode, cover, profilePicture, bio, notificationList: [],
                 followers: [], following: [], bookmark: [], verified: false, createdAt: serverTimestamp()
             };
             await setDoc(userRef, userData);
@@ -84,6 +84,30 @@ export const addFollower = async (req, res) => {
         await updateDoc(userRef, { followers: arrayUnion(user2Id) });
         await updateDoc(userRef2, { following: arrayUnion(userId) });
 
+        return res.status(200).json({ message: "Follower added successfully" });
+    } catch (error) {
+        console.error("Error adding follower:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+export const addNotifier = async (req, res) => {
+    try {
+        const { userId, user2Id } = req.body;
+        const userRef = doc(db, "users", userId);
+        const tweetSnapshot = await getDoc(userRef);
+
+        if (!tweetSnapshot.exists()) {
+            return res.status(404).json({ error: "Tweet not found" });
+        }
+
+        const tweetData = tweetSnapshot.data();
+
+        if (tweetData?.notificationList?.includes(user2Id)) {
+            await updateDoc(userRef, { notificationList: arrayRemove(user2Id) });
+        } else {
+            await updateDoc(userRef, { notificationList: arrayUnion(user2Id) });
+        }
         return res.status(200).json({ message: "Follower added successfully" });
     } catch (error) {
         console.error("Error adding follower:", error);

@@ -19,10 +19,10 @@ import { useChats } from '../context/chatContext'
 
 function Profile2() {
     const { ready, login, logout, authenticated, user } = usePrivy();
-    const { userDetails, initiateLoginUser, userlogoutService, loading } = useLoginService();
+    const { userDetails, initiateLoginUser, userlogoutService } = useLoginService();
 
     const { tweets, likeTweet, retweetTweet, addTweet } = useTweets();
-    const { users, addUser, modifyUser, addFollow, removeFollow, fetchUser } = useUsers();
+    const { users, addUser, modifyUser, addFollow, removeFollow, fetchUser, addNotifier, loading } = useUsers();
 
     const { allChats, initializeChat } = useChats();
 
@@ -61,7 +61,7 @@ function Profile2() {
     useEffect(() => {
 
         const getTweet = async () => {
-            console.log(params.id)
+            // console.log(params.id)
             try {
                 const fetchedTweet = await fetchUser(params.id); // Wait for the promise to resolve
                 // console.log(fetchedTweet)
@@ -81,7 +81,7 @@ function Profile2() {
         return () => {
 
         }
-    }, [params.id, stat])
+    }, [params.id, stat, loading])
 
     return (userInfo && <div>
         <div>
@@ -136,8 +136,24 @@ function Profile2() {
                                                 {/* <button type="button" class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white shadow p-1.5 rounded-full sm:flex hidden"> <ion-icon name="camera" class="text-2xl md hydrated" role="img" aria-label="camera"></ion-icon></button> */}
 
                                             </div>
-                                            <div style={{ flexDirection: 'row', display: 'flex'}}>
-                                                {userDetails?.username !== userInfo.username && <button onClick={()=>initializeChat(userDetails?.username, userInfo.username)}><i className='mdi mdi-chat p-10'></i></button>}
+                                            <div style={{ flexDirection: 'row', display: 'flex', rowGap: '10px', columnGap: '10px' }}>
+
+                                                {userDetails?.username !== userInfo.username &&
+                                                    userInfo?.notificationList?.includes(userDetails?.username) ?
+                                                    <button onClick={() => addNotifier(userInfo.username, userDetails?.username,)} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
+                                                        <ion-icon name="notifications" class='text-xl'></ion-icon>
+                                                    </button>
+                                                    :
+                                                    <button onClick={() => addNotifier(userInfo.username, userDetails?.username,)} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
+                                                        <ion-icon name="notifications-outline" class='text-xl'></ion-icon>
+                                                    </button>
+                                                }
+
+                                                {userDetails?.username !== userInfo.username &&
+                                                    <button onClick={() => initializeChat(userDetails?.username, userInfo.username)} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
+                                                        <ion-icon name="mail-outline" class='text-xl'></ion-icon>
+                                                    </button>
+                                                }
 
                                                 {userInfo.userId === userDetails.userId ? <button class="button bg-black dark:bg-secondery dark:bg-dark2 flex items-center gap-2 text-white py-2 px-3.5 max-md:flex-1">
                                                     <ion-icon name="add-circle" class="text-xl"></ion-icon>

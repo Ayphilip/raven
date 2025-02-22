@@ -25,8 +25,10 @@ const renderContentWithMentions = (text, users, me) => {
                     >
                         {user.name} {/* ✅ Show only name */}
                     </span>
-                    <Tooltip id={`mention-${userId}`} place="top" className="" delayHide={300} clickable>
-                        <div className="p-3 w-80 bg-white dark:bg-dark2 shadow-lg rounded-xl xl:space-y-6 space-y-3">
+                    <div class="p-4 bg-white rounded-lg shadow-md w-80 dark:bg-slate-700 z-[100]"
+                        uk-drop="offset:10;pos: bottom-right ; animation: uk-animation-slide-bottom-small">
+
+                        <div className="bg-white dark:bg-dark3 xl:space-y-6 space-y-3">
                             <div style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row' }}>
                                 <img src={user?.profilePicture ? avatars[parseInt(user.profilePicture)] : avatars[0]} alt="" class="w-10 h-10 rounded-full shadow" />
                                 {user.followers.includes(me.username) ? <button class="button bg-secondery flex items-center gap-2 text-white py-2 px-1.5 max-sm:flex-1">
@@ -49,8 +51,12 @@ const renderContentWithMentions = (text, users, me) => {
                             <p>
                                 Followed by {(() => {
                                     const filteredUsers = users.filter(use =>
-                                        me.following.includes(use.id) && user.followers.includes(use.id)
+                                        me?.following?.includes(use.id) && user.followers.includes(use.id)
                                     );
+
+                                    if(!filteredUsers.length > 0){
+                                        return 'No one you follow'
+                                    }
 
                                     const firstFour = filteredUsers.slice(0, 4).map(use => use.name);
                                     const remainingCount = filteredUsers.length - 4;
@@ -65,7 +71,7 @@ const renderContentWithMentions = (text, users, me) => {
                                 <span class="text-sm"> View Profile  </span>
                             </button>
                         </div>
-                    </Tooltip>
+                    </div>
                 </span>
             );
         }

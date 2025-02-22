@@ -71,12 +71,12 @@ function Sid2bar() {
         }
     }, [ready])
     return (
-        <div class="flex-1">
+        <div class="2xl:w-[380px] lg:w-[330px] w-full">
 
             <div class="lg:space-y-4 lg:pb-8 max-lg:grid sm:grid-cols-2 max-lg:gap-6"
                 uk-sticky="media: 1024; end: #js-oversized; offset: 80">
 
-                <div id="search--box" class="xl:w-auto sm:w-96 sm:relative rounded-xl overflow-hidden z-20 bg-secondery max-md:hidden w-screen left-0 max-sm:fixed max-sm:top-2 dark:!bg-white/5">
+                <div id="search--box" class="xl:w-auto sm:w-96 sm:relative rounded-xl overflow-hidden bg-secondery max-md:hidden w-screen left-0 max-sm:fixed max-sm:top-2 dark:!bg-white/5">
                     <ion-icon name="search" class="absolute left-4 top-1/2 -translate-y-1/2"></ion-icon>
                     <input type="text" placeholder="Search Friends, videos .." class="w-full !pl-10 !font-normal !bg-transparent h-12 !text-sm" />
                 </div>

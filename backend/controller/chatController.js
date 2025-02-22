@@ -108,15 +108,17 @@ export const markMessagesAsSeen = async (req, res) => {
         const chatId = userId < receiverId ? `${userId}_${receiverId}` : `${receiverId}_${userId}`;
         const chatRef = doc(db, "chats", chatId);
         const chatSnap = await getDoc(chatRef);
+        // console.log('Here')
 
         if (!chatSnap.exists()) {
             return res.status(200).json({ message: "No messages found" });
         }
 
         let messages = chatSnap.data().messages || [];
+        // console.log(messages)
 
         let updatedMessages = messages.map(msg =>
-            msg.receiverId === userId && msg.status === "delivered" ? { ...msg, status: "seen" } : msg
+            msg.receiverId === userId && msg.status === "sent" ? { ...msg, status: "seen" } : msg
         );
 
         await updateDoc(chatRef, { messages: updatedMessages });

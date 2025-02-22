@@ -7,6 +7,7 @@ import tweetRoutes from "./routes/tweets.js";
 import nftRoutes from "./routes/nfts.js";
 import tokenRoutes from "./routes/tokens.js"
 import chatRoutes from "./routes/chat.js";
+import notifyRoutes from "./routes/notifications.js";
 import { fileURLToPath } from "url";
 import { exec } from "child_process";
 import path from "path";
@@ -36,6 +37,7 @@ app.use("/api/tweets", tweetRoutes);
 app.use("/api/nfts", nftRoutes);
 app.use("/api/tokens", tokenRoutes);
 app.use("/api/chats", chatRoutes);
+app.use("/api/notifications", notifyRoutes);
 
 // Store Active Users
 const activeUsers = new Map(); // { userId: socketId }

@@ -9,6 +9,7 @@ export const OtherProvider = ({ children }) => {
     const [nft, setNft] = useState([])
     const [ptoken, setptoken] = useState('RTT')
     const [tokenBal, setTokenBal] = useState(0)
+    const [notification, setNotifivcations] = useState([])
     const [loadingOthers, setLoading] = useState(false);
 
 
@@ -26,8 +27,11 @@ export const OtherProvider = ({ children }) => {
                 const data = JSON.parse(storedUser);
                 const response = await axios.get(`/api/tokens/balance/${data?.username}/${storedTkn ? storedTkn : ptoken}`);
                 var number = response.data;
-                console.log(number)
-                if(storedTkn) setptoken(storedTkn);
+                const responseNot = await axios.get(`/api/notifications/${data?.username}`)
+                const notificationData = responseNot.data
+                console.log(notificationData)
+                setNotifivcations(notificationData.notifications)
+                if (storedTkn) setptoken(storedTkn);
                 setTokenBal(number.balance);
             }
 
@@ -57,7 +61,7 @@ export const OtherProvider = ({ children }) => {
                 symbol: data.symbol
             }
             const repon = await axios.post("/api/tokens/transfer", transData);
-            const {success} = repon.data
+            const { success } = repon.data
             fetchOthers()
 
             // console.log(allOthers)
@@ -84,51 +88,33 @@ export const OtherProvider = ({ children }) => {
         }
     };
 
-    const likeOther = async (OtherId, userId) => {
+    const createNotification = async (message, type, userId) => {
         try {
             // fetchOthers();
-            setOthers(prevOthers =>
-                prevOthers.map(Other =>
-                    Other.OtherId === OtherId
-                        ? {
-                            ...Other,
-                            likes: Other.likes.includes(userId)
-                                ? Other.likes.filter(id => id !== userId) // Unlike
-                                : [...Other.likes, userId] // Like
-                        }
-                        : Other
-                )
-            );
-            const response = await axios.post("/api/Others/like", { OtherId, userId })
+            //type 0 = tweet information
+            //type 1 = message information
+
+            const response = await axios.post("/api/notifications/send", { message, type, userId })
 
         } catch (error) {
             console.error("Error liking Other:", error);
         }
     };
 
-    const reOtherOther = async (OtherId, userId) => {
+    const markNotification = async (userId) => {
         try {
-            const response = await axios.post("/api/Others/reOther", { OtherId, userId })
+            const response = await axios.patch("/api/notifications/read", { userId })
+            fetchOthers()
 
-            setOthers(prevOthers =>
-                prevOthers.map(Other =>
-                    Other.OtherId === OtherId
-                        ? {
-                            ...Other,
-                            reOthers: Other.reOthers.includes(userId)
-                                ? Other.reOthers.filter(id => id !== userId) // Unlike
-                                : [...Other.reOthers, userId] // Like
-                        }
-                        : Other
-                )
-            );
+
         } catch (error) {
             console.error("Error reOthering:", error);
         }
     };
 
     return (
-        <OtherContext.Provider value={{ token, nft, ptoken, tokenBal, loadingOthers, makeTransfer, mintToken, fetchOthers, reOtherOther }}>
+        <OtherContext.Provider value={{ token, nft, ptoken, tokenBal, loadingOthers, notification, makeTransfer, 
+        mintToken, fetchOthers, createNotification, markNotification }}>
             {children}
         </OtherContext.Provider>
     );

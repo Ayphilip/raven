@@ -1,11 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
+import { useOthers } from "./otherContext";
+import { useUsers } from "./userContext";
 
 const TweetContext = createContext();
 
 export const TweetProvider = ({ children }) => {
     const [tweets, setTweets] = useState([]);
     const [loading, setLoading] = useState(false);
+    const { createNotification } = useOthers()
+    const { fetchUser } = useUsers()
 
 
     useEffect(() => {
@@ -42,16 +46,24 @@ export const TweetProvider = ({ children }) => {
 
     const addTweet = async (data) => {
         try {
-            console.log(data)
+            // console.log(data)
             const response = await axios.post("/api/tweets", {
                 userId: data.userId,
                 content: data.content,
                 media: data.media,
                 parent: data.parent,
                 visibility: data.visibility,
-                mentions: data.mentionedUserIds
+                mentions: data.mentions,
+                type: data.type
             })
+            // const user = await fetchUser(data.userId);
+
+            // mentions.forEach(element => {
+            // await createNotification()
+            // });
+
             fetchTweets();
+
         } catch (error) {
             console.error("Error creating tweet:", error);
         }

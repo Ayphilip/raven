@@ -50,10 +50,21 @@ function MessagesPage() {
         navigate('/login')
     }
 
+    const sortMessagesByLatest = (chatArray) => {
+        return chatArray.sort((a, b) => {
+            // Get the latest message timestamp from each chat object
+            const latestMessageA = a.messages[a.messages.length - 1]?.timestamp.seconds || 0;
+            const latestMessageB = b.messages[b.messages.length - 1]?.timestamp.seconds || 0;
+
+            // Sort in descending order (latest first)
+            return latestMessageB - latestMessageA;
+        });
+    };
+
 
     useEffect(() => {
 
-        console.log(allChats)
+        // console.log(allChats)
 
         socket.on("newMessage", (message) => {
             setMessages((prev) => [...prev, message]);
@@ -67,7 +78,7 @@ function MessagesPage() {
     }, [])
     return (
         <div id='wrapper'>
-            <Sidbar />
+            <Sidbar ps={2}/>
 
             <main id="site__main" class="2xl:ml-[--w-side]  xl:ml-[--w-side-sm] p-2.5 h-[calc(100vh-var(--m-top))] mt-[--m-top]">
 
@@ -127,23 +138,23 @@ function MessagesPage() {
 
                                 <div class="space-y-2 p-2 overflow-y-auto md:h-[calc(100vh-204px)] h-[calc(100vh-130px)]">
 
-                                    {allChats.map(chat => {
+                                    {sortMessagesByLatest(allChats).map(chat => {
                                         const parts = chat.id?.split("_") || [];
                                         const otherId = parts.find((part) => part !== userDetails?.username)
                                         return users.filter(use => use.username === otherId).map(use => <a onClick={() => setSelectedUser(use.username)} key={chat.id} class="relative flex items-center gap-4 p-2 duration-200 rounded-xl hover:bg-secondery" >
                                             <div class="relative w-14 h-14 shrink-0">
                                                 <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="object-cover w-full h-full rounded-full" />
 
-                                                <div class="w-4 h-4 absolute bottom-0 right-0  bg-green-500 rounded-full border border-white dark:border-slate-800"></div>
+                                                {chat.messages.some(mess => mess.receiverId === userDetails?.username && mess.status === 'sent') && <div class="w-4 h-4 absolute bottom-0 right-0  bg-green-500 rounded-full border border-white dark:border-slate-800"></div>}
                                             </div>
                                             <div class="flex-1 min-w-0">
                                                 <div class="flex items-center gap-2 mb-1.5">
                                                     <div class="mr-auto text-sm text-black dark:text-white font-medium">{use.name}</div>
-                                                    {chat.messages.length >0 && <div class="text-xs font-light text-gray-500 dark:text-white/70">{formatTimestamp(chat.messages[chat.messages.length - 1].timestamp)}</div>}
+                                                    {chat.messages.length > 0 && <div class="text-xs font-light text-gray-500 dark:text-white/70">{formatTimestamp(chat.messages[chat.messages.length - 1].timestamp)}</div>}
                                                 </div>
                                                 {chat?.messages.length > 0 && <div class="font-medium overflow-hidden text-ellipsis text-sm whitespace-nowrap">
 
-                                                    {CryptoJS.AES.decrypt(chat.messages[chat.messages.length - 1].message, "ravenTestToken").toString(CryptoJS.enc.Utf8)}
+                                                   {chat.messages[chat.messages.length - 1].senderId === userDetails?.username && 'Me:'} {CryptoJS.AES.decrypt(chat.messages[chat.messages.length - 1].message, "ravenTestToken").toString(CryptoJS.enc.Utf8)}
                                                 </div>}
                                             </div>
                                         </a>)

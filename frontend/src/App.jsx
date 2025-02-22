@@ -16,6 +16,9 @@ import TweetPage from './Pages/TweetPage'
 import Profile2 from './Pages/Profile2'
 import Premium from './Pages/Premium'
 import MessagesPage from './Pages/MessagesPage'
+import Logo from './asset/images/logo.png'
+import NotificationPage from './Pages/NotificationPage'
+import Hunt from './Pages/Hunt'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -23,15 +26,63 @@ function App() {
   const { ready } = usePrivy()
 
   if (!ready) {
-    return <div>
+    return <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        backgroundColor: "rgba(0, 0, 0, 0.0)", // Transparent background
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 9999, // Ensures it's above everything
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column", // Stack image & loader vertically
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "15px", // Spacing between image and loader
+        }}
+      >
+        {/* Centered Image */}
+        <img
+          src={Logo}
+          alt="Loading"
+          style={{
+            width: "150px", // Adjust size as needed
+            height: "auto",
+            borderRadius: "12px",
+            boxShadow: "0px 4px 10px rgba(255, 255, 255, 0.2)", // Soft glow effect
+          }}
+        />
 
-      <div style={{ position: 'fixed', width: 100 + '%', height: 100 + '%' }}>
+        {/* Loader (Spinner) */}
+        <div
+          style={{
+            width: "40px",
+            height: "40px",
+            border: "4px solid rgba(255, 255, 255, 0.3)",
+            borderTop: "4px solid #3396FF",
+            borderRadius: "50%",
+            animation: "spin 1s linear infinite",
+          }}
+        ></div>
       </div>
 
-      <video style={{ width: 100 + 'vw', height: 100 + 'vh', zIndex: -1 }} autoPlay loop muted>
-        <source src={Vids} type="video/mp4" />
-
-      </video>
+      {/* CSS Animation for Loader */}
+      <style>
+        {`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}
+      </style>
     </div>
   }
 
@@ -45,8 +96,10 @@ function App() {
 
       <Routes>
 
-      <Route path='/chat' Component={MessagesPage} />
+        <Route path='/chat' Component={MessagesPage} />
         <Route path='/premium' Component={Premium} />
+        <Route path='/ravenhunt' Component={Hunt} />
+        <Route path='/notifications' Component={NotificationPage}/>
         <Route path='/welcome' Component={Mapscreen} />
         <Route path='/newgame' Component={New} />
         <Route path='/game'>

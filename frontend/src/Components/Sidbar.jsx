@@ -16,13 +16,16 @@ import fly10 from "../asset/icons/switch.png"
 import Logo from '../asset/images/logo.png'
 import { useOthers } from '../context/otherContext';
 import Cookies from 'js-cookie'
+import { useChats } from '../context/chatContext';
 
 
-function Sidbar() {
+function Sidbar({ps}) {
     const { ready, login, logout, authenticated, user } = usePrivy();
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate } = useLoginService();
-    const {tokenBal, token, ptoken } = useOthers();
+    const { tokenBal, token, ptoken, notification } = useOthers();
     const [tkn, setTkn] = useState(ptoken)
+
+    const { chats, allChats, fetchMessages } = useChats();
 
     const navigate = useNavigate();
 
@@ -47,46 +50,57 @@ function Sidbar() {
                         <nav id="side" style={{ position: 'relative', height: '80vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
 
                             <ul>
-                                <li class="active">
-                                    <a href="/">
-                                        <img src={fly1} alt="feeds" class="w-6" />
+                                <li class={ps==1 && "active"}>
+                                    <a href="/" className='text-xl'>
+                                        {/* <img src={fly1} alt="feeds" class="w-6" /> */}
+                                        <ion-icon name="home-outline"></ion-icon>
                                         <span> Feed </span>
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="/chat">
-                                        <img src={fly2} alt="messages" class="w-5" />
+                                <li class={ps==2 && "active"}>
+                                    <a href="/chat" className='text-xl'>
+                                        <ion-icon name="mail-outline"></ion-icon>
                                         <span> messages </span>
+                                        {allChats.filter(chat =>
+                                            chat.messages.some(message => message.receiverId === userDetails?.username && message.status === 'sent')
+                                        ).length > 0 && <span style={{ background: '#3396FF' }} className='p-1 rounded-full border border-white dark:border-slate-800'>{allChats.filter(chat =>
+                                            chat.messages.some(message => message.receiverId === userDetails?.username && message.status === 'sent')
+                                        ).length}</span>}
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="event.html">
-                                        <img src={fly4} alt="messages" class="w-6" />
+                                <li class={ps==3 && "active"}>
+                                    <a href="/notifications" className='text-xl'>
+                                        <ion-icon name="notifications-outline"></ion-icon>
                                         <span> Notification </span>
+                                        {notification.filter(chat => !chat.isRead).length > 0 && (
+                                            <span style={{ background: '#3396FF' }} className='p-1 rounded-full border border-white dark:border-slate-800'>
+                                                {notification.filter(chat => !chat.isRead).length}
+                                            </span>
+                                        )}
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="/premium">
-                                        <img src={fly3} alt="premium" class="w-6" />
+                                <li class={ps==4 && "active"}>
+                                    <a href="/premium" className='text-xl'>
+                                        <ion-icon name="checkmark-done-circle-outline"></ion-icon>
                                         <span> Premium </span>
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="pages.html">
-                                        <img src={fly5} alt="pages" class="w-6" />
+                                <li class={ps==5 && "active"}>
+                                    <a href="pages.html" className='text-xl'>
+                                        <ion-icon name="grid-outline"></ion-icon>
                                         <span> Pages </span>
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="groups.html">
-                                        <img src={fly6} alt="groups" class="w-6" />
-                                        <span> Groups </span>
+                                <li class={ps==6 && "active"}>
+                                    <a href="/ravenhunt" className='text-xl'>
+                                        <ion-icon name="flame-outline"></ion-icon>
+                                        <span> Treasure Hunt </span>
                                     </a>
                                 </li>
 
                                 <li>
-                                    <a onClick={logoutUser}>
-                                        <img src={fly10} alt="blog" class="w-6" />
+                                    <a onClick={logoutUser} className='text-xl'>
+                                        <ion-icon name="exit-outline"></ion-icon>
                                         <span> Logout </span>
                                     </a>
                                 </li>
@@ -131,7 +145,7 @@ function Sidbar() {
                                 <div class="p-1 py-2 flex items-center gap-4">
                                     <img src={userDetails?.profilePicture ? avatars[parseInt(userDetails.profilePicture)] : avatars[0]} alt="" class="w-15 h-10 rounded-full shadow" />
                                     <div class="flex-1">
-                                        <h6 class="text-sm font-small text-black">{userDetails.name}</h6>
+                                        <h6 class="text-sm font-small text-black">{userDetails.name} {userDetails?.verified && <ion-icon name="shield-checkmark-outline" class="text-blue-500 font-medium text-xl"></ion-icon>}</h6>
                                         <div class="text-sm mt-1 text-blue-600 font-light dark:text-white/70">{userDetails.username.slice(0, 6)}...
                                             {userDetails.username.slice(-4)}</div>
                                         <div class="text-sm mt-1 text-blue-600 font-light dark:text-white/70">{tokenBal} {ptoken}</div>

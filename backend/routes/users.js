@@ -6,7 +6,8 @@ import {
   updateUser,
   addFollower,
   removeFollower,
-  handleBookmark
+  handleBookmark,
+  addNotifier
 } from "../controller/userController.js";
 
 const router = express.Router();
@@ -27,7 +28,7 @@ router.get("/:username", async (req, res) => {
   try {
     // console.log(req.params)
     const user = await getUser(req, res);
-    
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -37,7 +38,7 @@ router.get("/:username", async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const users = await getAllUsers(req, res);
-    
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -58,7 +59,7 @@ router.post("/follow", async (req, res) => {
   try {
     const { userId, user2Id } = req.body;
     const success = await addFollower(req, res);
-    
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -69,7 +70,16 @@ router.post("/unfollow", async (req, res) => {
   try {
     const { userId, user2Id } = req.body;
     const success = await removeFollower(req, res);
-    
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/addnotifier", async (req, res) => {
+  try {
+    await addNotifier(req, res);
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

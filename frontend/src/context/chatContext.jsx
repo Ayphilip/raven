@@ -23,11 +23,22 @@ export const ChatProvider = ({ children }) => {
         }
     }, []);
 
+    const markMessages = async (userId, receiverId) => {
+        try {
+            console.log('Here')
+            await axios.post(`/api/chats/seen/${userId}/${receiverId}`);
+            // setAllChats(response.data);
+            fetchAllChats(user.username)
+        } catch (error) {
+            console.error('Error fetching all chats:', error);
+        }
+    }
+
     // Fetch all user chats
     const fetchAllChats = async (userId) => {
         try {
 
-            
+
             const response = await axios.get(`/api/chats/${userId}`);
             setAllChats(response.data);
         } catch (error) {
@@ -52,7 +63,7 @@ export const ChatProvider = ({ children }) => {
         const chatRef = doc(db, 'chats', chatId);
 
         try {
-            
+
             const chatSnap = await getDoc(chatRef);
             if (chatSnap.exists()) {
                 // console.log('here')
@@ -96,7 +107,7 @@ export const ChatProvider = ({ children }) => {
     };
 
     return (
-        <ChatContext.Provider value={{ allChats, chats, fetchMessages, initializeChat, sendMessage, setSelectedChat }}>
+        <ChatContext.Provider value={{ allChats, chats, markMessages, fetchMessages, initializeChat, sendMessage, setSelectedChat }}>
             {children}
         </ChatContext.Provider>
     );

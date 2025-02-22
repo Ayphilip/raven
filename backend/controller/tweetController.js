@@ -13,6 +13,7 @@ import {
     arrayRemove,
     arrayUnion,
     serverTimestamp,
+    Timestamp,
 } from "../config/firebaseConfig.js";
 
 const genId = async () => {
@@ -22,30 +23,90 @@ const genId = async () => {
 export const createTweet = async (req, res) => {
     try {
         const initId = await genId();
-        const { userId, content, media, mentions, parent, visibility } = req.body;
+        const { userId, content, media, mentions, parent, visibility, type } = req.body;
         const tweetRef = doc(db, "tweets", initId);
+
+        if ((type == 1 || type === 2) && parent) {
+            const tweetRefOriginal = doc(db, "tweets", parent);
+            const tweetSnapshot = await getDoc(tweetRefOriginal);
+
+            if (!tweetSnapshot.exists()) {
+                return res.status(404).json({ error: "Tweet not found" });
+            }
+
+            if (type == 1) {
+                await updateDoc(tweetRefOriginal, { comments: arrayUnion(initId) });
+            } else {
+                await updateDoc(tweetRefOriginal, { retweets: arrayUnion(initId) });
+            }
+        }
+        
         const tweetData = {
             tweetId: initId,
             userId: userId,
             content: content || '',
-            media: media || [], // Ensure media is an array
+            media: media || [],
             likes: [],
             retweets: [],
             comments: [],
             bookmarks: [],
-            mentions: mentions || [],
-            parent: parent || 'original', // Ensure parent is explicitly set
+            type: type,
+            mentions: Array.isArray(mentions) ? mentions : [],
+            parent: parent || 'original',
             visibility: visibility,
             createdAt: serverTimestamp(),
         };
-        console.log(tweetData)
+
         await setDoc(tweetRef, tweetData);
+
+        // Fetch user data to get notification list
+        const userRef = doc(db, "users", userId);
+        const userSnapshot = await getDoc(userRef);
+        let notificationList = Array.isArray(mentions) ? mentions : [];
+
+        if (userSnapshot.exists()) {
+            const userData = userSnapshot.data();
+            if (Array.isArray(userData.notificationList)) {
+                notificationList = [...new Set([...userData.notificationList, ...notificationList])]; // Merge & remove duplicates
+            }
+        }
+
+        // Send notification to each user in the list
+        await Promise.all(notificationList.map(async (notifUserId) => {
+            await sendNotification(notifUserId, initId, 0);
+        }));
+
         return res.status(201).json({ message: "Tweet created successfully" });
     } catch (error) {
         console.error("Error creating tweet:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
+const sendNotification = async (userId, message, type) => {
+    try {
+        const initId = await genId();
+        const notificationData = {
+            id: initId,
+            message,
+            type,
+            isRead: false,
+            timestamp: Timestamp.now()
+        };
+
+        const userNotifRef = doc(db, "notifications", userId);
+        const userNotifDoc = await getDoc(userNotifRef);
+
+        if (!userNotifDoc.exists()) {
+            await setDoc(userNotifRef, { userId, notifications: [notificationData] });
+        } else {
+            await updateDoc(userNotifRef, { notifications: arrayUnion(notificationData) });
+        }
+    } catch (error) {
+        console.error("Error sending notification:", error);
+    }
+};
+
 
 // Get a single Tweet
 export const getTweet = async (req, res) => {

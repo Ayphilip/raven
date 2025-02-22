@@ -49,6 +49,25 @@ export const UserProvider = ({ children }) => {
         }
     };
 
+    const addNotifier = async (userId, user2Id) => {
+        setLoading(true);
+        try {
+            const allUsers = await axios.post('/api/users/addnotifier', {
+                userId: userId,
+                user2Id: user2Id
+            })
+            // const allUsers = await addFollower(userId, user2Id);
+            // setUsers(allUsers);
+            
+            return allUsers.data;
+        } catch (error) {
+            console.error("Error fetching users:", error);
+            return false
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const removeFollow = async (userId, user2Id) => {
         setLoading(true);
         try {
@@ -134,7 +153,7 @@ export const UserProvider = ({ children }) => {
     
 
     return (
-        <UserContext.Provider value={{ users, userList, loading, addUser, fetchUser, addFollow, removeFollow, modifyUser }}>
+        <UserContext.Provider value={{ users, userList, loading, addUser, fetchUser, addFollow, removeFollow, modifyUser, addNotifier }}>
             {children}
         </UserContext.Provider>
     );

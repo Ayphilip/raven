@@ -43,7 +43,7 @@ function RetweetView({ id, type }) {
                 {users.filter(use => use.username === tweet.userId).map(use => <>
                     <a href={"/timeline/" + use.username}> <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-9 h-9 rounded-full" /> </a>
                     <div class="flex-1">
-                        <a href={"/timeline/" + use.username}> <h4 class="text-black dark:text-white"> {userDetails.username === tweet.userId && use.name} </h4> </a>
+                        <a href={"/timeline/" + use.username}> <h4 class="text-black dark:text-white"> {use.name} </h4> </a>
                         <div class="text-xs text-gray-500 dark:text-white/80">{formatTimestamp(tweet.createdAt)}</div>
                     </div>
                 </>)}
@@ -59,7 +59,7 @@ function RetweetView({ id, type }) {
             </a>
 
 
-            <div class="grid sm:grid-cols-2 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
+            {tweet.media.length === 3 && <div class="grid sm:grid-cols-3 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
                 {tweet.media.map((med, index) => (
                     <span key={index} className="w-full">
                         <a className="inline" href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
@@ -67,7 +67,27 @@ function RetweetView({ id, type }) {
                         </a>
                     </span>
                 ))}
-            </div>
+            </div>}
+
+            {(tweet.media.length === 2 || tweet.media.length === 4) && <div class="grid sm:grid-cols-2 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
+                {tweet.media.map((med, index) => (
+                    <span key={index} className="w-full">
+                        <a className="inline" href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
+                            <MediaViewer fileUrl={med} />
+                        </a>
+                    </span>
+                ))}
+            </div>}
+
+            {tweet.media.length === 1 &&
+                <a href="#preview_modal" uk-toggle>
+                    {tweet.media.map((med, index) => (
+                        <div class="relative w-full lg:h-96 h-full sm:px-4">
+                            <MediaViewer fileUrl={med} />
+                        </div>
+                    ))}
+                </a>
+            }
 
         </div>
     )

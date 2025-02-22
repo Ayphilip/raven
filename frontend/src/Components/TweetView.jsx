@@ -10,6 +10,8 @@ import { motion } from "motion/react"
 import { Tooltip } from 'react-tooltip';
 import { renderContentWithMentions } from './CapsuleInstance';
 import { Mention, MentionsInput } from 'react-mentions';
+import CommentModal from './Modal';
+
 
 function TweetView({ tweets }) {
     const { users, userList, addUser, modifyUser } = useUsers();
@@ -20,7 +22,11 @@ function TweetView({ tweets }) {
     const [visibility, setVisible] = useState(0)
     const [media, setMedia] = useState([])
 
-    const [id, setId] = useState('')
+    const [id, setId] = useState(null)
+
+    const [type, setType] = useState(0)
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const justClick = () => {
         alert('Clicked')
@@ -102,7 +108,7 @@ function TweetView({ tweets }) {
                         <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails ? userDetails : '')}</p>
                     </div>
 
-                    <div class="grid sm:grid-cols-2 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
+                    {tweet.media.length === 3 && <div class="grid sm:grid-cols-3 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
                         {tweet.media.map((med, index) => (
                             <span key={index} className="w-full">
                                 <a className="inline" href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
@@ -110,37 +116,28 @@ function TweetView({ tweets }) {
                                 </a>
                             </span>
                         ))}
-                    </div>
+                    </div>}
 
-
-                    {/* {Array.isArray(tweet.media) && tweet.media.length > 0 && (
-                        tweet.media.length > 1 ? (
-                            <div className="relative uk-visible-toggle sm:px-4" tabIndex="-1" uk-slideshow="animation: push; ratio: 4:3">
-                                <ul className="uk-slideshow-items overflow-hidden rounded-xl" uk-lightbox="animation: fade">
-                                    {tweet.media.map((med, index) => (
-                                        <li key={index} className="w-full">
-                                            <a className="inline" href={med} data-caption={tweet.content}>
-                                                <MediaViewer fileUrl={med} />
-                                            </a>
-                                        </li>
-                                    ))}
-                                </ul>
-
-                                <a className="nav-prev left-6" href="#" uk-slideshow-item="previous">
-                                    <ion-icon name="chevron-back" className="text-2xl"></ion-icon>
+                    {(tweet.media.length === 2 || tweet.media.length === 4) && <div class="grid sm:grid-cols-2 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
+                        {tweet.media.map((med, index) => (
+                            <span key={index} className="w-full">
+                                <a className="inline" href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
+                                    <MediaViewer fileUrl={med} />
                                 </a>
-                                <a className="nav-next right-6" href="#" uk-slideshow-item="next">
-                                    <ion-icon name="chevron-forward" className="text-2xl"></ion-icon>
-                                </a>
-                            </div>
-                        ) : (
-                            <a href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
-                                <div className="relative w-full lg:h-96 h-full sm:px-4">
-                                    <MediaViewer fileUrl={tweet.media[0]} />
+                            </span>
+                        ))}
+                    </div>}
+
+                    {tweet.media.length === 1 &&
+                        <a href="#preview_modal" uk-toggle>
+                            {tweet.media.map((med, index) => (
+                                <div class="relative w-full lg:h-96 h-full sm:px-4">
+                                    <MediaViewer fileUrl={med} />
                                 </div>
-                            </a>
-                        )
-                    )} */}
+                            ))}
+                        </a>
+                    }
+
                 </a>
 
 
@@ -150,7 +147,10 @@ function TweetView({ tweets }) {
                 <div style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }} class="sm:p-4 p-2.5 flex items-center gap-4 text-xs font-semibold">
 
 
-                    <div class="flex items-center gap-3" uk-toggle="target: #create-status">
+                    <div class="flex items-center gap-3"
+                        onClick={() => { setType(1); setId(tweet) }}
+                    // uk-toggle="target: #create-status"
+                    >
                         <button type="button" class="button-icon bg-slate-200/70 dark:bg-slate-700"> <ion-icon class="text-lg" name="chatbubble-ellipses"></ion-icon> </button>
                         <motion.span
                             key={tweet.comments.length} // Key ensures animation triggers on change
@@ -164,6 +164,8 @@ function TweetView({ tweets }) {
                         </motion.span>
 
                     </div>
+
+
 
 
 
@@ -188,11 +190,19 @@ function TweetView({ tweets }) {
                                             </div>
                                         </div>}
                                 </label>
-                                <label uk-toggle="target: #create-status" onClick={() => setId(tweet.tweetId)}>
-                                    <div class=" relative flex items-center justify-between cursor-pointer rounded-md p-2 px-3 hover:bg-secondery peer-checked:[&_.active]:block dark:bg-dark3">
-                                        <div>
-                                            <ion-icon name="write"></ion-icon>
+                                <label onClick={() => { setType(2); setId(tweet) }}>
+                                    <div class="relative flex items-center justify-between cursor-pointer rounded-md p-2 px-3 hover:bg-secondery peer-checked:[&_.active]:block dark:bg-dark3">
+                                        <div style={{ flexDirection: 'row', display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+                                            <ion-icon name="create-outline"></ion-icon>
                                             <div class="text-sm"> Quote </div>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label>
+                                    <div class="relative flex items-center justify-between cursor-pointer rounded-md p-2 px-3 hover:bg-secondery peer-checked:[&_.active]:block dark:bg-dark3">
+                                        <div style={{ flexDirection: 'row', display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+                                            <ion-icon name="bar-chart-outline"></ion-icon>
+                                            <div class="text-sm">View Quote </div>
                                         </div>
                                     </div>
                                 </label>
@@ -301,7 +311,7 @@ function TweetView({ tweets }) {
             </div>
         )}
 
-        <div class="hidden lg:p-20 z-[1] uk- open" id="create-status" uk-modal="">
+        <div class="hidden lg:p-20 uk- open" id="create-status" uk-modal="">
 
             <div class="uk-modal-dialog tt relative overflow-auto mx-auto bg-white shadow-xl rounded-lg md:w-[520px] w-full dark:bg-dark2">
 
@@ -328,7 +338,7 @@ function TweetView({ tweets }) {
 
 
 
-                {id && <RetweetView id={id} />}
+
 
                 <div class="flex items-center gap-2 text-sm py-2 px-4 font-medium flex-wrap">
                     <label htmlFor="file-upload" className="flex items-center gap-1.5 bg-sky-50 text-sky-600 rounded-full py-1 px-2 border-2 border-sky-100 dark:bg-sky-950 dark:border-sky-900 cursor-pointer">
@@ -395,7 +405,7 @@ function TweetView({ tweets }) {
                                 Image
                                 
                             </label> */}
-                        <button type="" onClick={() => console.log('Here we are')} class="button bg-blue-500 text-white py-2 px-12 text-[14px]"> Create
+                        <button type="" onClick={() => alert('Here we are')} class="button bg-blue-500 z-[10] text-white py-2 px-12 text-[14px]"> Create
                         </button>
                     </div>
                 </div>
@@ -404,9 +414,151 @@ function TweetView({ tweets }) {
 
         </div>
 
+        <div class="hidden lg:p-20 p-10" id="modal" uk-modal>
+
+            <div class="uk-modal-dialog tt relative mx-auto bg-white rounded-lg shadow-xl w-[400px]">
+
+                <div class="p-6">
+                    <h2 class="text-xl font-semibold">Headline</h2>
+                </div>
+
+                <div class="p-6 py-0">
+
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing e ab  eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+                </div>
+
+                <div class="flex justify-end p-6 text-sm font-medium">
+                    <button class="px-4 py-1.5 rounded-md uk-modal-close" type="button">Cancel</button>
+                    <button class="px-5 py-1.5 bg-gray-100 rounded-md uk-modal-close" type="button">Save</button>
+                </div>
+
+
+                <button type="button" class="bg-white rounded-full p-2 absolute right-0 top-0 m-3 dark:bg-slate-600 uk-modal-close">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+            </div>
+
+        </div>
+
+        <CommentModal isOpen={id !== null} type={type} item={id} onClose={() => setId(null)} />
+
+
+
+
 
     </>
     )
 }
+
+const style = `
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  z-index: '10000',
+  align-items: center;
+  justify-content: center;
+
+  
+}
+.modal-container {
+  background: black;
+  color: white;
+  width: 500px;
+  padding: 20px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+.drafts {
+  color: #1d9bf0;
+  cursor: pointer;
+}
+.tweet-section {
+  display: flex;
+  gap: 10px;
+}
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+.user-name {
+  font-weight: bold;
+}
+.user-handle {
+  color: gray;
+  font-size: 14px;
+}
+.tweet-text {
+  margin: 5px 0;
+}
+.replying-to {
+  color: #1d9bf0;
+  font-size: 14px;
+}
+.reply-section {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.reply-input {
+  width: 100%;
+  background: black;
+  border: none;
+  color: white;
+  font-size: 16px;
+  outline: none;
+}
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.icons button {
+  background: none;
+  border: none;
+  color: #1d9bf0;
+  font-size: 18px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+.reply-btn {
+  background: #1d9bf0;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+`;
+
+// Inject styles into the document
+const styleSheet = document.createElement("style");
+styleSheet.type = "text/css";
+styleSheet.innerText = style;
+document.head.appendChild(styleSheet);
 
 export default TweetView

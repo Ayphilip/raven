@@ -4,6 +4,7 @@ import { useUsers } from '../context/userContext';
 import { avatars } from './avatars';
 import CryptoJS from 'crypto-js';
 import { useOthers } from '../context/otherContext';
+import { useChats } from '../context/chatContext';
 
 const socket = io("http://localhost:4000");
 function ChatUI({ chats, userDetails, userInfo }) {
@@ -14,6 +15,7 @@ function ChatUI({ chats, userDetails, userInfo }) {
     const [amount, setAmount] = useState(0)
 
     const { ptoken, tokenBal, makeTransfer } = useOthers()
+    const { markMessages } = useChats()
 
     const sendMessage = () => {
         var mesg = CryptoJS.AES.encrypt(newMessage, "ravenTestToken").toString()
@@ -49,9 +51,12 @@ function ChatUI({ chats, userDetails, userInfo }) {
     }
 
     useEffect(() => {
+
+        markMessages(userDetails?.username, userInfo)
+
         // console.log(chats)
         // fetchchats(userDetails?.username, selectedUser)
-    }, []);
+    }, [chats]);
 
 
 
@@ -121,15 +126,20 @@ function ChatUI({ chats, userDetails, userInfo }) {
 
                                 <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-9 h-9 rounded-full shadow" />
                             )}
+
                             <div class="px-4 py-2 rounded-[20px] max-w-sm bg-secondery">
                                 {CryptoJS.AES.decrypt(chat.message, "ravenTestToken").toString(CryptoJS.enc.Utf8)}
                             </div>
+
                         </div> :
                             <div class="flex gap-2 flex-row-reverse items-end">
 
                                 <img src={userDetails?.profilePicture ? avatars[parseInt(userDetails.profilePicture)] : avatars[0]} alt="" class="w-5 h-5 rounded-full shadow" />
-                                <div class="px-4 py-2 rounded-[20px] max-w-sm bg-gradient-to-tr from-sky-500 to-blue-500 text-white shadow">
-                                    {CryptoJS.AES.decrypt(chat.message, "ravenTestToken").toString(CryptoJS.enc.Utf8)}
+                                <div>
+                                    <div class="px-4 py-2 rounded-[20px] max-w-sm bg-gradient-to-tr from-sky-500 to-blue-500 text-white shadow">
+                                        {CryptoJS.AES.decrypt(chat.message, "ravenTestToken").toString(CryptoJS.enc.Utf8)}
+                                    </div>
+                                    <span style={{ fontSize: '10px' }}>{chat.status}</span>
                                 </div>
                             </div>
                         )}
@@ -213,7 +223,7 @@ function ChatUI({ chats, userDetails, userInfo }) {
 
                         <textarea placeholder="Write your message" value={newMessage} onChange={(e) => setNewMessage(e.target.value)} rows="1" class="w-full resize-none bg-secondery rounded-full px-4 p-2"></textarea>
 
-                        <button type="submit" disabled={newMessage ? false : true} onClick={sendMessage} class="text-white shrink-0 p-2 absolute right-0.5 top-0">
+                        <button type="submit" disabled={newMessage ? false : true} onClick={sendMessage} class="shrink-0 p-2 absolute right-0.5 top-0">
                             <ion-icon class="text-xl flex" name="send-outline"></ion-icon>
                         </button>
 
@@ -236,14 +246,14 @@ function ChatUI({ chats, userDetails, userInfo }) {
                         <div class="w-full h-1.5 bg-gradient-to-r to-purple-500 via-red-500 from-pink-500 -mt-px"></div>
 
                         <div class="py-10 text-center text-sm pt-20">
-                            
+
                             <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-24 h-24 rounded-full mx-auto mb-3" />
                             <div class="mt-8">
                                 <div class="md:text-xl text-base font-medium text-black dark:text-white"> {use.name}  </div>
                                 <div class="text-gray-500 text-sm mt-1 dark:text-white/80">{userDetails.username.slice(0, 6)}...{userDetails.username.slice(-4)}</div>
                             </div>
                             <div class="mt-5">
-                                <a href={"/timeline/"+use.username} class="inline-block rounded-full px-4 py-1.5 text-sm font-semibold bg-secondery">View profile</a>
+                                <a href={"/timeline/" + use.username} class="inline-block rounded-full px-4 py-1.5 text-sm font-semibold bg-secondery">View profile</a>
                             </div>
                         </div>
 

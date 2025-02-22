@@ -134,7 +134,7 @@ function TweetPage() {
                                     </div>
 
 
-                                    <div class="grid sm:grid-cols-2 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
+                                    {tweet.media.length === 3 && <div class="grid sm:grid-cols-3 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
                                         {tweet.media.map((med, index) => (
                                             <span key={index} className="w-full">
                                                 <a className="inline" href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
@@ -142,7 +142,27 @@ function TweetPage() {
                                                 </a>
                                             </span>
                                         ))}
-                                    </div>
+                                    </div>}
+
+                                    {(tweet.media.length === 2 || tweet.media.length === 4) && <div class="grid sm:grid-cols-2 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
+                                        {tweet.media.map((med, index) => (
+                                            <span key={index} className="w-full">
+                                                <a className="inline" href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
+                                                    <MediaViewer fileUrl={med} />
+                                                </a>
+                                            </span>
+                                        ))}
+                                    </div>}
+
+                                    {tweet.media.length === 1 &&
+                                        <a href="#preview_modal" uk-toggle>
+                                            {tweet.media.map((med, index) => (
+                                                <div class="relative w-full lg:h-96 h-full sm:px-4">
+                                                    <MediaViewer fileUrl={med} />
+                                                </div>
+                                            ))}
+                                        </a>
+                                    }
 
 
 
