@@ -22,7 +22,7 @@ function TweetPage() {
 
     // const fileInputRef = useRef(null);
 
-    
+
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate, useBookmark } = useLoginService();
 
     const navigate = useNavigate()
@@ -167,6 +167,7 @@ function TweetPage() {
 
                                         <div class="flex items-center gap-3">
                                             <button type="button" class="button-icon bg-slate-200/70 dark:bg-slate-700"> <ion-icon class="text-lg" name="chatbubble-ellipses"></ion-icon> </button>
+
                                             <motion.span
                                                 key={tweet?.comments?.length} // Key ensures animation triggers on change
                                                 initial={{ y: 5, opacity: 0 }}
@@ -293,14 +294,16 @@ function TweetPage() {
 
                                     <div class="sm:p-4 p-2.5 border-t border-gray-100 font-normal space-y-3 relative dark:border-slate-700/40">
 
-                                        {tweet?.comments?.map(comms =>
+                                        {tweets?.filter(twee => twee.parent === tweet.tweetId)?.map(comms =>
                                             users.filter(use => use.username === comms.userId).map(use =>
                                                 <>
                                                     <div class="flex items-start gap-3 relative">
                                                         <a href={"/timeline/" + use.id}> <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
                                                         <div class="flex-1">
                                                             <a href={"/timeline/" + use.id} class="text-black font-medium inline-block dark:text-white"> {use.name} </a>
-                                                            <p class="mt-0.5">{comms.comment}</p>
+
+                                                            <p class="font-normal">{renderContentWithMentions(comms.content, users, userDetails ? userDetails : '')}</p>
+
                                                         </div>
                                                     </div>
 
@@ -409,6 +412,8 @@ function TweetPage() {
                                                 </>
                                             )
                                         )}
+
+                                        
 
 
 
