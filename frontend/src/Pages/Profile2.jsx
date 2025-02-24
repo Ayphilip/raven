@@ -3,7 +3,6 @@ import Headers from '../Components/Headers'
 import Sidebar from '../Components/Sidebar'
 import Sidbar from '../Components/Sidbar'
 // import avatars from '../Components/avatars'
-import { usePrivy } from '@privy-io/react-auth'
 import { useLoginService } from '../services/authenticationService'
 import { getAllUsers } from '../services/userServices'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -18,7 +17,6 @@ import Sid2bar from '../Components/Sid2bar'
 import { useChats } from '../context/chatContext'
 
 function Profile2() {
-    const { ready, login, logout, authenticated, user } = usePrivy();
     const { userDetails, initiateLoginUser, userlogoutService } = useLoginService();
 
     const { tweets, likeTweet, retweetTweet, addTweet } = useTweets();
@@ -34,9 +32,6 @@ function Profile2() {
     // const [users, setUsers] = useState(null)
 
     const navigate = useNavigate()
-    if (ready && !authenticated || !userDetails) {
-        navigate('/login')
-    }
 
     const saveFollow = (userId, user2Id) => {
 
@@ -138,18 +133,27 @@ function Profile2() {
                                             </div>
                                             <div style={{ flexDirection: 'row', display: 'flex', rowGap: '10px', columnGap: '10px' }}>
 
-                                                {userDetails?.username !== userInfo.username &&
-                                                    userInfo?.notificationList?.includes(userDetails?.username) ?
+                                                {userDetails?.username === userInfo.username && (userDetails?.verified ?
+                                                    <button onClick={() => navigate('/premiumpage')} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
+                                                        <ion-icon name="flame-outline" class='text-xl'></ion-icon>
+                                                    </button> :
+                                                    <button onClick={() => navigate('/premium')} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
+                                                        <ion-icon name="flame-outline" class='text-xl'></ion-icon>
+                                                    </button>)
+                                                }
+
+                                                {userDetails?.username !== userInfo.username && userInfo.followers.includes(userDetails?.username) &&
+                                                    (userInfo?.notificationList?.includes(userDetails?.username) ?
                                                     <button onClick={() => addNotifier(userInfo.username, userDetails?.username,)} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
                                                         <ion-icon name="notifications" class='text-xl'></ion-icon>
                                                     </button>
                                                     :
                                                     <button onClick={() => addNotifier(userInfo.username, userDetails?.username,)} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
                                                         <ion-icon name="notifications-outline" class='text-xl'></ion-icon>
-                                                    </button>
+                                                    </button>)
                                                 }
 
-                                                {userDetails?.username !== userInfo.username &&
+                                                {userDetails?.username !== userInfo.username && userInfo.followers.includes(userDetails?.username) &&
                                                     <button onClick={() => initializeChat(userDetails?.username, userInfo.username)} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
                                                         <ion-icon name="mail-outline" class='text-xl'></ion-icon>
                                                     </button>
@@ -179,6 +183,10 @@ function Profile2() {
                                                 const filteredUsers = users.filter(user =>
                                                     userDetails.following.includes(user.id) && userInfo.followers.includes(user.id)
                                                 );
+
+                                                if(!filteredUsers.length > 0){
+                                                    return 'No one you follow'
+                                                }
 
                                                 const firstFour = filteredUsers.slice(0, 4).map(user => user.name);
                                                 const remainingCount = filteredUsers.length - 4;

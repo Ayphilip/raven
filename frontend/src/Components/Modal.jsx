@@ -6,7 +6,9 @@ import MediaViewer from './MediaViewer';
 import { avatars, view } from './avatars';
 import RetweetView from './RetweetView';
 import { useTweets } from '../context/tweetContext';
-import { renderContentWithMentions } from './CapsuleInstance';
+import { encryptText, renderContentWithMentions } from './CapsuleInstance';
+import { useOthers } from '../context/otherContext';
+import { uploadMedia } from '../services/uploadServices';
 
 export default function CommentModal({ isOpen, onClose, type, item }) {
     const { userList, users } = useUsers()
@@ -101,8 +103,8 @@ export default function CommentModal({ isOpen, onClose, type, item }) {
                                 <div style={{ flexDirection: 'column', display: 'flex' }}>
 
                                     <div style={{ flexDirection: 'column', display: 'flex' }}>
-                                        <strong>{use.name}<span 
-                                        class='text-xs font-medium gap-2 gap-y-0.5 p-2 mt-2'
+                                        <strong>{use.name}<span
+                                            class='text-xs font-medium gap-2 gap-y-0.5 p-2 mt-2'
                                         >@{userDetails.username.slice(0, 6)}...{userDetails.username.slice(-4)}</span></strong>
                                         <p class="font-normal">{renderContentWithMentions(item.content, users, userDetails ? userDetails : '')}</p>
                                     </div>
@@ -229,3 +231,127 @@ export default function CommentModal({ isOpen, onClose, type, item }) {
 
     );
 }
+
+export const QuestFormModal = ({ isOpen, onClose, onSubmit }) => {
+    const [formData, setFormData] = useState({
+        questTitle: "",
+        description: "",
+        reward: "",
+        rewardType: "",
+        rewardToken: "",
+        questContent: "",
+        questFace: "",
+        entryAmount: "",
+        answer: "",
+        startDate: "",
+        endDate: "",
+    });
+
+    const [file, setFile] = useState(null);
+
+    const { token, tokenBal, ptoken, makeTransfer } = useOthers()
+    const { userDetails } = useLoginService()
+    const [loadingSavingQuest, setLoadingState] = useState(false)
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    const handleFileChange = (e) => {
+        setFile(e.target.files[0]);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoadingState(true)
+        const data = {
+            from: userDetails?.username,
+            amount: 100,
+            to: '',
+            symbol: ptoken
+        }
+        const response = makeTransfer(data)
+        if (response) {
+            // alert('Successfull')
+
+
+            let fileURL = "";
+
+            if (file) {
+                // fileURL = URL.createObjectURL(file); // Replace with actual upload logic (e.g., Firebase Storage)
+
+                fileURL = await uploadMedia(file)
+            }
+
+            var questAns = encryptText(formData.answer);
+
+            onSubmit({
+                ...formData,
+                answer: questAns,
+                questFace: fileURL,
+                participants: [],
+                questInstruction: '',
+                clues: [],
+                status: "active",
+                winner: null,
+                creator: userDetails?.username
+            });
+            onClose();
+        }
+        setLoadingState(false)
+    };
+
+    if (!isOpen) return null;
+
+    return (
+        <div className=" uk-modal lg:p-20 z-[1] uk-open">
+            <div class="uk-modal-dialog tt relative overflow-auto mx-auto bg-white shadow-xl rounded-lg md:w-[520px] w-full dark:bg-dark1">
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    alignContent: 'end',
+                    alignItems: 'end',
+                    alignSelf: 'end'
+                }}
+                >
+                    {/* <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"> */}
+                    <div className="p-10 rounded-2xl shadow-2xl w-full max-w-6xl">
+                        <h2 className="text-4xl font-bold mb-8 text-center text-gray-800">Create Quest</h2>
+                        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
+                            <input type="text" name="questTitle" placeholder="Quest Title" className="w-full p-4 border border-gray-300 rounded-lg col-span-2" onChange={handleChange} required />
+                            <textarea name="description" placeholder="Description" className="w-full p-4 border border-gray-300 rounded-lg col-span-2" onChange={handleChange} required />
+                            <textarea name="questContent" placeholder="Quest Content" className="w-full p-4 border border-gray-300 rounded-lg col-span-2" onChange={handleChange} required />
+                            <input type="text" name="answer" placeholder="Correct Answer" className="w-full p-4 border border-gray-300 rounded-lg col-span-2" onChange={handleChange} required />
+                            <input type="file" name="questFace" className="w-full p-4 border border-gray-300 rounded-lg col-span-2" onChange={handleFileChange} required />
+                            <select name="rewardType" className="w-full p-4 border border-gray-300 rounded-lg" onChange={handleChange} required>
+                                <option value="">Select Reward Type</option>
+                                <option value="0">Cumulative</option>
+                                <option value="1">Fixed</option>
+                            </select>
+                            <select name="rewardToken" className="w-full p-4 border border-gray-300 rounded-lg" onChange={handleChange} required>
+                                <option value="">Select Token</option>
+                                {token.map(tkn =>
+
+                                    <option value={tkn.id}>{tkn.id}</option>
+                                )}
+                            </select>
+                            {formData.rewardType === "1" && <input type="number" name="reward" placeholder="Reward" className="w-full p-4 border border-gray-300 rounded-lg" onChange={handleChange} required />}
+                            {formData.rewardType === "0" && <input type="number" name="entryAmount" placeholder="Entry Amount" className="w-full p-4 border border-gray-300 rounded-lg" onChange={handleChange} required />}
+
+                            <input type="date" name="startDate" className="w-full p-4 border border-gray-300 rounded-lg" onChange={handleChange} placeholder='Start Date' required />
+                            <input type="date" name="endDate" className="w-full p-4 border border-gray-300 rounded-lg" onChange={handleChange} required />
+                            <div className="col-span-2 flex justify-between mt-8">
+                                <button type="button" onClick={onClose} className="px-8 py-3 bg-gray-400 rounded-lg text-lg">Cancel</button>
+                                {loadingSavingQuest ? 
+                                <button type="button" className="px-8 py-3 bg-blue-600 text-white rounded-lg text-lg">Executing...</button>
+                                : <button type="submit" className="px-8 py-3 bg-blue-600 text-white rounded-lg text-lg" disabled={tokenBal < 100 ? true : false}>Submit for 100 RTT</button>}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};

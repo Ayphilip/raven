@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { avatars } from './avatars'
 import { useTweets } from '../context/tweetContext';
 import { useUsers } from '../context/userContext';
-import { usePrivy } from '@privy-io/react-auth';
 import { useLoginService } from '../services/authenticationService';
 import { useOthers } from '../context/otherContext';
+import { useAddress } from '@chopinframework/react';
 
 function Sid2bar() {
 
@@ -14,7 +14,7 @@ function Sid2bar() {
     const { tweets, likeTweet, retweetTweet, addTweet } = useTweets();
     const { users, userList, addUser, modifyUser } = useUsers();
 
-    const { ready, login, logout, authenticated, user } = usePrivy();
+    const { address, isLoading, isLoginError, logout, revalidate } = useAddress();
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate } = useLoginService();
 
     const { ptoken, mintToken } = useOthers()
@@ -69,7 +69,7 @@ function Sid2bar() {
         return () => {
 
         }
-    }, [ready])
+    }, [isLoading])
     return (
         <div class="2xl:w-[380px] lg:w-[330px] w-full">
 

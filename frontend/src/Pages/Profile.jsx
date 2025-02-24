@@ -3,7 +3,6 @@ import Headers from '../Components/Headers'
 import Sidebar from '../Components/Sidebar'
 import Sidbar from '../Components/Sidbar'
 // import avatars from '../Components/avatars'
-import { usePrivy } from '@privy-io/react-auth'
 import { useLoginService } from '../services/authenticationService'
 import { getAllUsers } from '../services/userServices'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -16,7 +15,7 @@ import MediaViewer from '../Components/MediaViewer'
 import TweetView from '../Components/TweetView'
 
 function Profile() {
-    const { ready, login, logout, authenticated, user } = usePrivy();
+    
     const { userDetails, initiateLoginUser, userlogoutService, loading } = useLoginService();
 
     const { tweets, likeTweet, retweetTweet, addTweet } = useTweets();
@@ -30,10 +29,7 @@ function Profile() {
     // const [users, setUsers] = useState(null)
 
     const navigate = useNavigate()
-    if (ready && !authenticated || !userDetails) {
-        navigate('/login')
-    }
-
+   
     const saveFollow = (userId, user2Id) => {
         
         var hive = addFollow(userId, user2Id)

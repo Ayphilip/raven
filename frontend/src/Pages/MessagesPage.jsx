@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import Sidbar from '../Components/Sidbar'
 import { useTweets } from '../context/tweetContext';
 import { useUsers } from '../context/userContext';
-import { usePrivy } from '@privy-io/react-auth';
 import { useLoginService } from '../services/authenticationService';
 import { useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
@@ -26,7 +25,7 @@ function MessagesPage() {
 
     // const fileInputRef = useRef(null);
 
-    const { ready, login, logout, authenticated, user } = usePrivy();
+    
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate, useBookmark } = useLoginService();
 
     const navigate = useNavigate()
@@ -43,12 +42,6 @@ function MessagesPage() {
         // console.log(selectedUser)
         fetchMessages(selectedUser)
     }, [selectedUser]);
-
-
-    if (ready && !authenticated || !authenticate) {
-        // console.log(user)
-        navigate('/login')
-    }
 
     const sortMessagesByLatest = (chatArray) => {
         return chatArray.sort((a, b) => {

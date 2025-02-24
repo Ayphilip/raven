@@ -29,7 +29,7 @@ export const OtherProvider = ({ children }) => {
                 var number = response.data;
                 const responseNot = await axios.get(`/api/notifications/${data?.username}`)
                 const notificationData = responseNot.data
-                console.log(notificationData)
+                // console.log(notificationData)
                 setNotifivcations(notificationData.notifications)
                 if (storedTkn) setptoken(storedTkn);
                 setTokenBal(number.balance);
@@ -88,6 +88,20 @@ export const OtherProvider = ({ children }) => {
         }
     };
 
+    const mintNft = async (data) => {
+        try {
+            console.log(data)
+            const response = await axios.post("/api/nfts/mint", {
+                collectionName: data.collect,
+                owner: data.userId,
+                metadata: data.metadata
+            })
+            fetchOthers();
+        } catch (error) {
+            console.error("Error creating Nft:", error);
+        }
+    };
+
     const createNotification = async (message, type, userId) => {
         try {
             // fetchOthers();
@@ -114,7 +128,7 @@ export const OtherProvider = ({ children }) => {
 
     return (
         <OtherContext.Provider value={{ token, nft, ptoken, tokenBal, loadingOthers, notification, makeTransfer, 
-        mintToken, fetchOthers, createNotification, markNotification }}>
+        mintToken, fetchOthers, createNotification, markNotification, mintNft }}>
             {children}
         </OtherContext.Provider>
     );

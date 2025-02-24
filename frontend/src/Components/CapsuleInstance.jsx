@@ -1,6 +1,7 @@
 import React from "react";
 import { Tooltip } from "react-tooltip";
 import { avatars } from "./avatars";
+import CryptoJS from 'crypto-js';
 // import { useUsers } from "../context/userContext";
 
 // const { users, userList, addUser, modifyUser } = useUsers();
@@ -82,6 +83,10 @@ const renderContentWithMentions = (text, users, me) => {
     }).filter(Boolean); // Remove null values
 };
 
+const encryptText = (data) => {
+    var mesg = CryptoJS.AES.encrypt(data, "ravenTestToken").toString()
+    return mesg
+}
 
 
-export { renderContentWithMentions };
+export { renderContentWithMentions, encryptText };

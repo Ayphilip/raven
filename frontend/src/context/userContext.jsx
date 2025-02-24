@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { avatars } from "../Components/avatars";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const UserContext = createContext();
 
@@ -134,9 +135,17 @@ export const UserProvider = ({ children }) => {
             // Retrieve existing user data from cookies
             const storedUser = Cookies.get("userDetails");
             let existingUser = storedUser ? JSON.parse(storedUser) : {};
+
+            const data2 = await fetchUser(userId)
+
+            console.log(data2)
+
+            // console.log(response.data)
+            // console.log(existingUser)
     
             // Merge old data with the updated response
-            const updatedUser = { ...existingUser, ...response.data };
+            const updatedUser = { ...existingUser, ...data2 };
+            console.log(updatedUser)
     
             // Save updated user back to cookies
             Cookies.set("userDetails", JSON.stringify(updatedUser), { expires: 7 });
@@ -144,7 +153,7 @@ export const UserProvider = ({ children }) => {
             // Refresh user list
             fetchUsers();
     
-            return true;
+            return updatedUser;
         } catch (error) {
             console.error("Error updating user:", error);
             return false;

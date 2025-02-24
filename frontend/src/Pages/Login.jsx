@@ -1,4 +1,4 @@
-import { usePrivy } from '@privy-io/react-auth';
+
 import React, { useEffect } from 'react'
 import Img from '../asset/images/Welcome1.png';
 import Img2 from '../asset/images/Welcome.jpg';
@@ -7,31 +7,31 @@ import { checkUser } from '../services/userServices';
 
 import { useNavigate } from 'react-router-dom';
 import { useLoginService } from '../services/authenticationService';
+import { useAddress } from '@chopinframework/react';
 // import { Oracle } from 'chopinframework';
 
 // import { oracle } from '@chopinframework/react';
 
 function Login() {
-    const { ready, login, logout, authenticated, user } = usePrivy();
+
+    const { address, isLoading, isLoginError, login, logout, revalidate } = useAddress();
     const { userDetails, initiateLoginUser, userlogoutService, loading } = useLoginService();
 
 
 
     const navigate = useNavigate()
 
-    if (ready && authenticated) {
-        const response = initiateLoginUser(user);
+    if (!isLoading && address) {
+        const response = initiateLoginUser(address);
         // console.log(response)
     }
-    if (ready && authenticated && userDetails) {
-        navigate('/')
-    }
+
     useEffect(() => {
 
         return () => {
 
         }
-    }, [ready])
+    }, [])
 
     return (
         <div class="sm:flex">
@@ -48,7 +48,7 @@ function Login() {
                     </div>
 
                     <div>
-                        <h2 class="text-2xl font-semibold mb-1.5"> Sign in to your account </h2>
+                        <h2 class="text-2xl text-center font-semibold mb-1.5"> Sign in to your account </h2>
                     </div>
 
 
@@ -65,7 +65,7 @@ function Login() {
                         </div>
 
                         <div class="flex gap-2" uk-scrollspy="target: > *; cls: uk-animation-scale-up; delay: 400 ;repeat: true">
-                            <a onClick={authenticated ? logout : login} class="button flex-1 flex items-center gap-2 bg-primary text-white text-lg"> <ion-icon name="log-in-outline"></ion-icon> Get Started  </a>
+                            <a onClick={login} class="button flex-1 flex items-center gap-2 bg-primary text-white text-lg"> <ion-icon name="log-in-outline"></ion-icon> Get Started  </a>
                         </div>
 
                     </form>

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Headers from '../Components/Headers'
 import Sidbar from '../Components/Sidbar'
-import { usePrivy } from '@privy-io/react-auth';
 import { useNavigate } from 'react-router-dom';
 import { useLoginService } from '../services/authenticationService';
 import { avatars, view } from '../Components/avatars';
@@ -17,6 +16,7 @@ import RetweetView from '../Components/RetweetView';
 import TweetView from '../Components/TweetView';
 import { Mention, MentionsInput } from 'react-mentions';
 import Sid2bar from '../Components/Sid2bar';
+import { useAddress } from '@chopinframework/react';
 
 function Welcome() {
 
@@ -29,7 +29,7 @@ function Welcome() {
 
     const fileInputRef = useRef(null);
 
-    const { ready, login, logout, authenticated, user } = usePrivy();
+    const { address, isLoading, isLoginError, logout, revalidate } = useAddress();
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate } = useLoginService();
 
 
@@ -133,18 +133,12 @@ function Welcome() {
     }
 
 
-    if (ready && !authenticated || !authenticate) {
-        // console.log(user)
-        navigate('/login')
-    }
-
-
     useEffect(() => {
 
         return () => {
 
         }
-    }, [ready])
+    }, [])
 
     return (
         <div>

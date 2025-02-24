@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { io } from 'socket.io-client';
 import { useUsers } from '../context/userContext';
 import { avatars } from './avatars';
-import CryptoJS from 'crypto-js';
 import { useOthers } from '../context/otherContext';
 import { useChats } from '../context/chatContext';
+import { encryptText } from './CapsuleInstance';
 
 const socket = io("http://localhost:4000");
 function ChatUI({ chats, userDetails, userInfo }) {
@@ -18,7 +18,8 @@ function ChatUI({ chats, userDetails, userInfo }) {
     const { markMessages } = useChats()
 
     const sendMessage = () => {
-        var mesg = CryptoJS.AES.encrypt(newMessage, "ravenTestToken").toString()
+        
+        var mesg = encryptText(newMessage)
         socket.emit("sendMessage", {
             senderId: userDetails.username,
             receiverId: userInfo,
@@ -27,7 +28,7 @@ function ChatUI({ chats, userDetails, userInfo }) {
         setNewMessage("");
     };
     const sendMessage2 = (message) => {
-        var mesg = CryptoJS.AES.encrypt(message, "ravenTestToken").toString()
+        var mesg = encryptText(message)
         socket.emit("sendMessage", {
             senderId: userDetails.username,
             receiverId: userInfo,

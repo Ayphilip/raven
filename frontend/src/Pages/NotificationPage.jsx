@@ -6,7 +6,6 @@ import { useChats } from '../context/chatContext';
 import { useLoginService } from '../services/authenticationService';
 import Sidebar from '../Components/Sidebar';
 import Sid2bar from '../Components/Sid2bar';
-import { usePrivy } from '@privy-io/react-auth';
 import Sidbar from '../Components/Sidbar';
 import { useOthers } from '../context/otherContext';
 import RetweetView from '../Components/RetweetView';
@@ -21,7 +20,7 @@ function NotificationPage() {
 
     // const fileInputRef = useRef(null);
 
-    const { ready, login, logout, authenticated, user } = usePrivy();
+    
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate, useBookmark } = useLoginService();
 
     const navigate = useNavigate()
@@ -38,12 +37,6 @@ function NotificationPage() {
         // console.log(selectedUser)
         fetchMessages(selectedUser)
     }, [selectedUser]);
-
-
-    if (ready && !authenticated || !authenticate) {
-        // console.log(user)
-        navigate('/login')
-    }
 
     const sortMessagesByLatest = (chatArray) => {
         return chatArray.sort((a, b) => {

@@ -8,6 +8,7 @@ import nftRoutes from "./routes/nfts.js";
 import tokenRoutes from "./routes/tokens.js"
 import chatRoutes from "./routes/chat.js";
 import notifyRoutes from "./routes/notifications.js";
+import treasureRoutes from "./routes/hunt.js";
 import { fileURLToPath } from "url";
 import { exec } from "child_process";
 import path from "path";
@@ -15,6 +16,7 @@ import {
     db, doc, getDoc, setDoc, updateDoc, Timestamp, collection, getDocs, query, where, orderBy, serverTimestamp,
     arrayUnion
 } from "./config/firebaseConfig.js";
+import { genId } from "./util.js";
 
 // Define __dirname manually for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -38,6 +40,8 @@ app.use("/api/nfts", nftRoutes);
 app.use("/api/tokens", tokenRoutes);
 app.use("/api/chats", chatRoutes);
 app.use("/api/notifications", notifyRoutes);
+app.use("/api/treasurehunt", treasureRoutes);
+
 
 // Store Active Users
 const activeUsers = new Map(); // { userId: socketId }
@@ -141,6 +145,8 @@ app.get("*", (req, res) => {
 
 // Start Server
 const PORT = process.env.PORT || 5000;
+// const defs = await genId()
+// console.log(defs)
 server.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
 });

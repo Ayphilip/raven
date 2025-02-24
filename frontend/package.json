@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@chopinframework/next": "^1.0.25",
-    "@chopinframework/react": "^0.0.1",
+    "@chopinframework/react": "^0.1.1",
     "@privy-io/react-auth": "^2.0.8",
     "@react-google-maps/api": "^2.20.5",
     "@reduxjs/toolkit": "^2.5.1",

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useTweets } from '../context/tweetContext';
 import { useUsers } from '../context/userContext';
-import { usePrivy } from '@privy-io/react-auth';
 import { useLoginService } from '../services/authenticationService';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -23,7 +22,7 @@ function TweetPage() {
 
     // const fileInputRef = useRef(null);
 
-    const { ready, login, logout, authenticated, user } = usePrivy();
+    
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate, useBookmark } = useLoginService();
 
     const navigate = useNavigate()
@@ -40,12 +39,6 @@ function TweetPage() {
     // }
 
     // console.log(params)
-
-    if (ready && !authenticated || !authenticate) {
-        // console.log(user)
-        navigate('/login')
-    }
-
 
     useEffect(() => {
         const readTweet = async () => {

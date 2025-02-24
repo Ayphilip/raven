@@ -15,10 +15,9 @@ import {
     serverTimestamp,
     Timestamp,
 } from "../config/firebaseConfig.js";
+import { genId, sendNotification } from "../util.js";
 
-const genId = async () => {
-    return crypto.randomUUID();
-};
+
 // Create Tweet
 export const createTweet = async (req, res) => {
     try {
@@ -71,10 +70,7 @@ export const createTweet = async (req, res) => {
             }
         }
 
-        // Send notification to each user in the list
-        await Promise.all(notificationList.map(async (notifUserId) => {
-            await sendNotification(notifUserId, initId, 0);
-        }));
+        await sendNotification(notificationList, notifUserId, initId, 0)
 
         return res.status(201).json({ message: "Tweet created successfully" });
     } catch (error) {
@@ -83,29 +79,6 @@ export const createTweet = async (req, res) => {
     }
 };
 
-const sendNotification = async (userId, message, type) => {
-    try {
-        const initId = await genId();
-        const notificationData = {
-            id: initId,
-            message,
-            type,
-            isRead: false,
-            timestamp: Timestamp.now()
-        };
-
-        const userNotifRef = doc(db, "notifications", userId);
-        const userNotifDoc = await getDoc(userNotifRef);
-
-        if (!userNotifDoc.exists()) {
-            await setDoc(userNotifRef, { userId, notifications: [notificationData] });
-        } else {
-            await updateDoc(userNotifRef, { notifications: arrayUnion(notificationData) });
-        }
-    } catch (error) {
-        console.error("Error sending notification:", error);
-    }
-};
 
 
 // Get a single Tweet

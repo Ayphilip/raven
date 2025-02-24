@@ -57,7 +57,7 @@ function TweetView({ tweets }) {
 
             <div class="bg-white shadow-sm text-sm font-medium border1 dark:bg-dark1">
 
-                {tweet.retweets.includes(userDetails.username) ? (
+                {tweet.retweets.includes(userDetails?.username) ? (
                     <span style={{ fontSize: '12px', padding: '3px', alignItems: 'center', justifyContent: 'center' }} className='p-1'>
                         <ion-icon name="return-up-back-outline"></ion-icon> You reposted
                     </span>

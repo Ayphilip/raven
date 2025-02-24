@@ -1,7 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import Cookies from "js-cookie";
 import { checkUser, handleBookmark } from "./userServices";
-import { usePrivy } from "@privy-io/react-auth";
 import axios from "axios";
 import { useAddress } from '@chopinframework/react'
 import { useUsers } from "../context/userContext";
@@ -16,64 +15,65 @@ export const AuthProvider = ({ children }) => {
     const [authenticate, setAuthenticated] = useState(false);
     // const { addUser } = useUsers();
 
-    const { ready, logout, user } = usePrivy();
+    const { address, isLoading, isLoginError, login, logout, revalidate } = useAddress();
+    // const {fetchUser} = useUsers()
 
 
     useEffect(() => {
+        // console.log(isLoading)
+
+        // console.log(storedUser)const storedTkn = Cookies.get("ptoken");
+            
+        // const initUser = async () => {
+        //     if (address) {
+        //         const allTweets = await axios.get(`/api/users/${address}`);
+        //         setUser(allTweets.data);
+        //         setAuthenticated(true);
+        //     }
+        // }
+        // if(address) initUser()
+
         const storedUser = Cookies.get("userDetails");
         // console.log(storedUser)
         if (storedUser) {
             setUser(JSON.parse(storedUser));
             setAuthenticated(true);
         }
+            // console.log('here')
         setLoading(false);
     }, []);
 
-    const genId = async () => {
-        // var oracle = new Oracle;
-        // var Id = await oracle.notarize(() =>crypto.randomUUID())
-        // var id = await Oracle.notarize(() =>crypto.randomUUID())
-        var id = crypto.randomUUID()
-        // var addr = await useAddress().
-        // console.log(addr.address)
-
-        return id;
-    };
-
     function getRandomBetween() {
         return Math.random() * (avatars.length - 0) + 0;
-      }
+    }
 
-    async function initiateLoginUser(user) {
+    async function initiateLoginUser(address) {
         setLoading(true);
-        const initId = await genId();
+        // const initId = await genId();
+        console.log(address)
         // console.log("Generated ID:", initId);
 
         var name = getRandomCryptoUsername();
 
-        const responses = await axios.get('/_chopin/login')
-        var chopinData = responses.data;
+        // const responses = await axios.get('/_chopin/login')
+        // var chopinData = responses.data;
 
         var rands = getRandomBetween();
 
 
 
         const response = await axios.post('/api/users', {
-            userId: initId, 
-            privyId: user.id, 
-            mode: 'privy', 
-            username: user.wallet.address, 
-            name: name, 
-            profilePicture: rands.toString(), 
-            cover: "", 
+            mode: 'chopin',
+            username: address,
+            name: name,
+            profilePicture: rands.toString(),
+            cover: "",
             bio: ""
         });
-        
 
-        const combineResponse = { ...response.data, ...chopinData }
         // console.log(combineResponse)
         if (response) {
-            login(response.data);
+            logins(response.data);
         } else {
             alert('Error')
         }
@@ -84,10 +84,10 @@ export const AuthProvider = ({ children }) => {
     const useBookmark = async (userId, user2Id) => {
         try {
             // First, await the API call to ensure success before updating state
-            
+
             setUser(prevUser => {
                 if (!prevUser) return { bookmark: [user2Id] }; // Ensure `prevUser` is defined
-                
+
                 const updatedUser = {
                     ...prevUser,
                     bookmark: Array.isArray(prevUser?.bookmark)
@@ -96,24 +96,24 @@ export const AuthProvider = ({ children }) => {
                             : [...prevUser?.bookmark, user2Id] // Like
                         : [user2Id] // Initialize if undefined
                 };
-                
+
                 // ✅ Store updated user in cookies inside `setUser`
                 Cookies.set("userDetails", JSON.stringify(updatedUser));
                 // console.log(updatedUser)
-    
+
                 return updatedUser; // Return the updated state
             });
-            
+
             await handleBookmark(userId, user2Id);
         } catch (error) {
             console.error("Error Handling Bookmark:", error);
         }
     };
-    
-    
-    
 
-    const login = (userData) => {
+
+
+
+    const logins = (userData) => {
         setUser(userData);
         setAuthenticated(true);
         Cookies.set("userDetails", JSON.stringify(userData), { expires: 7 });

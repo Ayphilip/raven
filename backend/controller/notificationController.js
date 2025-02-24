@@ -1,15 +1,7 @@
 import { db, doc, getDoc, setDoc, updateDoc, collection, arrayUnion, arrayRemove, getDocs, query, where } from "../config/firebaseConfig.js";
+import { genId } from "../util.js";
 
-const genId = async () => {
-    // var oracle = new Oracle;
-    // var Id = await oracle.notarize(() =>crypto.randomUUID())
-    // var id = await Oracle.notarize(() =>crypto.randomUUID())
-    var id = crypto.randomUUID()
-    // var addr = await useAddress().
-    // console.log(addr.address)
 
-    return id;
-};
 
 // 📌 Create and send a notification
 export const sendNotification = async (req, res) => {

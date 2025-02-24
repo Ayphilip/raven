@@ -16,6 +16,7 @@ import '../assets/js/simplebar.js'
 import '../assets/js/uikit.min.js'
 import { ChatProvider } from './context/chatContext.jsx'
 import { OtherProvider } from './context/otherContext.jsx'
+import { TreasureHuntProvider } from './context/treasureHuntContext.jsx'
 
 // import '../assets/js/script.js';
 // import store from './redux/store.js'
@@ -34,62 +35,19 @@ import { OtherProvider } from './context/otherContext.jsx'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
-      <PrivyProvider
-        appId="cm6dgl8ba00sh10xcnswn30yq"
-        config={{
-          "appearance": {
-            "accentColor": "#38CCCD",
-            "theme": "#f9f9ff",
-            "showWalletLoginFirst": false,
-            "logo": "https://raw.githubusercontent.com/Ayphilip/appPics/refs/heads/main/logo.png",
-            "walletChainType": "ethereum-only",
-            "walletList": [
-              "detected_wallets",
-              "phantom",
-              "solflare",
-              "backpack",
-              "okx_wallet"
-            ]
-          },
-          "loginMethods": [
-            "email",
-            "google",
-            "twitter",
-            "apple",
-            "wallet"
-          ],
-          "fundingMethodConfig": {
-            "moonpay": {
-              "useSandbox": true
-            }
-          },
-          "embeddedWallets": {
-            "createOnLogin": "all-users",
-            "requireUserPasswordOnCreate": false,
-            "showWalletUIs": true,
-            "ethereum": {
-              "createOnLogin": "users-without-wallets"
-            },
-            "solana": {
-              "createOnLogin": "off"
-            }
-          },
-          "mfa": {
-            "noPromptOnMfaRequired": false
-          }
-        }}
-      >
-        <OtherProvider>
-
-          <ChatProvider>
-            <UserProvider>
-              <TweetProvider>
-                <App />
-              </TweetProvider>
-            </UserProvider>
-          </ChatProvider>
-        </OtherProvider>
-      </PrivyProvider>
+      
+        <TreasureHuntProvider>
+          <OtherProvider>
+            <ChatProvider>
+              <UserProvider>
+                <TweetProvider>
+                  <App />
+                </TweetProvider>
+              </UserProvider>
+            </ChatProvider>
+          </OtherProvider>
+        </TreasureHuntProvider>
+      
     </AuthProvider>
   </StrictMode>,
 )

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { avatars } from './avatars'
-import { usePrivy } from '@privy-io/react-auth';
 import { useLoginService } from '../services/authenticationService';
 import { useNavigate } from 'react-router-dom';
 import fly1 from '../asset/icons/home.png'
@@ -17,10 +16,11 @@ import Logo from '../asset/images/logo.png'
 import { useOthers } from '../context/otherContext';
 import Cookies from 'js-cookie'
 import { useChats } from '../context/chatContext';
+import { useAddress } from '@chopinframework/react';
 
 
 function Sidbar({ps}) {
-    const { ready, login, logout, authenticated, user } = usePrivy();
+    const { address, isLoading, isLoginError, logout, revalidate } = useAddress();
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate } = useLoginService();
     const { tokenBal, token, ptoken, notification } = useOthers();
     const [tkn, setTkn] = useState(ptoken)
@@ -34,9 +34,6 @@ function Sidbar({ps}) {
         logout()
     }
 
-    if (ready && !authenticated || !authenticate) {
-        navigate('/login')
-    }
     return (
         authenticate && <div>
             <div id="site__sidebar" class="fixed top-0 left-0 z-[0] overflow-hidden transition-transform xl:duration-500 max-xl:w-full max-xl:-translate-x-full">

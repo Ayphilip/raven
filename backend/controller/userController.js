@@ -1,17 +1,19 @@
 import { db, doc, getDoc, setDoc, updateDoc, collection, getDocs, query, where, arrayRemove, arrayUnion, serverTimestamp } from "../config/firebaseConfig.js";
+import { genId } from "../util.js";
 
 // CREATE User
 export const checkUser = async (req, res) => {
     try {
-        const { userId, privyId, mode, username, name, profilePicture, cover, bio } = req.body;
+        const { mode, username, name, profilePicture, cover, bio } = req.body;
         const userRef = doc(db, "users", username);
         const snapshot = await getDoc(userRef);
+        const userId = await genId()
 
         if (snapshot.exists()) {
             return res.status(200).json(snapshot.data());
         } else {
             const userData = {
-                userId, username, name, privyId, mode, cover, profilePicture, bio, notificationList: [],
+                userId, username, name, mode, cover, profilePicture, bio, notificationList: [],
                 followers: [], following: [], bookmark: [], verified: false, createdAt: serverTimestamp()
             };
             await setDoc(userRef, userData);

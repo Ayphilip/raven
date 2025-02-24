@@ -1,11 +1,14 @@
-import { usePrivy } from '@privy-io/react-auth';
+
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useLoginService } from '../services/authenticationService';
 import { useUsers } from '../context/userContext';
 import { useTweets } from '../context/tweetContext';
 import Sidbar from '../Components/Sidbar';
 import Sid2bar from '../Components/Sid2bar';
+import { useAddress } from '@chopinframework/react';
+import { useTreasureHunt } from '../context/treasureHuntContext';
+import formatTimestamp from '../Components/timeStamping';
 
 function Hunt() {
     const { tweets, likeTweet, retweetTweet, addTweet, fetchTweet } = useTweets();
@@ -15,8 +18,10 @@ function Hunt() {
 
     // const fileInputRef = useRef(null);
 
-    const { ready, login, logout, authenticated, user } = usePrivy();
+    const { address, isLoading, isLoginError, logout, revalidate } = useAddress();
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate, useBookmark } = useLoginService();
+
+    const { quests } = useTreasureHunt()
 
     const navigate = useNavigate()
     // const dispatch = useDispatch()
@@ -33,12 +38,6 @@ function Hunt() {
 
     // console.log(params)
 
-    if (ready && !authenticated || !authenticate) {
-        // console.log(user)
-        navigate('/login')
-    }
-
-
     useEffect(() => {
 
 
@@ -48,7 +47,7 @@ function Hunt() {
     }, [])
     return (
         <div id="wrapper">
-            <Sidbar ps={6}/>
+            <Sidbar ps={6} />
 
             <main id="site__main" class="2xl:ml-[--w-side]  xl:ml-[--w-side-sm] p-2.5 h-[calc(100vh)]">
 
@@ -65,9 +64,9 @@ function Hunt() {
 
                                     <ul uk-switcher="connect: #tabs ; animation: uk-animation-fade">
 
-                                        <li> <a href="#"> Suggestions </a> </li>
-                                        <li> <a href="#"> Popular </a> </li>
-                                        <li> <a href="#"> My games </a> </li>
+                                        <li> <a href="#"> All </a> </li>
+                                        <li> <a href="#"> Ongoing </a> </li>
+                                        <li> <a href="#"> Subscribed Games </a> </li>
 
                                     </ul>
 
@@ -77,440 +76,131 @@ function Hunt() {
 
                             <div id="tabs" class="uk-switcher">
 
-                                
+
                                 <div class="grid md:grid-cols-4 grid-cols-3 md:gap-3 gap-2" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 20 ;repeat: true">
 
-                                    <div>
+                                    {quests.filter(quest => quest.creator !== userDetails?.username).map(quest => <div>
                                         <div class="card">
-                                            <a href="#">
+                                            <a href={'/ravenhunt/quest/' + quest.id} >
                                                 <div class="card-media sm:aspect-[2/1.8] h-36">
-                                                    <img src="assets/images/games/img-1.jpg" alt=""/>
-                                                        <div class="card-overly"></div>
+                                                    <img src={quest.questFace} alt="" />
+                                                    <div class="card-overly"></div>
                                                 </div>
                                             </a>
                                             <div class="card-body">
-                                                <a href="#"><h4 class="card-title text-sm"> Battle Grounds </h4></a>
-                                                <p class="card-text">365K Viewers</p>
+                                                <a href={'/ravenhunt/quest/' + quest.id} ><h4 class="card-title text-sm"> {quest.questTitle} </h4></a>
+                                                <p class="card-text">{quest.participants.length}</p>
                                             </div>
                                         </div>
                                         <div class="uk-drop w-80 max-md:!hidden" uk-drop="pos: right-center; boundary: !.content-area; offset: 10; animation: uk-animation-scale-up">
                                             <div class="card shadow-xl">
                                                 <div class="card-media h-40">
-                                                    <img src="assets/images/games/img-1.jpg" alt=""/>
-                                                        <div class="card-overly"></div>
+                                                    <img src={quest.questFace} alt="" />
+                                                    <div class="card-overly"></div>
                                                 </div>
                                                 <div class="card-body" uk-scrollspy="target: > * ; cls: uk-animation-slide-bottom-small ; delay: 60 ;repeat: true">
-                                                    <h4 class="card-title text-sm font-semibold"> Battle Grounds </h4>
-                                                    <p class="card-text">365K Viewers</p>
-                                                    <p class="text-sm mt-1.5"> Play match 3! Fight in battles, win, and claim your rewards!</p>
+                                                    <h4 class="card-title text-sm font-semibold"> {quest.questTitle} </h4>
+                                                    <p class="card-text">{quest.participants.length} involved</p>
+                                                    <p class="text-sm mt-1.5"> {quest.description}</p>
                                                     <div class="flex gap-2 mt-2" uk-scrollspy-class="uk-animation-slide-top-small">
-                                                        <button type="button" class="button bg-secondery flex-1">Play</button>
+                                                        {(quest.participants.includes(userDetails?.username) || quest.rewardType === '1') ? <button type="button" class="button bg-secondery flex-1"> Play</button> : <button type="button" class="button bg-secondery flex-1"> <ion-icon name="lock-closed-outline"></ion-icon> Enter ({quest.entryAmount} {quest.rewardToken})</button>}
                                                         <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="arrow-redo" class="text-base"></ion-icon> </button>
                                                         <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="bookmark" class="text-base"></ion-icon> </button>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div>
-                                        <div class="card">
-                                            <a href="#">
-                                                <div class="card-media sm:aspect-[2/1.8] h-36">
-                                                    <img src="assets/images/games/img-2.jpg" alt=""/>
-                                                        <div class="card-overly"></div>
-                                                </div>
-                                            </a>
-                                            <div class="card-body">
-                                                <a href="#"><h4 class="card-title text-sm"> ChooxTv  </h4></a>
-                                                <p class="card-text">240K Viewers</p>
-                                            </div>
-                                        </div>
-                                        <div class="uk-drop w-80 max-md:!hidden" uk-drop="pos: right-center; boundary: !.content-area; offset: 10; animation: uk-animation-scale-up">
-                                            <div class="card shadow-xl">
-                                                <div class="card-media h-40">
-                                                    <img src="assets/images/games/img-2.jpg" alt=""/>
-                                                        <div class="card-overly"></div>
-                                                </div>
-                                                <div class="card-body" uk-scrollspy="target: > * ; cls: uk-animation-slide-bottom-small ; delay: 60 ;repeat: true">
-                                                    <h4 class="card-title text-sm font-semibold"> ChooxTv  </h4>
-                                                    <p class="card-text">365K Viewers</p>
-                                                    <p class="text-sm mt-1.5"> Play match 3! Fight in battles, win, and claim your rewards!</p>
-                                                    <div class="flex gap-2 mt-2" uk-scrollspy-class="uk-animation-slide-top-small">
-                                                        <button type="button" class="button bg-secondery flex-1">Play</button>
-                                                        <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="arrow-redo" class="text-base"></ion-icon> </button>
-                                                        <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="bookmark" class="text-base"></ion-icon> </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="card">
-                                            <a href="#">
-                                                <div class="card-media sm:aspect-[2/1.8] h-36">
-                                                    <img src="assets/images/games/img-4.jpg" alt=""/>
-                                                        <div class="card-overly"></div>
-                                                </div>
-                                            </a>
-                                            <div class="card-body">
-                                                <a href="#"><h4 class="card-title text-sm">  Mobile Legends  </h4></a>
-                                                <p class="card-text">420K Viewers</p>
-                                            </div>
-                                        </div>
-                                        <div class="uk-drop w-80 max-md:!hidden" uk-drop="pos: right-center; boundary: !.content-area; offset: 10; animation: uk-animation-scale-up">
-                                            <div class="card shadow-xl">
-                                                <div class="card-media h-40">
-                                                    <img src="assets/images/games/img-4.jpg" alt=""/>
-                                                        <div class="card-overly"></div>
-                                                </div>
-                                                <div class="card-body" uk-scrollspy="target: > * ; cls: uk-animation-slide-bottom-small ; delay: 60 ;repeat: true">
-                                                    <h4 class="card-title text-sm font-semibold">  Mobile Legends  </h4>
-                                                    <p class="card-text">365K Viewers</p>
-                                                    <p class="text-sm mt-1.5"> Play match 3! Fight in battles, win, and claim your rewards!</p>
-                                                    <div class="flex gap-2 mt-2" uk-scrollspy-class="uk-animation-slide-top-small">
-                                                        <button type="button" class="button bg-secondery flex-1">Play</button>
-                                                        <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="arrow-redo" class="text-base"></ion-icon> </button>
-                                                        <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="bookmark" class="text-base"></ion-icon> </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="card">
-                                            <a href="#">
-                                                <div class="card-media sm:aspect-[2/1.8] h-36">
-                                                    <img src="assets/images/games/img-5.jpg" alt=""/>
-                                                        <div class="card-overly"></div>
-                                                </div>
-                                            </a>
-                                            <div class="card-body">
-                                                <a href="#"><h4 class="card-title text-sm"> Minecraft </h4></a>
-                                                <p class="card-text">194K Viewers</p>
-                                            </div>
-                                        </div>
-                                        <div class="uk-drop w-80 max-md:!hidden" uk-drop="pos: right-center; boundary: !.content-area; offset: 10; animation: uk-animation-scale-up">
-                                            <div class="card shadow-xl">
-                                                <div class="card-media h-40">
-                                                    <img src="assets/images/games/img-5.jpg" alt=""/>
-                                                        <div class="card-overly"></div>
-                                                </div>
-                                                <div class="card-body" uk-scrollspy="target: > * ; cls: uk-animation-slide-bottom-small ; delay: 60 ;repeat: true">
-                                                    <h4 class="card-title text-sm font-semibold"> Minecraft </h4>
-                                                    <p class="card-text">365K Viewers</p>
-                                                    <p class="text-sm mt-1.5"> Play match 3! Fight in battles, win, and claim your rewards!</p>
-                                                    <div class="flex gap-2 mt-2" uk-scrollspy-class="uk-animation-slide-top-small">
-                                                        <button type="button" class="button bg-secondery flex-1">Play</button>
-                                                        <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="arrow-redo" class="text-base"></ion-icon> </button>
-                                                        <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="bookmark" class="text-base"></ion-icon> </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="card">
-                                            <a href="#">
-                                                <div class="card-media sm:aspect-[2/1.8] h-36">
-                                                    <img src="assets/images/games/img-5.jpg" alt=""/>
-                                                        <div class="card-overly"></div>
-                                                </div>
-                                            </a>
-                                            <div class="card-body">
-                                                <a href="#"><h4 class="card-title text-sm"> Minecraft </h4></a>
-                                                <p class="card-text">194K Viewers</p>
-                                            </div>
-                                        </div>
-                                        <div class="uk-drop w-80 max-md:!hidden" uk-drop="pos: right-center; boundary: !.content-area; offset: 10; animation: uk-animation-scale-up">
-                                            <div class="card shadow-xl">
-                                                <div class="card-media h-40">
-                                                    <img src="assets/images/games/img-5.jpg" alt=""/>
-                                                        <div class="card-overly"></div>
-                                                </div>
-                                                <div class="card-body" uk-scrollspy="target: > * ; cls: uk-animation-slide-bottom-small ; delay: 60 ;repeat: true">
-                                                    <h4 class="card-title text-sm font-semibold"> Minecraft </h4>
-                                                    <p class="card-text">365K Viewers</p>
-                                                    <p class="text-sm mt-1.5"> Play match 3! Fight in battles, win, and claim your rewards!</p>
-                                                    <div class="flex gap-2 mt-2" uk-scrollspy-class="uk-animation-slide-top-small">
-                                                        <button type="button" class="button bg-secondery flex-1">Play</button>
-                                                        <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="arrow-redo" class="text-base"></ion-icon> </button>
-                                                        <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="bookmark" class="text-base"></ion-icon> </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="card">
-                                            <a href="#">
-                                                <div class="card-media sm:aspect-[2/1.8] h-36">
-                                                    <img src="assets/images/games/img-3.jpg" alt=""/>
-                                                        <div class="card-overly"></div>
-                                                </div>
-                                            </a>
-                                            <div class="card-body">
-                                                <a href="#"><h4 class="card-title text-sm">Larion TV </h4></a>
-                                                <p class="card-text">512K Viewers</p>
-                                            </div>
-                                        </div>
-                                        <div class="uk-drop w-80 max-md:!hidden" uk-drop="pos: right-center; boundary: !.content-area; offset: 10; animation: uk-animation-scale-up">
-                                            <div class="card shadow-xl">
-                                                <div class="card-media h-40">
-                                                    <img src="assets/images/games/img-3.jpg" alt=""/>
-                                                        <div class="card-overly"></div>
-                                                </div>
-                                                <div class="card-body" uk-scrollspy="target: > * ; cls: uk-animation-slide-bottom-small ; delay: 60 ;repeat: true">
-                                                    <h4 class="card-title text-sm font-semibold"> Larion TV </h4>
-                                                    <p class="card-text">365K Viewers</p>
-                                                    <p class="text-sm mt-1.5"> Play match 3! Fight in battles, win, and claim your rewards!</p>
-                                                    <div class="flex gap-2 mt-2" uk-scrollspy-class="uk-animation-slide-top-small">
-                                                        <button type="button" class="button bg-secondery flex-1">Play</button>
-                                                        <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="arrow-redo" class="text-base"></ion-icon> </button>
-                                                        <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="bookmark" class="text-base"></ion-icon> </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="card">
-                                            <a href="#">
-                                                <div class="card-media sm:aspect-[2/1.8] h-36">
-                                                    <img src="assets/images/games/img-6.jpg" alt=""/>
-                                                        <div class="card-overly"></div>
-                                                </div>
-                                            </a>
-                                            <div class="card-body">
-                                                <a href="#"><h4 class="card-title text-sm"> Fortninte </h4></a>
-                                                <p class="card-text">512K Viewers</p>
-                                            </div>
-                                        </div>
-                                        <div class="uk-drop w-80 max-md:!hidden" uk-drop="pos: right-center; boundary: !.content-area; offset: 10; animation: uk-animation-scale-up">
-                                            <div class="card shadow-xl">
-                                                <div class="card-media h-40">
-                                                    <img src="assets/images/games/img-6.jpg" alt=""/>
-                                                        <div class="card-overly"></div>
-                                                </div>
-                                                <div class="card-body" uk-scrollspy="target: > * ; cls: uk-animation-slide-bottom-small ; delay: 60 ;repeat: true">
-                                                    <h4 class="card-title text-sm font-semibold"> Fortninte </h4>
-                                                    <p class="card-text">365K Viewers</p>
-                                                    <p class="text-sm mt-1.5"> Play match 3! Fight in battles, win, and claim your rewards!</p>
-                                                    <div class="flex gap-2 mt-2" uk-scrollspy-class="uk-animation-slide-top-small">
-                                                        <button type="button" class="button bg-secondery flex-1">Play</button>
-                                                        <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="arrow-redo" class="text-base"></ion-icon> </button>
-                                                        <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="bookmark" class="text-base"></ion-icon> </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="card">
-                                            <a href="#">
-                                                <div class="card-media sm:aspect-[2/1.8] h-36">
-                                                    <img src="assets/images/games/img-1.jpg" alt=""/>
-                                                        <div class="card-overly"></div>
-                                                </div>
-                                            </a>
-                                            <div class="card-body">
-                                                <a href="#"><h4 class="card-title text-sm"> Battle Grounds </h4></a>
-                                                <p class="card-text">365K Viewers</p>
-                                            </div>
-                                        </div>
-                                        <div class="uk-drop w-80 max-md:!hidden" uk-drop="pos: right-center; boundary: !.content-area; offset: 10; animation: uk-animation-scale-up">
-                                            <div class="card shadow-xl">
-                                                <div class="card-media h-40">
-                                                    <img src="assets/images/games/img-1.jpg" alt=""/>
-                                                        <div class="card-overly"></div>
-                                                </div>
-                                                <div class="card-body" uk-scrollspy="target: > * ; cls: uk-animation-slide-bottom-small ; delay: 60 ;repeat: true">
-                                                    <h4 class="card-title text-sm font-semibold"> Battle Grounds </h4>
-                                                    <p class="card-text">365K Viewers</p>
-                                                    <p class="text-sm mt-1.5"> Play match 3! Fight in battles, win, and claim your rewards!</p>
-                                                    <div class="flex gap-2 mt-2" uk-scrollspy-class="uk-animation-slide-top-small">
-                                                        <button type="button" class="button bg-secondery flex-1">Play</button>
-                                                        <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="arrow-redo" class="text-base"></ion-icon> </button>
-                                                        <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="bookmark" class="text-base"></ion-icon> </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                
-                                <div tabindex="-1" uk-slider="finite:true">
-
-                                    <div class="uk-slider-container pb-1">
-
-                                        <ul class="uk-slider-items grid-small">
-                                            <li class="md:w-1/4 sm:w-1/4 w-1/2">
-                                                <div class="card">
-                                                    <a href="#">
-                                                        <div class="card-media sm:aspect-[2/1.8] h-36">
-                                                            <img src="assets/images/games/img-5.jpg" alt=""/>
-                                                                <div class="card-overly"></div>
-                                                        </div>
-                                                    </a>
-                                                    <div class="card-body">
-                                                        <a href="#"><h4 class="card-title text-sm"> Minecraft </h4></a>
-                                                        <p class="card-text">620K Viewers</p>
-                                                        <button type="button" class="button border">Play now</button>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="md:w-1/4 sm:w-1/4 w-1/2">
-                                                <div class="card">
-                                                    <a href="#">
-                                                        <div class="card-media sm:aspect-[2/1.8] h-36">
-                                                            <img src="assets/images/games/img-3.jpg" alt=""/>
-                                                                <div class="card-overly"></div>
-                                                        </div>
-                                                    </a>
-                                                    <div class="card-body">
-                                                        <a href="#"><h4 class="card-title text-sm"> Larion TV </h4></a>
-                                                        <p class="card-text">365K Viewers</p>
-                                                        <button type="button" class="button border">Play now</button>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="md:w-1/4 sm:w-1/4 w-1/2">
-                                                <div class="card">
-                                                    <a href="#">
-                                                        <div class="card-media sm:aspect-[2/1.8] h-36">
-                                                            <img src="assets/images/games/img-1.jpg" alt=""/>
-                                                                <div class="card-overly"></div>
-                                                        </div>
-                                                    </a>
-                                                    <div class="card-body">
-                                                        <a href="#"><h4 class="card-title text-sm"> Battle Grounds </h4></a>
-                                                        <p class="card-text">365K Viewers</p>
-                                                        <button type="button" class="button border">Play now</button>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="md:w-1/4 sm:w-1/4 w-1/2">
-                                                <div class="card">
-                                                    <a href="#">
-                                                        <div class="card-media sm:aspect-[2/1.8] h-36">
-                                                            <img src="assets/images/games/img-2.jpg" alt=""/>
-                                                                <div class="card-overly"></div>
-                                                        </div>
-                                                    </a>
-                                                    <div class="card-body">
-                                                        <a href="#"><h4 class="card-title text-sm"> ChooxTv </h4></a>
-                                                        <p class="card-text">260K Viewers</p>
-                                                        <button type="button" class="button border">Play now</button>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="md:w-1/4 sm:w-1/4 w-1/2">
-                                                <div class="card">
-                                                    <a href="#">
-                                                        <div class="card-media sm:aspect-[2/1.8] h-36">
-                                                            <img src="assets/images/games/img-4.jpg" alt=""/>
-                                                                <div class="card-overly"></div>
-                                                        </div>
-                                                    </a>
-                                                    <div class="card-body">
-                                                        <a href="#"><h4 class="card-title text-sm">  Mobile Legends  </h4></a>
-                                                        <p class="card-text">230K Viewers</p>
-                                                        <button type="button" class="button border">Play now</button>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-
-                                    </div>
-
-                                    
-                                    <a class="nav-prev !top-24" href="#" uk-slider-item="previous"> <ion-icon name="chevron-back" class="text-2xl"></ion-icon> </a>
-                                    <a class="nav-next !top-24" href="#" uk-slider-item="next"> <ion-icon name="chevron-forward" class="text-2xl"></ion-icon></a>
+                                    </div>)}
 
                                 </div>
 
-                                
-                                <div class="grid sm:grid-cols-2 gap-5" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 20 ;repeat: true">
+                                <div class="grid md:grid-cols-4 grid-cols-3 md:gap-3 gap-2" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 20 ;repeat: true">
 
-                                    <div class="card flex space-x-5 flex-row">
-                                        <a href="#">
-                                            <div class="card-media w-28 h-full shrink-0 overflow-hidden">
-                                                <img src="assets/images/games/img-3.jpg" alt="" />
+                                    {quests.filter(quest => quest.creator !== userDetails?.username && quest.status === 'active').map(quest => <div>
+                                        <div class="card">
+                                            <a href={'/ravenhunt/quest/' + quest.id} >
+                                                <div class="card-media sm:aspect-[2/1.8] h-36">
+                                                    <img src={quest.questFace} alt="" />
                                                     <div class="card-overly"></div>
-                                            </div>
-                                        </a>
-                                        <div class="card-body flex-1 pl-0">
-                                            <h4 class="card-title"> Larion TV </h4>
-                                            <p class="card-text mt-1 font-normal">192 friends playing</p>
-                                            <div class="flex gap-1.5 mt-3">
-                                                <button type="button" class="button border"> Play </button>
-                                                <button type="button" class="button border !w-auto"> <ion-icon name="arrow-redo" class="text-lg"></ion-icon> </button>
+                                                </div>
+                                            </a>
+                                            <div class="card-body">
+                                                <a href={'/ravenhunt/quest/' + quest.id} ><h4 class="card-title text-sm"> {quest.questTitle} </h4></a>
+                                                <p class="card-text">{quest.participants.length}</p>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="card flex space-x-5 flex-row">
-                                        <a href="#">
-                                            <div class="card-media w-28 h-full shrink-0 overflow-hidden">
-                                                <img src="assets/images/games/img-5.jpg" alt="" />
+                                        <div class="uk-drop w-80 max-md:!hidden" uk-drop="pos: right-center; boundary: !.content-area; offset: 10; animation: uk-animation-scale-up">
+                                            <div class="card shadow-xl">
+                                                <div class="card-media h-40">
+                                                    <img src={quest.questFace} alt="" />
                                                     <div class="card-overly"></div>
-                                            </div>
-                                        </a>
-                                        <div class="card-body flex-1 pl-0">
-                                            <h4 class="card-title">  Minecraft  </h4>
-                                            <p class="card-text mt-1 font-normal">148 friends playing</p>
-                                            <div class="flex gap-1.5 mt-3">
-                                                <button type="button" class="button border"> Play </button>
-                                                <button type="button" class="button border !w-auto"> <ion-icon name="arrow-redo" class="text-lg"></ion-icon> </button>
+                                                </div>
+                                                <div class="card-body" uk-scrollspy="target: > * ; cls: uk-animation-slide-bottom-small ; delay: 60 ;repeat: true">
+                                                    <h4 class="card-title text-sm font-semibold"> {quest.questTitle} </h4>
+                                                    <p class="card-text">{quest.participants.length} involved</p>
+                                                    <p class="text-sm mt-1.5"> {quest.description}</p>
+                                                    <div class="flex gap-2 mt-2" uk-scrollspy-class="uk-animation-slide-top-small">
+                                                        {(quest.participants.includes(userDetails?.username) || quest.rewardType === '1') ? <button onClick={() => <Navigate to={'/ravenhunt/quest/' + quest.id} />} type="button" class="button bg-secondery flex-1"> Play</button> : <button type="button" onClick={() => <Navigate to={'/ravenhunt/quest/' + quest.id} />} class="button bg-secondery flex-1"> <ion-icon name="lock-closed-outline"></ion-icon> Enter ({quest.entryAmount} {quest.rewardToken})</button>}
+                                                        <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="arrow-redo" class="text-base"></ion-icon> </button>
+                                                        <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="bookmark" class="text-base"></ion-icon> </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="card flex space-x-5">
-                                        <a href="#">
-                                            <div class="card-media w-28 h-full shrink-0 overflow-hidden">
-                                                <img src="assets/images/games/img-4.jpg" alt="" />
+                                    </div>)}
+
+                                </div>
+
+
+                                <div class="grid md:grid-cols-4 grid-cols-3 md:gap-3 gap-2" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 20 ;repeat: true">
+
+                                    {quests.filter(quest => quest.creator !== userDetails?.username && quest.participants.includes(userDetails?.username)).map(quest => <div>
+                                        <div class="card">
+                                            <a href={'/ravenhunt/quest/' + quest.id} >
+                                                <div class="card-media sm:aspect-[2/1.8] h-36">
+                                                    <img src={quest.questFace} alt="" />
                                                     <div class="card-overly"></div>
-                                            </div>
-                                        </a>
-                                        <div class="card-body flex-1 pl-0">
-                                            <h4 class="card-title"> Mobile Legends</h4>
-                                            <p class="card-text mt-1 font-normal">216 friends playing</p>
-                                            <div class="flex gap-1.5 mt-3">
-                                                <button type="button" class="button border"> Play </button>
-                                                <button type="button" class="button border !w-auto"> <ion-icon name="arrow-redo" class="text-lg"></ion-icon> </button>
+                                                </div>
+                                            </a>
+                                            <div class="card-body">
+                                                <a href={'/ravenhunt/quest/' + quest.id} ><h4 class="card-title text-sm"> {quest.questTitle} </h4></a>
+                                                <p class="card-text">{quest.participants.length} Involved</p>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="card flex space-x-5">
-                                        <a href="#">
-                                            <div class="card-media w-28 h-full shrink-0 overflow-hidden">
-                                                <img src="assets/images/games/img-1.jpg" alt="" />
+                                        <div class="uk-drop w-80 max-md:!hidden" uk-drop="pos: right-center; boundary: !.content-area; offset: 10; animation: uk-animation-scale-up">
+                                            <div class="card shadow-xl">
+                                                <div class="card-media h-40">
+                                                    <img src={quest.questFace} alt="" />
                                                     <div class="card-overly"></div>
-                                            </div>
-                                        </a>
-                                        <div class="card-body flex-1 pl-0">
-                                            <h4 class="card-title"> Battle Grounds </h4>
-                                            <p class="card-text mt-1 font-normal">320 friends playing</p>
-                                            <div class="flex gap-1.5 mt-3">
-                                                <button type="button" class="button border"> Play </button>
-                                                <button type="button" class="button border !w-auto"> <ion-icon name="arrow-redo" class="text-lg"></ion-icon> </button>
+                                                </div>
+                                                <div class="card-body" uk-scrollspy="target: > * ; cls: uk-animation-slide-bottom-small ; delay: 60 ;repeat: true">
+                                                    <h4 class="card-title text-sm font-semibold"> {quest.questTitle} </h4>
+                                                    <p class="card-text">{quest.participants.length} involved</p>
+                                                    <p class="text-sm mt-1.5"> {quest.description}</p>
+                                                    <div class="flex gap-2 mt-2" uk-scrollspy-class="uk-animation-slide-top-small">
+                                                        {(quest.participants.includes(userDetails?.username) || quest.rewardType === '1') ? <button type="button" class="button bg-secondery flex-1"> Play</button> : <button type="button" class="button bg-secondery flex-1"> <ion-icon name="lock-closed-outline"></ion-icon> Enter ({quest.entryAmount} {quest.rewardToken})</button>}
+                                                        <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="arrow-redo" class="text-base"></ion-icon> </button>
+                                                        <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="bookmark" class="text-base"></ion-icon> </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div>)}
 
                                 </div>
 
                             </div>
 
-                            
+
                             <div class="flex items-center justify-between text-black dark:text-white py-1 sm:mb-4 mb-3 mt-8">
-                                <h3 class="text-xl font-semibold"> Top Clip Streamers </h3>
+                                <h3 class="text-xl font-semibold"> All Active Quest </h3>
                                 <a href="#" class="text-sm text-blue-500 hidden">See all</a>
                             </div>
 
-                            
+
                             <nav>
 
-                                <ul uk-tab class="flex gap-2 flex-wrap text-sm text-center text-gray-600 capitalize font-semibold dark:text-white/80"
+                                {/* <ul uk-tab class="flex gap-2 flex-wrap text-sm text-center text-gray-600 capitalize font-semibold dark:text-white/80"
                                     uk-switcher="connect: #ttabs ; animation: uk-animation-slide-right-medium, uk-animation-slide-left-medium">
 
                                     <li>
@@ -539,92 +229,50 @@ function Hunt() {
                                         </a>
                                     </li>
 
-                                </ul>
+                                </ul> */}
                             </nav>
 
-                            
+
                             <div class="box p-5 mt-6">
 
-                                <div class="card-list">
-                                    <a href="#">
+                                {quests?.filter(quest => quest.creator !== userDetails?.username).map(quest => <div class="card-list p-1">
+                                    <a href={'/ravenhunt/quest/' + quest.id} >
                                         <div class="card-list-media md:h-full">
-                                            <img src="assets/images/games/img-lg-1.jpg" alt="" class="shadow"/>
-                                                <img src="assets/images/icon-play.svg" class="!w-12 !h-12 absolute !top-1/2 !left-1/2 -translate-x-1/2 -translate-y-1/2" alt=""/>
-                                                </div>
-                                            </a>
-                                            <div class="card-list-body">
-                                                <a href="#"> <h3 class="card-list-title">  Strike Force Heroes 2 </h3> </a>
-                                                <p class="card-list-text"> Lorem ipsum dolor sit amet, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem </p>
-                                                <a href="#"> <div class="card-list-link"> John Michael </div> </a>
-                                                <div class="card-list-info text-xs">
-                                                    <div> 27 weeks ago</div>
-                                                    <div class="md:block hidden">·</div>
-                                                    <div> 156.9K views</div>
-                                                </div>
-                                            </div>
+                                            <img src={quest.questFace} alt="" class="shadow" />
+                                            {/* <img src="assets/images/icon-play.svg" class="!w-12 !h-12 absolute !top-1/2 !left-1/2 -translate-x-1/2 -translate-y-1/2" alt="" /> */}
                                         </div>
-
-                                        <hr class="card-list-divider"></hr>
-
-                                        <div class="card-list">
-                                            <a href="#">
-                                                <div class="card-list-media md:h-full">
-                                                    <img src="assets/images/games/img-lg-2.jpg" alt="" class="shadow"/>
-                                                        <img src="assets/images/icon-play.svg" class="!w-12 !h-12 absolute !top-1/2 !left-1/2 -translate-x-1/2 -translate-y-1/2" alt=""/>
-                                                        </div>
-                                                    </a>
-                                                    <div class="card-list-body">
-                                                        <a href="#"> <h3 class="card-list-title"> Free Fire - Battlegrounds </h3> </a>
-                                                        <p class="card-list-text"> Consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam,</p>
-                                                        <a href="#"> <div class="card-list-link"> Monroe Parker </div> </a>
-                                                        <div class="card-list-info text-xs">
-                                                            <div> 27 weeks ago</div>
-                                                            <div class="md:block hidden">·</div>
-                                                            <div> 156.9K views</div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <hr class="card-list-divider"></hr>
-
-                                                <div class="card-list">
-                                                    <a href="#">
-                                                        <div class="card-list-media md:h-full">
-                                                            <img src="assets/images/games/img-lg-3.jpg" alt="" class="shadow"/>
-                                                                <img src="assets/images/icon-play.svg" class="!w-12 !h-12 absolute !top-1/2 !left-1/2 -translate-x-1/2 -translate-y-1/2" alt=""/>
-                                                                </div>
-                                                            </a>
-                                                            <div class="card-list-body">
-                                                                <a href="#"> <h3 class="card-list-title"> Clip Of Wolv strike </h3> </a>
-                                                                <p class="card-list-text">  Lorem ipsum dolor sit amet, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem </p>
-                                                                <a href="#"> <div class="card-list-link"> Martin Gray </div> </a>
-                                                                <div class="card-list-info text-xs">
-                                                                    <div> 27 weeks ago</div>
-                                                                    <div class="md:block hidden">·</div>
-                                                                    <div> 156.9K views</div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                </div>
-
-                                                <div class="flex justify-center my-6">
-                                                    <button type="button" class="bg-white py-2 px-5 rounded-full shadow-md font-semibold text-sm dark:bg-dark2">Load more...</button>
-                                                </div>
-
-
+                                    </a>
+                                    <div class="card-list-body">
+                                        <a href={'/ravenhunt/quest/' + quest.id} > <h3 class="card-list-title">  {quest.questTitle} </h3> </a>
+                                        <p class="card-list-text"> {quest.description} </p>
+                                        <a href={'/timeline/' + quest.creator} > <div class="card-list-link"> {users.filter(use => use.username === quest.creator).map(use => use.name)} </div> </a>
+                                        <div class="card-list-info text-xs">
+                                            <div> {formatTimestamp(quest.createdAt)}</div>
+                                            <div class="md:block hidden">·</div>
+                                            <div> {quest.participants.length} involved.</div>
                                         </div>
-
-
-                                </div>
-
-                                <Sid2bar/>
+                                    </div>
+                                </div>)}
 
                             </div>
 
-                        </main>
+                            <div class="flex justify-center my-6">
+                                <button type="button" class="bg-white py-2 px-5 rounded-full shadow-md font-semibold text-sm dark:bg-dark2">Load more...</button>
+                            </div>
+
+
+                        </div>
+
+
                     </div>
-                    )
+
+                    <Sid2bar />
+
+                </div>
+
+            </main>
+        </div>
+    )
 }
 
-                    export default Hunt
+export default Hunt
