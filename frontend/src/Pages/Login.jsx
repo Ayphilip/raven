@@ -22,7 +22,7 @@ function Login() {
     const navigate = useNavigate()
 
     if (!isLoading && address) {
-        const response = initiateLoginUser(address);
+        if(address) initiateLoginUser(address);
         // console.log(response)
     }
 
