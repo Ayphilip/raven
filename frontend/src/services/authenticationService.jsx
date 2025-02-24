@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
             setAuthenticated(true);
         }
             // console.log('here')
-        setLoading(false);
+        setLoading(false); 
     }, []);
 
     function getRandomBetween() {
