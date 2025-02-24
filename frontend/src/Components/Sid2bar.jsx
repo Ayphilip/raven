@@ -5,6 +5,8 @@ import { useUsers } from '../context/userContext';
 import { useLoginService } from '../services/authenticationService';
 import { useOthers } from '../context/otherContext';
 import { useAddress } from '@chopinframework/react';
+import { useTreasureHunt } from '../context/treasureHuntContext';
+import { useChats } from '../context/chatContext';
 
 function Sid2bar() {
 
@@ -18,6 +20,10 @@ function Sid2bar() {
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate } = useLoginService();
 
     const { ptoken, mintToken } = useOthers()
+
+    const { chats, allChats, fetchMessages } = useChats();
+
+    const { quests } = useTreasureHunt()
 
     const handleMint = () => {
         if (isMintAvailable) {
@@ -245,44 +251,19 @@ function Sid2bar() {
 
                             <ul class="-ml-2 uk-slider-items w-[calc(100%+0.5rem)]">
 
-                                <li class="w-1/2 pr-2">
+                                {quests.filter(quest => quest.status === 'active').map(quest => <li class="w-1/2 pr-2">
 
-                                    <a href="#">
+                                    <a href={'/ravenhunt/quest/' + quest.id}>
                                         <div class="relative overflow-hidden rounded-lg">
                                             <div class="relative w-full h-40">
-                                                <img src="assets/images/product/product-1.jpg" alt="" class="object-cover w-full h-full inset-0" />
+                                                <img src={quest.questFace} alt="" class="object-cover w-full h-full inset-0" />
                                             </div>
-                                            <div class="absolute right-0 top-0 m-2 bg-white/60 rounded-full py-0.5 px-2 text-sm font-semibold dark:bg-slate-800/60"> $12 </div>
+                                            <div class="absolute right-0 top-0 m-2 bg-white/60 rounded-full py-0.5 px-2 text-sm font-semibold dark:bg-slate-800/60"> {quest.rewardType === '1' ? quest.reward : (quest.participants.length * quest.entryAmount)} {quest.rewardToken} </div>
                                         </div>
-                                        <div class="mt-3 w-full"> Chill Lotion </div>
+                                        <div class="mt-3 w-full"> {quest.questTitle} </div>
                                     </a>
-                                </li>
-                                <li class="w-1/2 pr-2">
+                                </li>)}
 
-                                    <a href="#">
-                                        <div class="relative overflow-hidden rounded-lg">
-                                            <div class="relative w-full h-40">
-                                                <img src="assets/images/product/product-3.jpg" alt="" class="object-cover w-full h-full inset-0" />
-                                            </div>
-                                            <div class="absolute right-0 top-0 m-2 bg-white/60 rounded-full py-0.5 px-2 text-sm font-semibold dark:bg-slate-800/60"> $18 </div>
-                                        </div>
-                                        <div class="mt-3 w-full">  Gaming mouse </div>
-                                    </a>
-
-                                </li>
-                                <li class="w-1/2 pr-2">
-
-                                    <a href="#">
-                                        <div class="relative overflow-hidden rounded-lg">
-                                            <div class="relative w-full h-40">
-                                                <img src="assets/images/product/product-5.jpg" alt="" class="object-cover w-full h-full inset-0" />
-                                            </div>
-                                            <div class="absolute right-0 top-0 m-2 bg-white/60 rounded-full py-0.5 px-2 text-sm font-semibold dark:bg-slate-800/60"> $12 </div>
-                                        </div>
-                                        <div class="mt-3 w-full">  Herbal Shampoo </div>
-                                    </a>
-
-                                </li>
 
                             </ul>
 
@@ -313,8 +294,8 @@ function Sid2bar() {
                                 onClick={handleMint}
                                 disabled={!isMintAvailable}
                                 className={`button ${isMintAvailable
-                                        ? "bg-primary-soft text-primary dark:text-white"
-                                        : "bg-primary-soft text-primary dark:text-white"
+                                    ? "bg-primary-soft text-primary dark:text-white"
+                                    : "bg-primary-soft text-primary dark:text-white"
                                     }`}
                             >
                                 {isMintAvailable ? `Mint ${ptoken}` : `${timeLeft}`}
@@ -333,42 +314,19 @@ function Sid2bar() {
 
                     <div class="grid grid-cols-6 gap-3 mt-4">
 
-                        <a href="timeline.html">
-                            <div class="w-10 h-10 relative">
-                                <img src="assets/images/avatars/avatar-2.jpg" alt="" class="w-full h-full absolute inset-0 rounded-full" />
-                                <div class="absolute bottom-0 right-0 m-0.5 bg-green-500 rounded-full w-2 h-2"></div>
-                            </div>
-                        </a>
-                        <a href="timeline.html">
-                            <div class="w-10 h-10 relative">
-                                <img src="assets/images/avatars/avatar-3.jpg" alt="" class="w-full h-full absolute inset-0 rounded-full" />
-                                <div class="absolute bottom-0 right-0 m-0.5 bg-green-500 rounded-full w-2 h-2"></div>
-                            </div>
-                        </a>
-                        <a href="timeline.html">
-                            <div class="w-10 h-10 relative">
-                                <img src="assets/images/avatars/avatar-4.jpg" alt="" class="w-full h-full absolute inset-0 rounded-full" />
-                                <div class="absolute bottom-0 right-0 m-0.5 bg-green-500 rounded-full w-2 h-2"></div>
-                            </div>
-                        </a>
-                        <a href="timeline.html">
-                            <div class="w-10 h-10 relative">
-                                <img src="assets/images/avatars/avatar-5.jpg" alt="" class="w-full h-full absolute inset-0 rounded-full" />
-                                <div class="absolute bottom-0 right-0 m-0.5 bg-green-500 rounded-full w-2 h-2"></div>
-                            </div>
-                        </a>
-                        <a href="timeline.html">
-                            <div class="w-10 h-10 relative">
-                                <img src="assets/images/avatars/avatar-6.jpg" alt="" class="w-full h-full absolute inset-0 rounded-full" />
-                                <div class="absolute bottom-0 right-0 m-0.5 bg-green-500 rounded-full w-2 h-2"></div>
-                            </div>
-                        </a>
-                        <a href="timeline.html">
-                            <div class="w-10 h-10 relative">
-                                <img src="assets/images/avatars/avatar-7.jpg" alt="" class="w-full h-full absolute inset-0 rounded-full" />
-                                <div class="absolute bottom-0 right-0 m-0.5 bg-green-500 rounded-full w-2 h-2"></div>
-                            </div>
-                        </a>
+                        {allChats.map(chat => {
+                            const parts = chat.id?.split("_") || [];
+                            const otherId = parts.find((part) => part !== userDetails?.username)
+                            return users.filter(use => use.username === otherId).map(use =>
+                                < a href={"/timeline/"+use.username} >
+                                    <div class="w-10 h-10 relative">
+                                        <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-full h-full absolute inset-0 rounded-full" />
+                                        <div class="absolute bottom-0 right-0 m-0.5 bg-green-500 rounded-full w-2 h-2"></div>
+                                    </div>
+                                </a>
+                            )
+                        }
+                        )}
 
                     </div>
 
@@ -384,7 +342,7 @@ function Sid2bar() {
 
 
             </div>
-        </div>
+        </div >
     )
 }
 

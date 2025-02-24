@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { io } from 'socket.io-client';
 import { useUsers } from '../context/userContext';
 import { avatars } from './avatars';
+import CryptoJS from 'crypto-js';
 import { useOthers } from '../context/otherContext';
 import { useChats } from '../context/chatContext';
 import { encryptText } from './CapsuleInstance';
@@ -119,7 +120,7 @@ function ChatUI({ chats, userDetails, userInfo }) {
                         </div>
                     </div>)}
 
-                    <div class="text-sm font-medium space-y-6">
+                    <div class="text-sm font-medium space-y-6" style={{overflow: 'hidden'}}>
 
 
                         {chats.map(chat => chat.senderId !== userDetails?.username ? <div class="flex gap-3">
