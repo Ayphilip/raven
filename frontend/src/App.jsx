@@ -23,6 +23,7 @@ import { useLoginService } from './services/authenticationService'
 import PremiumPage from './Pages/PremiumPage'
 import QuestDetails from './Pages/QuestDetails'
 import BookmarkPage from './Pages/Bookmark'
+import SearchPage from './Pages/SearchPage'
 
 function App() {
   const { address, isLoading, isLoginError, login, logout, revalidate } = useAddress();
@@ -176,6 +177,7 @@ function App() {
         {isAuthenticated ? (
           <>
             <Route path="/bookmarks" Component={BookmarkPage} />
+            <Route path="/search" Component={SearchPage} />
             <Route path="/chat" Component={MessagesPage} />
             <Route path="/premium" Component={Premium} />
             <Route path="/premiumpage" Component={PremiumPage} />

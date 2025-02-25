@@ -10,6 +10,8 @@ import { useTreasureHunt } from '../context/treasureHuntContext';
 import { avatars } from '../Components/avatars';
 import formatTimestamp from '../Components/timeStamping';
 import { useOthers } from '../context/otherContext';
+import CryptoJS from 'crypto-js';
+import { encryptText } from '../Components/CapsuleInstance';
 
 function QuestDetails() {
 
@@ -23,7 +25,7 @@ function QuestDetails() {
     const { address, isLoading, isLoginError, logout, revalidate } = useAddress();
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate, useBookmark } = useLoginService();
 
-    const { quests, setSelectedQuest, joinQuest } = useTreasureHunt()
+    const { quests, guesses, setSelectedQuest, joinQuest, submitGuess } = useTreasureHunt()
     const { tokenBal, ptoken, makeTransfer } = useOthers()
 
     const [loadingQuest, setLoading] = useState(false)
@@ -36,6 +38,27 @@ function QuestDetails() {
 
     const [tweet, setTweet] = useState(null)
 
+    const [openGuess, setOpenGuess] = useState(false)
+
+    const [password, setPassword] = useState('')
+
+    const [serverResponse, setServerResponse] = useState('')
+
+    const checkGuess = async () => {
+        setLoading(true)
+        var mesg = encryptText(password)
+        const data = {
+            userId: userDetails?.username,
+            questId: questSelected.id,
+            guess: mesg
+        }
+        const response = await submitGuess(data)
+        setServerResponse(response.message)
+        // console.log(response.message)
+        setLoading(false)
+    }
+
+
     const joininQuest = () => {
         setLoading(true)
         if (ptoken !== questSelected?.rewardToken) {
@@ -43,7 +66,7 @@ function QuestDetails() {
         }
         const data = {
             from: userDetails?.username,
-            amount: questSelected.entryAmount,
+            amount: questSelected.entryAmount ? questSelected.entryAmount : 0,
             to: '',
             symbol: questSelected.rewardToken
         }
@@ -136,7 +159,8 @@ function QuestDetails() {
                                     </div>
 
                                     <div>
-                                        <div uk-countdown={"date: " + (questSelected.startDate >= Date.now ? questSelected.endDate : questSelected.startDate)}
+                                        Timer to end of quest
+                                    <div uk-countdown={`date: ${questSelected.endDate}`} 
                                             class="flex gap-3 text-2xl font-semibold text-primary dark:text-white max-lg:justify-center">
 
                                             <div class="bg-primary-soft/40 flex flex-col items-center justify-center rounded-lg w-16 h-16 lg:border-4 border-white md:shadow dark:border-slate-700">
@@ -168,7 +192,7 @@ function QuestDetails() {
                         <div class="flex items-center justify-between px-2 max-md:flex-col">
 
                             <div class="flex items-center gap-2 text-sm py-2 pr-1 lg:order-1">
-                                <button type="button" class="button bg-secondery flex items-center gap-2 py-2 px-3.5 dark:bg-dark3">
+                                <button type="button" onClick={() => setOpenGuess(true)} class="button bg-secondery flex items-center gap-2 py-2 px-3.5 dark:bg-dark3">
                                     <ion-icon name="star-outline" class="text-xl"></ion-icon>
                                     <span class="text-sm"> Submit Guess </span>
                                 </button>
@@ -212,7 +236,7 @@ function QuestDetails() {
                     </div>
 
                     <div class="flex 2xl:gap-12 gap-10 mt-8 max-lg:flex-col" id="js-oversized">
-                        <div id="page-tabs" class="uk-switcher mt-10" style={{width: '60%'}}>
+                        <div id="page-tabs" class="uk-switcher mt-10" style={{ width: '60%' }}>
                             <div class="flex-1 space-y-4">
 
                                 <div class="box p-5 px-6 relative">
@@ -305,70 +329,22 @@ function QuestDetails() {
                             <div class="flex-1 space-y-4">
 
                                 <div class="box p-5 px-6 relative">
-                                    <h3 class="font-semibold text-lg text-black dark:text-white"> Discussions </h3>
+                                    <h3 class="font-semibold text-lg text-black dark:text-white"> Guess </h3>
 
                                     <div class=" text-sm font-normal space-y-4 relative mt-4">
 
-                                        <div class="flex items-start gap-3 relative">
-                                            <a href="timeline.html"> <img src="assets/images/avatars/avatar-3.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
-                                            <div class="flex-1">
-                                                <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> Monroe Parker </a>
-                                                <p class="mt-0.5">What a beautiful photo! I love it. 😍 </p>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-start gap-3 relative">
-                                            <a href="timeline.html"> <img src="assets/images/avatars/avatar-2.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
-                                            <div class="flex-1">
-                                                <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> John Michael </a>
-                                                <p class="mt-0.5">   You captured the moment.😎 </p>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-start gap-3 relative">
-                                            <a href="timeline.html"> <img src="assets/images/avatars/avatar-5.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
-                                            <div class="flex-1">
-                                                <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> James Lewis </a>
-                                                <p class="mt-0.5">What a beautiful photo! I love it. 😍 </p>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-start gap-3 relative">
-                                            <a href="timeline.html"> <img src="assets/images/avatars/avatar-4.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
-                                            <div class="flex-1">
-                                                <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> Martin Gray </a>
-                                                <p class="mt-0.5">   You captured the moment.😎 </p>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <button type="button" class="flex items-center gap-1.5 text-blue-500 hover:text-blue-500 my-5">
-                                                <ion-icon name="chevron-down-outline" class="ml-auto duration-200 group-aria-expanded:rotate-180"></ion-icon>
-                                                More Comment
-                                            </button>
-                                        </div>
+                                        {guesses.slice(0, 15).map(guess =>
+                                            users.filter(use => use.username === guess.userId).map(use =>
 
-                                    </div>
-
-
-                                    <div class="sm:px-4 sm:py-3 p-2.5 border-t border-gray-100 flex items-center gap-1 -m-6 mt-0 bg-secondery/60 dark:border-slate-700/40">
-
-                                        <img src="assets/images/avatars/avatar-7.jpg" alt="" class="w-6 h-6 rounded-full" />
-
-                                        <div class="flex-1 relative overflow-hidden h-10">
-                                            <textarea placeholder="Add Comment...." rows="1" class="w-full resize-none !bg-transparent px-4 py-2 focus:!border-transparent focus:!ring-transparent"></textarea>
-
-                                            <div class="!top-2 pr-2" uk-drop="pos: bottom-right; mode: click">
-                                                <div class="flex items-center gap-2" uk-scrollspy="target: > svg; cls: uk-animation-slide-right-small; delay: 100 ;repeat: true">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 fill-sky-600">
-                                                        <path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" clip-rule="evenodd" />
-                                                    </svg>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 fill-pink-600">
-                                                        <path d="M3.25 4A2.25 2.25 0 001 6.25v7.5A2.25 2.25 0 003.25 16h7.5A2.25 2.25 0 0013 13.75v-7.5A2.25 2.25 0 0010.75 4h-7.5zM19 4.75a.75.75 0 00-1.28-.53l-3 3a.75.75 0 00-.22.53v4.5c0 .199.079.39.22.53l3 3a.75.75 0 001.28-.53V4.75z" />
-                                                    </svg>
+                                                <div class="flex items-start gap-3 relative">
+                                                    <a href={"/timeline/"+use.username}> <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
+                                                    <div class="flex-1">
+                                                        <a href={"/timeline/"+use.username} class="text-black font-medium inline-block dark:text-white"> {use.name} - {formatTimestamp(guess.createdAt)} </a>
+                                                        <p class="mt-0.5">{CryptoJS.AES.decrypt(guess.guess, "ravenTestToken").toString(CryptoJS.enc.Utf8)} </p>
+                                                    </div>
                                                 </div>
-                                            </div>
-
-
-                                        </div>
-
-                                        <button type="submit" class="text-sm rounded-full py-1.5 px-3.5 bg-secondery"> Replay</button>
+                                            )
+                                        )}
                                     </div>
 
 
@@ -519,12 +495,73 @@ function QuestDetails() {
                                 className={tokenBal < questSelected.entryAmount ? "flex items-center text-white justify-center gap-2 bg-secondery px-4 py-2 rounded-lg shadow-md w-full hover:bg-opacity-90 transition" : "flex items-center text-white justify-center gap-2 bg-primary px-4 py-2 rounded-lg shadow-md w-full hover:bg-opacity-90 transition"}
                             >
                                 <ion-icon name="lock-closed-outline"></ion-icon>
-                                Enter ({questSelected.entryAmount} {questSelected.rewardToken})
+                                Enter ({questSelected.entryAmount ? questSelected.entryAmount : 0} {questSelected.rewardToken})
                             </button>}
                             {tokenBal < questSelected.entryAmount && <span className='text-red-500'>Not Enough token</span>}
                         </div>
                     </div>
                 </div>}
+
+            {openGuess && <div className=" uk-modal lg:p-20 z-[1] uk-open">
+                <div class="uk-modal-dialog tt relative overflow-auto mx-auto bg-white shadow-xl rounded-lg md:w-[auto] dark:bg-dark1">
+                    <div className="relative bg-white dark:bg-dark1 p-6 rounded-lg shadow-xl w-96 text-center animate-fade-in">
+
+                        {/* Close Button */}
+                        <button
+                            onClick={() => {
+                                setPassword("");
+                                setOpenGuess(false);
+                            }}
+                            className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 text-lg"
+                        >
+                            ✖
+                        </button>
+
+                        {/* Title / Server Response */}
+                        <h1 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">{serverResponse}</h1>
+
+                        {/* Guess Input */}
+                        <input
+                            type="text"
+                            placeholder="Enter your guess..."
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary dark:bg-dark2 dark:text-white transition"
+                        />
+
+                        {/* Guess Button */}
+                        {loadingQuest ? (
+                            <button
+                                type="button"
+                                className="flex items-center justify-center gap-2 bg-primary px-4 py-2 rounded-lg shadow-md w-full text-white hover:bg-opacity-90 transition mt-4"
+                                disabled
+                            >
+                                Executing...
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={checkGuess}
+                                className="flex items-center justify-center gap-2 bg-primary px-4 py-2 rounded-lg shadow-md w-full text-white hover:bg-opacity-90 transition mt-4"
+                            >
+                                <ion-icon name="lock-closed-outline"></ion-icon>
+                                Guess
+                            </button>
+                        )}
+
+                        {/* Cancel Button */}
+                        <span
+                            className="block mt-4 text-red-500 cursor-pointer hover:underline"
+                            onClick={() => {
+                                setPassword("");
+                                setOpenGuess(false);
+                            }}
+                        >
+                            Cancel
+                        </span>
+                    </div>
+                </div>
+            </div>}
         </div>
     )
 }

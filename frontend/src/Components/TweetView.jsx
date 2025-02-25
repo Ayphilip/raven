@@ -105,7 +105,7 @@ function TweetView({ tweets }) {
                 </div>
 
 
-                <div style={{cursor: 'pointer'}}>
+                <div style={{cursor: 'pointer', padding: '10px'}}>
                     <a href={'/tweet/' + tweet.id}>
 
                         <div class="sm:px-4 p-2.5 pt-0">

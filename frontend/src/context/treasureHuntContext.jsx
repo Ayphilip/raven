@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import { db, collection, doc, getDoc, setDoc, updateDoc, arrayUnion, onSnapshot, Timestamp } from '../Components/firebaseConfig';
+import { db, collection, doc, getDoc, setDoc, updateDoc, arrayUnion, query, where, onSnapshot, Timestamp } from '../Components/firebaseConfig';
 
 const TreasureHuntContext = createContext();
 
 export const TreasureHuntProvider = ({ children }) => {
     const [quests, setQuests] = useState([]);
     const [selectedQuest, setSelectedQuest] = useState(null);
+    const [guesses, setGuesses] = useState([])
 
 
     // Fetch quests from the API
@@ -53,9 +54,10 @@ export const TreasureHuntProvider = ({ children }) => {
     };
 
     // Submit a guess
-    const submitGuess = async (userId, questId, guess) => {
+    const submitGuess = async (data2) => {
         try {
-            const { data } = await axios.post('/api/treasurehunt/quest/guess', { userId, questId, guess }, {
+            console.log(data2)
+            const { data } = await axios.post('/api/treasurehunt/quest/guess', data2, {
                 headers: { 'Content-Type': 'application/json' }
             });
             return data;
@@ -68,17 +70,32 @@ export const TreasureHuntProvider = ({ children }) => {
     useEffect(() => {
         if (!selectedQuest) return;
 
-        const chatRef = collection(db, 'quests');
+        // Reference the selected quest document
+        const questRef = doc(db, "quests", selectedQuest);
 
-        // Firestore subscription
-        const unsubscribe = onSnapshot(chatRef, (snapshot) => {
-            if (!snapshot.empty) {
-                const quests = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-                setQuests(quests);
+        // Firestore subscription for the selected quest
+        const unsubscribeQuest = onSnapshot(questRef, (doc) => {
+            if (doc.exists()) {
+                setQuests((prevQuests) => {
+                    const updatedQuest = { id: doc.id, ...doc.data() };
+                    return prevQuests.some((q) => q.id === updatedQuest.id)
+                        ? prevQuests.map((q) => (q.id === updatedQuest.id ? updatedQuest : q))
+                        : [...prevQuests, updatedQuest];
+                });
             }
         });
 
-        // EventSource for real-time updates
+        // Firestore subscription for the guesses of the selected quest
+        const guessRef = doc(db, "guess", selectedQuest); // questId is the document ID
+        const unsubscribeGuesses = onSnapshot(guessRef, (doc) => {
+            if (doc.exists()) {
+                setGuesses(doc.data().guesses || []); // Extract only the guesses array
+            } else {
+                setGuesses([]); // If no document exists, reset the guesses
+            }
+        });
+
+        // EventSource for real-time quest updates from the server
         const eventSource = new EventSource(`/api/treasurehunt/quest/live/${selectedQuest}`);
         eventSource.onmessage = (event) => {
             const updatedQuest = JSON.parse(event.data);
@@ -89,14 +106,16 @@ export const TreasureHuntProvider = ({ children }) => {
 
         // Cleanup function
         return () => {
-            unsubscribe();  // Unsubscribe Firestore listener
-            eventSource.close(); // Close EventSource
+            unsubscribeQuest(); // Unsubscribe from quest updates
+            unsubscribeGuesses(); // Unsubscribe from guess updates
+            eventSource.close(); // Close EventSource connection
         };
     }, [selectedQuest]);
 
 
+
     return (
-        <TreasureHuntContext.Provider value={{ quests, createQuest, joinQuest, submitGuess, setSelectedQuest }}>
+        <TreasureHuntContext.Provider value={{ quests, guesses, createQuest, joinQuest, submitGuess, setSelectedQuest }}>
             {children}
         </TreasureHuntContext.Provider>
     );

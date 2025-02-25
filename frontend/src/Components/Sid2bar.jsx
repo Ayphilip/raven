@@ -8,7 +8,7 @@ import { useAddress } from '@chopinframework/react';
 import { useTreasureHunt } from '../context/treasureHuntContext';
 import { useChats } from '../context/chatContext';
 
-function Sid2bar() {
+function Sid2bar({ ps }) {
 
     const [isMintAvailable, setIsMintAvailable] = useState(false);
     const [timeLeft, setTimeLeft] = useState("");
@@ -82,10 +82,10 @@ function Sid2bar() {
             <div class="lg:space-y-4 lg:pb-8 max-lg:grid sm:grid-cols-2 max-lg:gap-6"
                 uk-sticky="media: 1024; end: #js-oversized; offset: 80">
 
-                <div id="search--box" class="xl:w-auto sm:w-96 sm:relative rounded-xl overflow-hidden bg-secondery max-md:hidden w-screen left-0 max-sm:fixed max-sm:top-2 dark:!bg-white/5">
+                {ps !== 'search' && <div id="search--box" class="xl:w-auto sm:w-96 sm:relative rounded-xl overflow-hidden bg-secondery max-md:hidden w-screen left-0 max-sm:fixed max-sm:top-2 dark:!bg-white/5">
                     <ion-icon name="search" class="absolute left-4 top-1/2 -translate-y-1/2"></ion-icon>
                     <input type="text" placeholder="Search Friends, videos .." class="w-full !pl-10 !font-normal !bg-transparent h-12 !text-sm" />
-                </div>
+                </div>}
 
                 <div class="box p-5 px-6 border1 dark:bg-dark1">
 
@@ -153,16 +153,29 @@ function Sid2bar() {
 
                     <div class="side-list">
 
-                        {users.filter(use => userDetails && use.username !== userDetails.username).map(use => <div class="side-list-item">
-                            <a href={"/timeline/" + use.id}>
-                                <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="side-list-image rounded-full" />
-                            </a>
-                            <div class="flex-1">
-                                <a href={"/timeline/" + use.id}><h4 class="side-list-title">  {use.name} </h4></a>
-                                <div class="side-list-info"> {use.followers.length} Following </div>
-                            </div>
-                            {use.followers.some(fol => fol === userDetails.username) ? <button class="button bg-primary-soft text-primary dark:text-white">unfollow</button> : <button class="button bg-primary-soft text-primary dark:text-white">follow</button>}
-                        </div>)}
+                        {users
+                            .filter(use => userDetails && use.username !== userDetails.username) // Filter out the current user
+                            // .sort(() => Math.random() - 0.5) // Shuffle the array randomly
+                            .slice(0, 5) // Limit to 5 random users
+                            .map(use => (
+                                <div class="side-list-item" key={use.id}>
+                                    <a href={"/timeline/" + use.id}>
+                                        <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="side-list-image rounded-full" />
+                                    </a>
+                                    <div class="flex-1">
+                                        <a href={"/timeline/" + use.id}>
+                                            <h4 class="side-list-title"> {use.name} </h4>
+                                        </a>
+                                        <div class="side-list-info"> {use.followers.length} Following </div>
+                                    </div>
+                                    {use.followers.some(fol => fol === userDetails.username) ? (
+                                        <button class="button bg-primary-soft text-primary dark:text-white">unfollow</button>
+                                    ) : (
+                                        <button class="button bg-primary-soft text-primary dark:text-white">follow</button>
+                                    )}
+                                </div>
+                            ))}
+
 
                         <button class="bg-secondery button w-full mt-2 hidden">See all</button>
 
@@ -318,7 +331,7 @@ function Sid2bar() {
                             const parts = chat.id?.split("_") || [];
                             const otherId = parts.find((part) => part !== userDetails?.username)
                             return users.filter(use => use.username === otherId).map(use =>
-                                < a href={"/timeline/"+use.username} >
+                                < a href={"/timeline/" + use.username} >
                                     <div class="w-10 h-10 relative">
                                         <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-full h-full absolute inset-0 rounded-full" />
                                         <div class="absolute bottom-0 right-0 m-0.5 bg-green-500 rounded-full w-2 h-2"></div>

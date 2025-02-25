@@ -1,4 +1,4 @@
-import { db, doc, getDoc, setDoc, updateDoc, collection, addDoc, arrayUnion, arrayRemove, getDocs, query, where, onSnapshot, serverTimestamp } from "../config/firebaseConfig.js";
+import { db, doc, getDoc, setDoc, updateDoc, collection, addDoc, arrayUnion, arrayRemove, getDocs, query, where, onSnapshot, serverTimestamp, Timestamp } from "../config/firebaseConfig.js";
 import crypto from "crypto";
 import { genId, sendNotification } from "../util.js";
 
@@ -53,11 +53,11 @@ export const createQuest = async (req, res) => {
 
         const userRef = doc(db, "users", creator);
         const userSnapshot = await getDoc(userRef);
-        
+
 
         if (userSnapshot.exists()) {
             const userData = userSnapshot.data();
-            
+
             await sendNotification(userData.notificationList, creator, questId, 1)
         }
 
@@ -70,6 +70,79 @@ export const createQuest = async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
+
+export const submitGuess = async (req, res) => {
+    try {
+        const { userId, questId, guess } = req.body;
+
+        // Reference the quest document
+        const questRef = doc(db, "quests", questId);
+        const questDoc = await getDoc(questRef);
+
+        if (!questDoc.exists()) {
+            return res.status(404).json({ error: "Quest not found" });
+        }
+
+        const questData = questDoc.data();
+
+        if (questData.status === "completed") {
+            return res.status(400).json({ error: "This quest has already been completed." });
+        }
+
+        // Prepare the new guess entry
+        const newGuess = {
+            userId,
+            guess,
+            createdAt: Timestamp.now(),
+        };
+
+        // Reference the "guess" collection, where each questId holds a list of guesses
+        const guessRef = doc(db, "guess", questId);
+        const guessDoc = await getDoc(guessRef);
+
+        if (guessDoc.exists()) {
+            // Append new guess to the existing list
+            await updateDoc(guessRef, {
+                guesses: arrayUnion(newGuess), // Add new guess to the list
+            });
+        } else {
+            // Create a new document for this questId
+            await setDoc(guessRef, {
+                questId,
+                guesses: [newGuess], // Initialize with the first guess
+            });
+        }
+
+        // Check if the guess is correct
+        const isCorrect = guess === questData.answer;
+
+        if (isCorrect) {
+            // Update the quest with the winner and set status to "completed"
+            await updateDoc(questRef, {
+                winner: userId,
+                status: "completed",
+            });
+
+            return res.status(200).json({ 
+                success: true, 
+                correct: true, 
+                message: "Congratulations! Your guess is correct."
+            });
+        }
+
+        return res.status(200).json({ 
+            success: true, 
+            correct: false, 
+            message: "Incorrect guess. Try again!"
+        });
+
+    } catch (error) {
+        console.error("Error submitting guess:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
 
 export const joinQuest = async (req, res) => {
     try {
@@ -91,10 +164,10 @@ export const joinQuest = async (req, res) => {
 
 
 // 📌 Submit a guess for a quest
-export const submitGuess = async (req, res) => {
+export const submitGuesss = async (req, res) => {
     try {
         const { userId, questId, guess } = req.body;
-        const questRef = doc(db, "quests", questId);
+        const questRef = doc(db, "guess", questId);
         const questDoc = await getDoc(questRef);
 
         if (!questDoc.exists()) {

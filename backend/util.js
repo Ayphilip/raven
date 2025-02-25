@@ -1,3 +1,4 @@
+import { Oracle } from "@chopinframework/core";
 import {
     db,
     doc,
@@ -26,14 +27,31 @@ import {
 // }
 
 export const genId = async () => {
-    // var oracle = new Oracle;
-    // var Id = await oracle.notarize(() =>crypto.randomUUID())
-    // var id = await Oracle.notarize(() =>crypto.randomUUID())
-    var id = crypto.randomUUID()
+    var oracle = new Oracle('http://localhost:4000');
+    var Id = await oracle.notarize(() => crypto.randomUUID())
     // var addr = await useAddress().
     // console.log(addr.address)
 
-    return id;
+    return Id;
+};
+
+export const genId2 = async () => {
+    var oracle = new Oracle('http://localhost:4000');
+    // var Id = await oracle.notarize(() =>crypto.randomUUID())
+    // var name = await oracle.random(50)
+    // var Id = await oracle.now()
+    // var Id = await oracle.random()
+    var Id = await oracle.notarize(() => {
+
+        return 'Hello World'
+    }
+    )
+    // var id = await Oracle.notarize(() =>crypto.randomUUID())
+    // var id = crypto.randomUUID()
+    // var addr = await useAddress().
+    // console.log(addr.address)
+
+    return Id;
 };
 
 // export const timeStampsChopin = async () => {

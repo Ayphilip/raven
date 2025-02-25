@@ -16,7 +16,7 @@ import {
     db, doc, getDoc, setDoc, updateDoc, Timestamp, collection, getDocs, query, where, orderBy, serverTimestamp,
     arrayUnion
 } from "./config/firebaseConfig.js";
-import { genId } from "./util.js";
+import { genId, genId2 } from "./util.js";
 
 // Define __dirname manually for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -145,7 +145,7 @@ app.get("*", (req, res) => {
 
 // Start Server
 const PORT = process.env.PORT || 5000;
-// const defs = await genId()
+// const defs = await genId2()
 // console.log(defs)
 server.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);

@@ -117,7 +117,7 @@ export const OtherProvider = ({ children }) => {
 
     const markNotification = async (userId) => {
         try {
-            const response = await axios.patch("/api/notifications/read", { userId })
+            await axios.patch("/api/notifications/read", { userId })
             fetchOthers()
 
 
