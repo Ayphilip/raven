@@ -333,7 +333,7 @@ function QuestDetails() {
 
                                     <div class=" text-sm font-normal space-y-4 relative mt-4">
 
-                                        {guesses.slice(0, 15).map(guess =>
+                                        {guesses.reverse().slice(0, 15).map(guess =>
                                             users.filter(use => use.username === guess.userId).map(use =>
 
                                                 <div class="flex items-start gap-3 relative">
