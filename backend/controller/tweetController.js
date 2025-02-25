@@ -70,7 +70,7 @@ export const createTweet = async (req, res) => {
             }
         }
 
-        await sendNotification(notificationList, notifUserId, initId, 0)
+        await sendNotification(notificationList, initId, 0)
 
         return res.status(201).json({ message: "Tweet created successfully" });
     } catch (error) {

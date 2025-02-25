@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
+import { db, collection, doc, getDoc, setDoc, updateDoc, arrayUnion, onSnapshot, Timestamp } from '../Components/firebaseConfig';
 
 const TreasureHuntContext = createContext();
 
@@ -66,13 +67,33 @@ export const TreasureHuntProvider = ({ children }) => {
     // Real-time listener for quest updates using SSE
     useEffect(() => {
         if (!selectedQuest) return;
+
+        const chatRef = collection(db, 'quests');
+
+        // Firestore subscription
+        const unsubscribe = onSnapshot(chatRef, (snapshot) => {
+            if (!snapshot.empty) {
+                const quests = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+                setQuests(quests);
+            }
+        });
+
+        // EventSource for real-time updates
         const eventSource = new EventSource(`/api/treasurehunt/quest/live/${selectedQuest}`);
         eventSource.onmessage = (event) => {
             const updatedQuest = JSON.parse(event.data);
-            setQuests((prevQuests) => prevQuests.map(q => q.id === updatedQuest.id ? updatedQuest : q));
+            setQuests((prevQuests) =>
+                prevQuests.map((q) => (q.id === updatedQuest.id ? updatedQuest : q))
+            );
         };
-        return () => eventSource.close();
+
+        // Cleanup function
+        return () => {
+            unsubscribe();  // Unsubscribe Firestore listener
+            eventSource.close(); // Close EventSource
+        };
     }, [selectedQuest]);
+
 
     return (
         <TreasureHuntContext.Provider value={{ quests, createQuest, joinQuest, submitGuess, setSelectedQuest }}>

@@ -75,7 +75,7 @@ function Sid2bar() {
         return () => {
 
         }
-    }, [isLoading])
+    }, [isLoading, isMintAvailable])
     return (
         <div class="2xl:w-[380px] lg:w-[330px] w-full">
 

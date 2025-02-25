@@ -10,7 +10,7 @@ import { motion } from "motion/react"
 import { Tooltip } from 'react-tooltip';
 import { renderContentWithMentions } from './CapsuleInstance';
 import { Mention, MentionsInput } from 'react-mentions';
-import CommentModal from './Modal';
+import CommentModal, { FileViewTweet } from './Modal';
 
 
 function TweetView({ tweets }) {
@@ -20,11 +20,13 @@ function TweetView({ tweets }) {
 
     const [content, setContent] = useState('')
     const [visibility, setVisible] = useState(0)
-    const [media, setMedia] = useState([])
+    const [media2, setMedia2] = useState([])
 
     const [id, setId] = useState(null)
 
     const [type, setType] = useState(0)
+
+    const [itemViewId, setItemViewId] = useState(null)
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -43,7 +45,7 @@ function TweetView({ tweets }) {
         const uploadedFiles = await Promise.all(fileArray.map(uploadMedia));
 
         // Store uploaded URLs in state
-        setMedia((prevUrls) => [...prevUrls, ...uploadedFiles]);
+        setMedia2((prevUrls) => [...prevUrls, ...uploadedFiles]);
     };
 
     const saveRetweet = (tweetId) => {
@@ -102,16 +104,19 @@ function TweetView({ tweets }) {
                     </div>
                 </div>
 
-                <a href={'/tweet/' + tweet.id}>
 
-                    <div class="sm:px-4 p-2.5 pt-0">
-                        <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails ? userDetails : '')}</p>
-                    </div>
+                <div style={{cursor: 'pointer'}}>
+                    <a href={'/tweet/' + tweet.id}>
+
+                        <div class="sm:px-4 p-2.5 pt-0">
+                            <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails ? userDetails : '')}</p>
+                        </div>
+                    </a>
 
                     {tweet.media.length === 3 && <div class="grid sm:grid-cols-3 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
                         {tweet.media.map((med, index) => (
                             <span key={index} className="w-full">
-                                <a className="inline" href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
+                                <a className="inline" onClick={() => { setItemViewId(tweet.tweetId) }} data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
                                     <MediaViewer fileUrl={med} />
                                 </a>
                             </span>
@@ -121,7 +126,7 @@ function TweetView({ tweets }) {
                     {(tweet.media.length === 2 || tweet.media.length === 4) && <div class="grid sm:grid-cols-2 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
                         {tweet.media.map((med, index) => (
                             <span key={index} className="w-full">
-                                <a className="inline" href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
+                                <a className="inline" onClick={() => { setItemViewId(tweet.tweetId) }} data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
                                     <MediaViewer fileUrl={med} />
                                 </a>
                             </span>
@@ -130,17 +135,17 @@ function TweetView({ tweets }) {
 
                     {tweet.media.length === 1 &&
                         <div class="grid sm:grid-cols-1 gap-1" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
-                        {tweet.media.map((med, index) => (
-                            <span key={index} className="w-full">
-                                <a className="inline" href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
-                                    <MediaViewer fileUrl={med} />
-                                </a>
-                            </span>
-                        ))}
-                    </div>
+                            {tweet.media.map((med, index) => (
+                                <span key={index} className="w-full">
+                                    <a className="inline" onClick={() => { setItemViewId(tweet.tweetId) }} data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
+                                        <MediaViewer fileUrl={med} />
+                                    </a>
+                                </span>
+                            ))}
+                        </div>
                     }
 
-                </a>
+                </div>
 
 
                 {tweet.parent !== 'original' && <RetweetView id={tweet.parent} />}
@@ -446,6 +451,8 @@ function TweetView({ tweets }) {
 
         </div>
 
+
+        <FileViewTweet isOpen={itemViewId !== null} tweetId={itemViewId} onClose={() => setItemViewId(null)} />
         <CommentModal isOpen={id !== null} type={type} item={id} onClose={() => setId(null)} />
 
 

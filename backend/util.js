@@ -42,7 +42,7 @@ export const genId = async () => {
 // }
 
 
-export const sendNotification = async (users, userId, message, type) => {
+export const sendNotification = async (users, message, type) => {
     try {
         //type 0 = Tweet Notification
         //type 1 = Quest Notification

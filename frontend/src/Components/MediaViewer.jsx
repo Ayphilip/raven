@@ -11,7 +11,7 @@ const MediaViewer = ({ fileUrl }) => {
     if (!fileUrl) return <p>No media available</p>;
 
     return isVideo(fileUrl) ? (
-        <video controls={false}  className="w-full rounded-lg">
+        <video  className="w-full rounded-lg">
             <source src={fileUrl} />
             Your browser does not support the video tag.
         </video>

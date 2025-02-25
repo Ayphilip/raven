@@ -6,12 +6,17 @@ import { useLoginService } from '../services/authenticationService';
 import MediaViewer from './MediaViewer';
 import { avatars } from './avatars';
 import { renderContentWithMentions } from './CapsuleInstance';
+import { FileViewTweet } from './Modal';
 
 function RetweetView({ id, type }) {
     const { tweets, likeTweet, retweetTweet, fetchTweet, addTweet } = useTweets();
     const { users, addUser, modifyUser } = useUsers();
     const { userDetails, initiateLoginUser, userlogoutService, loading } = useLoginService();
     const [tweet, setTweet] = useState(null)
+
+    const [itemViewId, setItemViewId] = useState(null)
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
 
     useEffect(() => {
@@ -51,45 +56,49 @@ function RetweetView({ id, type }) {
 
             </div>}
 
-            <a href={'/tweet/' + tweet.tweetId}>
+            <div style={{ cursor: 'pointer' }}>
+                <a href={'/tweet/' + tweet.id}>
 
-                <div class="sm:px-4 p-2.5 pt-0">
-                    <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails ? userDetails.username : '')}</p>
-                </div>
-            </a>
+                    <div class="sm:px-4 p-2.5 pt-0">
+                        <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails ? userDetails : '')}</p>
+                    </div>
+                </a>
 
-
-            {tweet.media.length === 3 && <div class="grid sm:grid-cols-3 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
-                {tweet.media.map((med, index) => (
-                    <span key={index} className="w-full">
-                        <a className="inline" href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
-                            <MediaViewer fileUrl={med} />
-                        </a>
-                    </span>
-                ))}
-            </div>}
-
-            {(tweet.media.length === 2 || tweet.media.length === 4) && <div class="grid sm:grid-cols-2 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
-                {tweet.media.map((med, index) => (
-                    <span key={index} className="w-full">
-                        <a className="inline" href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
-                            <MediaViewer fileUrl={med} />
-                        </a>
-                    </span>
-                ))}
-            </div>}
-
-            {tweet.media.length === 1 &&
-                <div class="grid sm:grid-cols-1 gap-1" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
+                {tweet.media.length === 3 && <div class="grid sm:grid-cols-3 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
                     {tweet.media.map((med, index) => (
                         <span key={index} className="w-full">
-                            <a className="inline" href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
+                            <a className="inline" onClick={() => { setItemViewId(tweet.tweetId) }} data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
                                 <MediaViewer fileUrl={med} />
                             </a>
                         </span>
                     ))}
-                </div>
-            }
+                </div>}
+
+                {(tweet.media.length === 2 || tweet.media.length === 4) && <div class="grid sm:grid-cols-2 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
+                    {tweet.media.map((med, index) => (
+                        <span key={index} className="w-full">
+                            <a className="inline" onClick={() => { setItemViewId(tweet.tweetId) }} data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
+                                <MediaViewer fileUrl={med} />
+                            </a>
+                        </span>
+                    ))}
+                </div>}
+
+                {tweet.media.length === 1 &&
+                    <div class="grid sm:grid-cols-1 gap-1" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
+                        {tweet.media.map((med, index) => (
+                            <span key={index} className="w-full">
+                                <a className="inline" onClick={() => { setItemViewId(tweet.tweetId) }} data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
+                                    <MediaViewer fileUrl={med} />
+                                </a>
+                            </span>
+                        ))}
+                    </div>
+                }
+
+            </div>
+
+            <FileViewTweet isOpen={itemViewId !== null} tweetId={itemViewId} onClose={() => setItemViewId(null)} />
 
         </div>
     )

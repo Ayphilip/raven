@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useUsers } from '../context/userContext';
 import { useLoginService } from '../services/authenticationService';
 import { Mention, MentionsInput } from 'react-mentions';
@@ -9,6 +9,8 @@ import { useTweets } from '../context/tweetContext';
 import { encryptText, renderContentWithMentions } from './CapsuleInstance';
 import { useOthers } from '../context/otherContext';
 import { uploadMedia } from '../services/uploadServices';
+import formatTimestamp from './timeStamping';
+import { motion } from "motion/react"
 
 export default function CommentModal({ isOpen, onClose, type, item }) {
     const { userList, users } = useUsers()
@@ -16,9 +18,9 @@ export default function CommentModal({ isOpen, onClose, type, item }) {
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate } = useLoginService();
     const [content, setContent] = useState('')
     const [visibility, setVisible] = useState(0)
-    const [media, setMedia] = useState([])
+    const [media3, setMedia3] = useState([])
 
-    const handleFileChange = async (event) => {
+    const handleFileChangeModal = async (event) => {
 
         const files = event.target.files;
         if (!files.length) return;
@@ -29,7 +31,7 @@ export default function CommentModal({ isOpen, onClose, type, item }) {
         const uploadedFiles = await Promise.all(fileArray.map(uploadMedia));
 
         // Store uploaded URLs in state
-        setMedia((prevUrls) => [...prevUrls, ...uploadedFiles]);
+        setMedia3((prevUrls) => [...prevUrls, ...uploadedFiles]);
     };
 
     const extractMentions = (text) => {
@@ -51,7 +53,7 @@ export default function CommentModal({ isOpen, onClose, type, item }) {
         const data = {
             userId: userDetails.username,
             content: content,
-            media: media,
+            media: media3,
             parent: item.tweetId,
             visibility: visibility,
             mentions: mentionedUserIds,
@@ -62,7 +64,7 @@ export default function CommentModal({ isOpen, onClose, type, item }) {
         addTweet(data);
         setVisible(1)
         setContent('')
-        setMedia([])
+        setMedia3([])
         onClose()
 
     }
@@ -173,7 +175,7 @@ export default function CommentModal({ isOpen, onClose, type, item }) {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    {media.map(meds =>
+                    {media3.map(meds =>
                         <div style={{ width: 10 + 'vw', padding: 10, borderRadius: 30 }}>
                             <MediaViewer fileUrl={meds} />
                         </div>
@@ -183,22 +185,23 @@ export default function CommentModal({ isOpen, onClose, type, item }) {
 
                     {item && type == 2 && <RetweetView id={item.tweetId} />}
                 </div>
+
                 {/* <DisplayFile fileId={2} /> */}
 
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
 
                     <div class="flex items-center gap-2 text-sm py-2 px-4 font-medium flex-wrap">
 
-                        <label htmlFor="file-upload" className="flex items-center gap-1.5 bg-sky-50 text-sky-600 rounded-full py-1 px-2 border-2 border-sky-100 dark:bg-sky-950 dark:border-sky-900 cursor-pointer">
+                        <label className="flex items-center gap-1.5 bg-sky-50 text-sky-600 rounded-full py-1 px-2 border-2 border-sky-100 dark:bg-sky-950 dark:border-sky-900 cursor-pointer">
                             <ion-icon name="image" className="text-base"></ion-icon>
 
                             <input
-                                id="file-upload"
+
                                 type="file"
                                 multiple
                                 accept="image/*"
                                 className="hidden"
-                                onChange={handleFileChange}
+                                onChange={handleFileChangeModal}
                             />
                         </label>
 
@@ -211,13 +214,13 @@ export default function CommentModal({ isOpen, onClose, type, item }) {
                                 multiple
                                 accept="video/*"
                                 className="hidden"
-                                onChange={handleFileChange}
+                                onChange={handleFileChangeModal}
                             />
                         </label>
 
                     </div>
                     <div class="flex items-center gap-2 p-5">
-                        <button type="submit" disabled={!content && !media.length ? true : false} onClick={saveTweet} class="button bg-blue-500 text-white py-2 px-12 text-[14px]"> reply</button>
+                        <button type="submit" disabled={!content && !media3.length ? true : false} onClick={saveTweet} class="button bg-blue-500 text-white py-2 px-12 text-[14px]"> reply</button>
                     </div>
                 </div>
 
@@ -344,9 +347,9 @@ export const QuestFormModal = ({ isOpen, onClose, onSubmit }) => {
                             <input type="date" name="endDate" className="w-full p-4 border border-gray-300 rounded-lg" onChange={handleChange} required />
                             <div className="col-span-2 flex justify-between mt-8">
                                 <button type="button" onClick={onClose} className="px-8 py-3 bg-gray-400 rounded-lg text-lg">Cancel</button>
-                                {loadingSavingQuest ? 
-                                <button type="button" className="px-8 py-3 bg-blue-600 text-white rounded-lg text-lg">Executing...</button>
-                                : <button type="submit" className="px-8 py-3 bg-blue-600 text-white rounded-lg text-lg" disabled={tokenBal < 100 ? true : false}>Submit for 100 RTT</button>}
+                                {loadingSavingQuest ?
+                                    <button type="button" className="px-8 py-3 bg-blue-600 text-white rounded-lg text-lg">Executing...</button>
+                                    : <button type="submit" className="px-8 py-3 bg-blue-600 text-white rounded-lg text-lg" disabled={tokenBal < 100 ? true : false}>Submit for 100 RTT</button>}
                             </div>
                         </form>
                     </div>
@@ -355,3 +358,564 @@ export const QuestFormModal = ({ isOpen, onClose, onSubmit }) => {
         </div>
     );
 };
+
+export const FileViewTweet = ({ tweetId, isOpen, onClose, onSubmit }) => {
+
+    const [tweet, setTweet] = useState(null)
+    const { tweets, likeTweet, retweetTweet, addTweet, fetchTweet } = useTweets();
+    const { users, addUser, modifyUser } = useUsers();
+    const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate, useBookmark } = useLoginService();
+
+    const [id, setId] = useState(null)
+
+    const [type, setType] = useState(0)
+
+    const isVideo = (url) => {
+        const videoExtensions = [".mp4", ".webm", ".mov", ".avi", ".mkv"];
+        return videoExtensions.some((ext) => url.includes(ext));
+    };
+
+    useEffect(() => {
+        const readTweet = async () => {
+            // const response = await fetchTweet(tweetId)
+            const newTweet = tweets.find(tweet => tweet.tweetId === tweetId);
+            setTweet(newTweet)
+            console.log(newTweet)
+        }
+
+        if (tweetId) readTweet()
+
+
+        return () => {
+
+        }
+    }, [tweetId, tweets])
+
+    if (!isOpen) return null;
+
+    return userDetails && tweet && <div class="uk-modal lg:p-20 max-lg:!items-start uk-open" id="preview_modal" uk-modal="">
+
+        <div class="uk-modal-dialog tt relative mx-auto overflow-hidden shadow-xl rounded-lg lg:flex items-center ax-w-[86rem] w-full lg:h-[80vh]">
+
+
+            <div class="lg:h-full lg:w-[calc(100vw-400px)] w-full h-96 flex justify-center items-center relative">
+
+                {/* <div class="relative z-10 w-full h-full">
+                    <img src="assets/images/post/post-1.jpg" alt="" class="w-full h-full object-cover absolute" />
+                </div> */}
+
+
+
+
+                <div class="relative z-10 w-full h-full" >
+
+                    <div class="relative" tabindex="-1" uk-slideshow="animation: push">
+
+                        <ul class="uk-slideshow-items" >
+                            {tweet.media.map(fileUrl =>
+
+                                <li >
+                                    {isVideo(fileUrl) ? (
+                                        <video controls autoPlay className="w-full h-full object-cover absolute">
+                                            <source src={fileUrl} />
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    ) : (
+                                        <img src={fileUrl} alt="Uploaded" className="w-full h-full object-cover absolute" />
+                                    )}
+                                </li>
+                            )
+                            }
+
+                        </ul>
+
+
+                        <ul class="flex justify-center my-5 uk-dotnav uk-slideshow-nav gap-2.5"></ul>
+
+
+                        <a class="absolute -translate-y-1/2 bg-white rounded-full top-1/2 -left-4 grid w-9 h-9 place-items-center shadow dark:bg-dark3" href="#" uk-slideshow-item="previous"> <ion-icon name="chevron-back" class="text-2xl"></ion-icon></a>
+                        <a class="absolute -right-4 -translate-y-1/2 bg-white rounded-full top-1/2 grid w-9 h-9 place-items-center shadow dark:bg-dark3" href="#" uk-slideshow-item="next"> <ion-icon name="chevron-forward" class="text-2xl"></ion-icon></a>
+
+                    </div>
+
+                </div>
+
+
+
+
+                <button type="button" onClick={onClose} class="bg-white rounded-full p-2 absolute right-0 top-0 m-3 uk-animation-slide-right-medium z-10 dark:bg-slate-600 uk-modal-close">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+            </div>
+
+
+            {/* <div class="lg:w-[400px] w-full bg-white h-full relative  overflow-y-auto shadow-xl dark:bg-dark2 flex flex-col justify-between">
+
+                <div class="p-5 pb-0">
+
+
+                    <div class="flex gap-3 text-sm font-medium">
+                        <img src="assets/images/avatars/avatar-5.jpg" alt="" class="w-9 h-9 rounded-full" />
+                        <div class="flex-1">
+                            <h4 class="text-black font-medium dark:text-white"> Steeve </h4>
+                            <div class="text-gray-500 text-xs dark:text-white/80"> 2 hours ago</div>
+                        </div>
+
+
+                        <div class="-m-1">
+                            <button type="button" class="button__ico w-8 h-8"> <ion-icon class="text-xl" name="ellipsis-horizontal"></ion-icon> </button>
+                            <div class="w-[253px]" uk-dropdown="pos: bottom-right; animation: uk-animation-scale-up uk-transform-origin-top-right; animate-out: true">
+                                <nav>
+                                    <a href="#"> <ion-icon class="text-xl shrink-0" name="bookmark-outline"></ion-icon>  Add to favorites </a>
+                                    <a href="#"> <ion-icon class="text-xl shrink-0" name="notifications-off-outline"></ion-icon> Mute Notification </a>
+                                    <a href="#"> <ion-icon class="text-xl shrink-0" name="flag-outline"></ion-icon>  Report this post </a>
+                                    <a href="#"> <ion-icon class="text-xl shrink-0" name="share-outline"></ion-icon>  Share your profile </a>
+                                    <hr />
+                                    <a href="#" class="text-red-400 hover:!bg-red-50 dark:hover:!bg-red-500/50"> <ion-icon class="text-xl shrink-0" name="stop-circle-outline"></ion-icon>  Unfollow </a>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="font-normal text-sm leading-6 mt-4"> Photography is the art of capturing light with a camera.  it can be fun, challenging. It can also be a hobby, a passion. 📷 </p>
+
+                    <div class="shadow relative -mx-5 px-5 py-3 mt-3">
+                        <div class="flex items-center gap-4 text-xs font-semibold">
+                            <div class="flex items-center gap-2.5">
+                                <button type="button" class="button__ico text-red-500 bg-red-100 dark:bg-slate-700"> <ion-icon class="text-lg" name="heart"></ion-icon> </button>
+                                <a href="#">1,300</a>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <button type="button" class="button__ico bg-slate-100 dark:bg-slate-700"> <ion-icon class="text-lg" name="chatbubble-ellipses"></ion-icon> </button>
+                                <span>260</span>
+                            </div>
+                            <button type="button" class="button__ico ml-auto"> <ion-icon class="text-xl" name="share-outline"></ion-icon> </button>
+                            <button type="button" class="button__ico"> <ion-icon class="text-xl" name="bookmark-outline"></ion-icon> </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="p-5 h-full overflow-y-auto flex-1">
+
+
+                    <div class="relative text-sm font-medium space-y-5">
+
+                        <div class="flex items-start gap-3 relative">
+                            <img src="assets/images/avatars/avatar-2.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" />
+                            <div class="flex-1">
+                                <a href="#" class="text-black font-medium inline-block dark:text-white"> Steeve </a>
+                                <p class="mt-0.5">What a beautiful, I love it. 😍 </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 relative">
+                            <img src="assets/images/avatars/avatar-3.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" />
+                            <div class="flex-1">
+                                <a href="#" class="text-black font-medium inline-block dark:text-white"> Monroe </a>
+                                <p class="mt-0.5">   You captured the moment.😎 </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 relative">
+                            <img src="assets/images/avatars/avatar-7.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" />
+                            <div class="flex-1">
+                                <a href="#" class="text-black font-medium inline-block dark:text-white"> Alexa </a>
+                                <p class="mt-0.5"> This photo is amazing!   </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 relative">
+                            <img src="assets/images/avatars/avatar-4.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" />
+                            <div class="flex-1">
+                                <a href="#" class="text-black font-medium inline-block dark:text-white"> John  </a>
+                                <p class="mt-0.5"> Wow, You are so talented 😍 </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 relative">
+                            <img src="assets/images/avatars/avatar-5.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" />
+                            <div class="flex-1">
+                                <a href="#" class="text-black font-medium inline-block dark:text-white"> Michael </a>
+                                <p class="mt-0.5"> I love taking photos   🌳🐶</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 relative">
+                            <img src="assets/images/avatars/avatar-3.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" />
+                            <div class="flex-1">
+                                <a href="#" class="text-black font-medium inline-block dark:text-white"> Monroe </a>
+                                <p class="mt-0.5">  Awesome. 😊😢 </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 relative">
+                            <img src="assets/images/avatars/avatar-5.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" />
+                            <div class="flex-1">
+                                <a href="#" class="text-black font-medium inline-block dark:text-white"> Jesse </a>
+                                <p class="mt-0.5"> Well done 🎨📸   </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 relative">
+                            <img src="assets/images/avatars/avatar-2.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" />
+                            <div class="flex-1">
+                                <a href="#" class="text-black font-medium inline-block dark:text-white"> Steeve </a>
+                                <p class="mt-0.5">What a beautiful, I love it. 😍 </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 relative">
+                            <img src="assets/images/avatars/avatar-7.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" />
+                            <div class="flex-1">
+                                <a href="#" class="text-black font-medium inline-block dark:text-white"> Alexa </a>
+                                <p class="mt-0.5"> This photo is amazing!   </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 relative">
+                            <img src="assets/images/avatars/avatar-4.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" />
+                            <div class="flex-1">
+                                <a href="#" class="text-black font-medium inline-block dark:text-white"> John  </a>
+                                <p class="mt-0.5"> Wow, You are so talented 😍 </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 relative">
+                            <img src="assets/images/avatars/avatar-5.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" />
+                            <div class="flex-1">
+                                <a href="#" class="text-black font-medium inline-block dark:text-white"> Michael </a>
+                                <p class="mt-0.5"> I love taking photos   🌳🐶</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 relative">
+                            <img src="assets/images/avatars/avatar-3.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" />
+                            <div class="flex-1">
+                                <a href="#" class="text-black font-medium inline-block dark:text-white"> Monroe </a>
+                                <p class="mt-0.5">  Awesome. 😊😢 </p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="bg-white p-3 text-sm font-medium flex items-center gap-2">
+
+                    <img src="assets/images/avatars/avatar-2.jpg" alt="" class="w-6 h-6 rounded-full" />
+
+                    <div class="flex-1 relative overflow-hidden ">
+                        <textarea placeholder="Add Comment...." rows="1" class="w-full resize-  px-4 py-2 focus:!border-transparent focus:!ring-transparent resize-y"></textarea>
+
+                        <div class="flex items-center gap-2 absolute bottom-0.5 right-0 m-3">
+                            <ion-icon class="text-xl flex text-blue-700" name="image"></ion-icon>
+                            <ion-icon class="text-xl flex text-yellow-500" name="happy"></ion-icon>
+                        </div>
+
+                    </div>
+
+                    <button type="submit" class="hidden text-sm rounded-full py-1.5 px-4 font-semibold bg-secondery"> Replay</button>
+
+                </div>
+
+            </div> */}
+
+
+            <div class="lg:w-[400px] w-full bg-white h-full relative  overflow-y-auto shadow-xl dark:bg-dark2 flex flex-col justify-between">
+
+                <div>
+                    {tweet.parent !== 'original' && <RetweetView id={tweet.parent} type={'full'} />}
+                    <div class="bg-white shadow-sm text-sm font-medium border1 dark:bg-dark1">
+
+
+                        <div class="flex gap-3 sm:p-4 p-2.5 text-sm font-medium">
+                            {users.filter(use => use.username === tweet.userId).map(use => <>
+                                <a href={"/timeline/" + use.id}> <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-9 h-9 rounded-full" /> </a>
+                                <div class="flex-1">
+                                    <a href={"/timeline/" + use.id}> <h4 class="text-black dark:text-white"> {userDetails && userDetails.username === tweet.userId ? userDetails.name : use.name} </h4> </a>
+                                    <div class="text-xs text-gray-500 dark:text-white/80">{formatTimestamp(tweet.createdAt)}</div>
+                                </div>
+                            </>)}
+
+                            <div class="-mr-1">
+                                <button type="button" class="button-icon w-8 h-8"> <ion-icon class="text-xl" name="ellipsis-horizontal"></ion-icon> </button>
+                                <div class="w-[245px]" uk-dropdown="pos: bottom-right; animation: uk-animation-scale-up uk-transform-origin-top-right; animate-out: true; mode: click">
+                                    <nav>
+                                        <a href="#"> <ion-icon class="text-xl shrink-0" name="bookmark-outline"></ion-icon>  Add to favorites </a>
+                                        <a href="#"> <ion-icon class="text-xl shrink-0" name="notifications-off-outline"></ion-icon> Mute Notification </a>
+                                        <a href="#"> <ion-icon class="text-xl shrink-0" name="flag-outline"></ion-icon>  Report this post </a>
+                                        <a href="#"> <ion-icon class="text-xl shrink-0" name="share-outline"></ion-icon>  Share your profile </a>
+                                        <hr />
+                                        <a href="#" class="text-red-400 hover:!bg-red-50 dark:hover:!bg-red-500/50"> <ion-icon class="text-xl shrink-0" name="stop-circle-outline"></ion-icon>  Unfollow </a>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="sm:px-4 p-2.5 pt-0">
+                            <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails ? userDetails : '')}</p>
+                        </div>
+
+                        <div style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }} class="sm:p-4 p-2.5 flex items-center gap-4 text-xs font-semibold">
+
+
+                            <div class="flex items-center gap-3">
+                                <button type="button" class="button-icon bg-slate-200/70 dark:bg-slate-700"> <ion-icon class="text-lg" name="chatbubble-ellipses"></ion-icon> </button>
+
+                                <motion.span
+                                    key={tweet?.comments?.length} // Key ensures animation triggers on change
+                                    initial={{ y: 5, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    exit={{ y: -5, opacity: 0 }}
+                                    transition={{ duration: 0.2, ease: "easeOut" }}
+                                    style={{ display: "inline-block", marginLeft: 5 }}
+                                >
+                                    {tweet?.comments?.length}
+                                </motion.span>
+
+                            </div>
+
+
+
+                            <div class="flex items-center gap-3">
+                                <button type="button" class={tweet?.retweets?.includes(userDetails && userDetails?.username) ? "button-icon text-green-500 bg-slate-200/70 dark:bg-slate-700" : "button-icon bg-slate-200/70 dark:bg-slate-700"}> <ion-icon name="repeat-outline" class="text-lg"></ion-icon> </button>
+                                <div class="p-2 bg-white rounded-lg shadow-lg text-black font-medium border border-slate-100 w-60 dark:bg-slate-700"
+                                    uk-drop="offset:10;pos: bottom-left; reveal-left;animate-out: true; animation: uk-animation-scale-up uk-transform-origin-bottom-left ; mode:click">
+
+                                    <form>
+                                        <label>
+
+                                            {tweet?.retweets?.includes(userDetails && userDetails?.username) ?
+                                                <div onClick={() => retweetTweet(tweet.tweetId, userDetails?.username)} class=" relative flex items-center justify-between cursor-pointer rounded-md p-2 px-3 hover:bg-secondery peer-checked:[&_.active]:block dark:bg-dark3">
+                                                    <div style={{ flexDirection: 'row', display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+                                                        <ion-icon name="repeat-outline" class='text-lg'></ion-icon>
+                                                        <div class="text-sm"> Undo Repost </div>
+                                                    </div>
+                                                </div> : <div onClick={() => retweetTweet(tweet.tweetId, userDetails?.username)} class=" relative flex items-center justify-between cursor-pointer rounded-md p-2 px-3 hover:bg-secondery peer-checked:[&_.active]:block dark:bg-dark3">
+                                                    <div style={{ flexDirection: 'row', display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+                                                        <ion-icon name="repeat-outline" class='text-lg'></ion-icon>
+                                                        <div class="text-sm">  Repost </div>
+                                                    </div>
+                                                </div>}
+                                        </label>
+                                        <label uk-toggle="target: #create-status" onClick={() => { setType(2); setId(tweet) }}>
+                                            <div class=" relative flex items-center justify-between cursor-pointer rounded-md p-2 px-3 hover:bg-secondery peer-checked:[&_.active]:block dark:bg-dark3">
+                                                <div>
+                                                    <ion-icon name="write"></ion-icon>
+                                                    <div class="text-sm"> Quote </div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </form>
+
+                                </div>
+                                <motion.span
+                                    key={tweet?.retweets?.length} // Key ensures animation triggers on change
+                                    initial={{ y: 5, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    exit={{ y: -5, opacity: 0 }}
+                                    transition={{ duration: 0.2, ease: "easeOut" }}
+                                    style={{ display: "inline-block", marginLeft: 5 }}
+                                >
+                                    {tweet?.retweets?.length}
+                                </motion.span>
+
+
+
+
+
+                            </div>
+
+
+                            <div>
+                                <div class="flex items-center gap-2.5">
+                                    <button onClick={() => likeTweet(tweet.tweetId, userDetails?.username)} type="button" class={tweet?.likes?.includes(userDetails && userDetails.username) ? "button-icon text-red-500 bg-dark-100 dark:bg-slate-700" : "button-icon text-secondary-500 bg-dark-100 dark:bg-slate-700"}> <ion-icon class="text-lg" name="heart"></ion-icon> </button>
+                                    <motion.a
+                                        key={tweet?.likes?.length} // Key ensures animation triggers on change
+                                        initial={{ y: 5, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        exit={{ y: -5, opacity: 0 }}
+                                        transition={{ duration: 0.2, ease: "easeOut" }}
+                                        style={{ display: "inline-block", marginLeft: 5 }}
+                                    >
+                                        {tweet?.likes?.length}
+                                    </motion.a>
+                                    {/* <a href="#">{tweet.likes.length}</a> */}
+                                </div>
+                            </div>
+
+
+
+
+                            {/* <button type="button" class="button-icon ml-auto"> <ion-icon class="text-xl" name="paper-plane-outline"></ion-icon> </button> */}
+                            <div style={{ flexDirection: 'row', display: 'flex' }}>
+                                {userDetails && userDetails?.bookmark?.includes(tweet.tweetId) ?
+                                    <button type="button" onClick={() => useBookmark(userDetails?.username, tweet.tweetId)} class="button-icon text-blue-500"> <ion-icon class="text-xl" name="bookmark"></ion-icon> </button>
+                                    :
+                                    <button type="button" onClick={() => useBookmark(userDetails?.username, tweet.tweetId)} class="button-icon"> <ion-icon class="text-xl" name="bookmark-outline"></ion-icon> </button>
+                                }
+
+                                <button type="button" class="button-icon"> <ion-icon class="text-xl" name="share-outline"></ion-icon> </button>
+                            </div>
+                        </div>
+
+
+                        <div class="sm:px-4 sm:py-3 p-2.5 border-t border-gray-100 flex items-center gap-1 dark:border-slate-700/40">
+
+                            <img src={userDetails?.profilePicture ? avatars[parseInt(userDetails.profilePicture)] : avatars[0]} alt="" class="w-6 h-6 rounded-full" />
+
+                            <div class="flex-1 relative overflow-hidden h-10">
+                                <textarea placeholder="Add Comment...." rows="1" class="w-full resize-none !bg-transparent px-4 py-2 focus:!border-transparent focus:!ring-transparent"></textarea>
+
+                                <div class="!top-2 pr-2" uk-drop="pos: bottom-right; mode: click">
+                                    <div class="flex items-center gap-2" uk-scrollspy="target: > svg; cls: uk-animation-slide-right-small; delay: 100 ;repeat: true">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 fill-sky-600">
+                                            <path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" clip-rule="evenodd" />
+                                        </svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 fill-pink-600">
+                                            <path d="M3.25 4A2.25 2.25 0 001 6.25v7.5A2.25 2.25 0 003.25 16h7.5A2.25 2.25 0 0013 13.75v-7.5A2.25 2.25 0 0010.75 4h-7.5zM19 4.75a.75.75 0 00-1.28-.53l-3 3a.75.75 0 00-.22.53v4.5c0 .199.079.39.22.53l3 3a.75.75 0 001.28-.53V4.75z" />
+                                        </svg>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+
+                            <button type="submit" class="text-sm rounded-full py-1.5 px-3.5 bg-secondery"> Reply</button>
+                        </div>
+
+
+                        <div class="sm:p-4 p-2.5 border-t border-gray-100 font-normal space-y-3 relative dark:border-slate-700/40">
+
+                            {tweets?.filter(twee => twee.parent === tweet.tweetId)?.map(comms =>
+                                users.filter(use => use.username === comms.userId).map(use =>
+                                    <>
+                                        <div class="flex items-start gap-3 relative">
+                                            <a href={"/timeline/" + use.id}> <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
+                                            <div class="flex-1">
+                                                <a href={"/timeline/" + use.id} class="text-black font-medium inline-block dark:text-white"> {use.name} </a>
+
+                                                <p class="font-normal">{renderContentWithMentions(comms.content, users, userDetails ? userDetails : '')}</p>
+
+                                            </div>
+                                        </div>
+
+
+                                        <div style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }} class="sm:p-4 p-2.5 flex items-center gap-4 text-xs font-semibold">
+
+
+                                            <div class="flex items-center gap-3" onClick={() => { setType(1); setId(comms) }}>
+                                                <button type="button" class="button-icon bg-slate-200/70 dark:bg-slate-700"> <ion-icon class="text-lg" name="chatbubble-ellipses"></ion-icon> </button>
+                                                <motion.span
+                                                    key={comms?.comments?.length} // Key ensures animation triggers on change
+                                                    initial={{ y: 5, opacity: 0 }}
+                                                    animate={{ y: 0, opacity: 1 }}
+                                                    exit={{ y: -5, opacity: 0 }}
+                                                    transition={{ duration: 0.2, ease: "easeOut" }}
+                                                    style={{ display: "inline-block", marginLeft: 5 }}
+                                                >
+                                                    {comms?.comments?.length}
+                                                </motion.span>
+
+                                            </div>
+
+
+
+                                            <div class="flex items-center gap-3">
+                                                <button type="button" class="button-icon bg-slate-200/70 dark:bg-slate-700"> <ion-icon name="repeat-outline" class="text-lg"></ion-icon> </button>
+                                                <div class="p-2 bg-white rounded-lg shadow-lg text-black font-medium border border-slate-100 w-60 dark:bg-slate-700"
+                                                    uk-drop="offset:10;pos: bottom-left; reveal-left;animate-out: true; animation: uk-animation-scale-up uk-transform-origin-bottom-left ; mode:click">
+
+                                                    <form>
+                                                        <label>
+
+                                                            {comms?.retweets?.includes(userDetails && userDetails?.username) ?
+                                                                <div class=" relative flex items-center justify-between cursor-pointer rounded-md p-2 px-3 hover:bg-secondery peer-checked:[&_.active]:block dark:bg-dark3">
+                                                                    <div style={{ flexDirection: 'row', display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+                                                                        <ion-icon name="cancel-outline" class='text-lg'></ion-icon>
+                                                                        <div class="text-sm"> Undo Repost </div>
+                                                                    </div>
+                                                                </div> : <div onClick={() => saveRetweet(comms.tweetId)} class=" relative flex items-center justify-between cursor-pointer rounded-md p-2 px-3 hover:bg-secondery peer-checked:[&_.active]:block dark:bg-dark3">
+                                                                    <div style={{ flexDirection: 'row', display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+                                                                        <ion-icon name="repeat-outline" class='text-lg'></ion-icon>
+                                                                        <div class="text-sm">  Repost </div>
+                                                                    </div>
+                                                                </div>}
+                                                        </label>
+                                                        <label uk-toggle="target: #create-status" onClick={() => { setType(2); setId(comms) }}>
+                                                            <div class=" relative flex items-center justify-between cursor-pointer rounded-md p-2 px-3 hover:bg-secondery peer-checked:[&_.active]:block dark:bg-dark3">
+                                                                <div>
+                                                                    <ion-icon name="write"></ion-icon>
+                                                                    <div class="text-sm"> Quote </div>
+                                                                </div>
+                                                            </div>
+                                                        </label>
+                                                    </form>
+
+                                                </div>
+                                                <motion.span
+                                                    key={comms?.retweets?.length} // Key ensures animation triggers on change
+                                                    initial={{ y: 5, opacity: 0 }}
+                                                    animate={{ y: 0, opacity: 1 }}
+                                                    exit={{ y: -5, opacity: 0 }}
+                                                    transition={{ duration: 0.2, ease: "easeOut" }}
+                                                    style={{ display: "inline-block", marginLeft: 5 }}
+                                                >
+                                                    {comms?.retweets?.length}
+                                                </motion.span>
+
+
+
+
+
+                                            </div>
+
+
+                                            <div>
+                                                <div class="flex items-center gap-2.5">
+                                                    <button onClick={() => likeTweet(comms.tweetId, userDetails?.username)} type="button" class={comms?.likes?.includes(userDetails && userDetails.username) ? "button-icon text-red-500 bg-dark-100 dark:bg-slate-700" : "button-icon text-secondary-500 bg-dark-100 dark:bg-slate-700"}> <ion-icon class="text-lg" name="heart"></ion-icon> </button>
+                                                    <motion.a
+                                                        key={comms?.likes?.length} // Key ensures animation triggers on change
+                                                        initial={{ y: 5, opacity: 0 }}
+                                                        animate={{ y: 0, opacity: 1 }}
+                                                        exit={{ y: -5, opacity: 0 }}
+                                                        transition={{ duration: 0.2, ease: "easeOut" }}
+                                                        style={{ display: "inline-block", marginLeft: 5 }}
+                                                    >
+                                                        {comms?.likes?.length}
+                                                    </motion.a>
+                                                    {/* <a href="#">{tweet.likes.length}</a> */}
+                                                </div>
+                                            </div>
+
+
+                                            {/* <button type="button" class="button-icon ml-auto"> <ion-icon class="text-xl" name="paper-plane-outline"></ion-icon> </button> */}
+                                            <div style={{ flexDirection: 'row', display: 'flex' }}>
+                                                {userDetails && userDetails?.bookmark?.includes(comms.tweetId) ?
+                                                    <button type="button" onClick={() => useBookmark(userDetails?.username, comms.tweetId)} class="button-icon text-blue-500"> <ion-icon class="text-xl" name="bookmark"></ion-icon> </button>
+                                                    :
+                                                    <button type="button" onClick={() => useBookmark(userDetails?.username, comms.tweetId)} class="button-icon"> <ion-icon class="text-xl" name="bookmark-outline"></ion-icon> </button>
+                                                }
+
+                                                <button type="button" class="button-icon"> <ion-icon class="text-xl" name="share-outline"></ion-icon> </button>
+                                            </div>
+                                        </div>
+                                    </>
+                                )
+                            )}
+
+
+
+
+
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+                <div></div>
+
+            </div>
+
+        </div>
+
+    </div>
+}

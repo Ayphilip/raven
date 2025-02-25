@@ -76,7 +76,7 @@ export const OtherProvider = ({ children }) => {
 
     const mintToken = async (data) => {
         try {
-            console.log(data)
+            // console.log(data)
             const response = await axios.post("/api/tokens/mint", {
                 address: data.userId,
                 amount: data.amount,
