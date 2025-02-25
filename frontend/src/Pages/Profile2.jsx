@@ -153,7 +153,7 @@ function Profile2() {
                                                     </button>)
                                                 }
 
-                                                {userDetails?.username !== userInfo.username && userInfo.followers.includes(userDetails?.username) &&
+                                                {userDetails?.username !== userInfo.username && userInfo.followers.includes(userDetails?.username) && (userDetails?.verified || userInfo.following.includes(userDetails?.username)) &&
                                                     <button onClick={() => initializeChat(userDetails?.username, userInfo.username)} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
                                                         <ion-icon name="mail-outline" class='text-xl'></ion-icon>
                                                     </button>

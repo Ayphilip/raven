@@ -22,6 +22,7 @@ import { useAddress } from '@chopinframework/react'
 import { useLoginService } from './services/authenticationService'
 import PremiumPage from './Pages/PremiumPage'
 import QuestDetails from './Pages/QuestDetails'
+import BookmarkPage from './Pages/Bookmark'
 
 function App() {
   const { address, isLoading, isLoginError, login, logout, revalidate } = useAddress();
@@ -174,6 +175,7 @@ function App() {
 
         {isAuthenticated ? (
           <>
+            <Route path="/bookmarks" Component={BookmarkPage} />
             <Route path="/chat" Component={MessagesPage} />
             <Route path="/premium" Component={Premium} />
             <Route path="/premiumpage" Component={PremiumPage} />

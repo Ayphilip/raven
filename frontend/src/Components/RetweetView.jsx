@@ -80,13 +80,15 @@ function RetweetView({ id, type }) {
             </div>}
 
             {tweet.media.length === 1 &&
-                <a href="#preview_modal" uk-toggle>
+                <div class="grid sm:grid-cols-1 gap-1" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
                     {tweet.media.map((med, index) => (
-                        <div class="relative w-full lg:h-96 h-full sm:px-4">
-                            <MediaViewer fileUrl={med} />
-                        </div>
+                        <span key={index} className="w-full">
+                            <a className="inline" href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
+                                <MediaViewer fileUrl={med} />
+                            </a>
+                        </span>
                     ))}
-                </a>
+                </div>
             }
 
         </div>

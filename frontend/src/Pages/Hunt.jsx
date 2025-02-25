@@ -178,7 +178,7 @@ function Hunt() {
                                                     <p class="card-text">{quest.participants.length} involved</p>
                                                     <p class="text-sm mt-1.5"> {quest.description}</p>
                                                     <div class="flex gap-2 mt-2" uk-scrollspy-class="uk-animation-slide-top-small">
-                                                        {(quest.participants.includes(userDetails?.username) || quest.rewardType === '1') ? <button type="button" class="button bg-secondery flex-1"> Play</button> : <button type="button" class="button bg-secondery flex-1"> <ion-icon name="lock-closed-outline"></ion-icon> Enter ({quest.entryAmount} {quest.rewardToken})</button>}
+                                                        {(quest.participants.includes(userDetails?.username) || quest.rewardType === '1') ? <button type="button" onClick={() =>navigate('/ravenhunt/quest/' + quest.id)} class="button bg-secondery flex-1"> Play</button> : <button type="button" onClick={() => navigate('/ravenhunt/quest/' + quest.id)} class="button bg-secondery flex-1"> <ion-icon name="lock-closed-outline"></ion-icon> Enter ({quest.entryAmount} {quest.rewardToken})</button>}
                                                         <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="arrow-redo" class="text-base"></ion-icon> </button>
                                                         <button type="button" class="button bg-secondery !w-auto"> <ion-icon name="bookmark" class="text-base"></ion-icon> </button>
                                                     </div>

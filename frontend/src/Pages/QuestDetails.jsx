@@ -24,7 +24,7 @@ function QuestDetails() {
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate, useBookmark } = useLoginService();
 
     const { quests, setSelectedQuest, joinQuest } = useTreasureHunt()
-    const {tokenBal, ptoken, makeTransfer} = useOthers()
+    const { tokenBal, ptoken, makeTransfer } = useOthers()
 
     const [loadingQuest, setLoading] = useState(false)
     const [questSelected, setSelectedQuests] = useState(null)
@@ -38,8 +38,8 @@ function QuestDetails() {
 
     const joininQuest = () => {
         setLoading(true)
-        if(ptoken !== questSelected?.rewardToken){
-            return alert('Wrong Chain, Switch Token to '+questSelected.rewardToken+' and try again.')
+        if (ptoken !== questSelected?.rewardToken) {
+            return alert('Wrong Chain, Switch Token to ' + questSelected.rewardToken + ' and try again.')
         }
         const data = {
             from: userDetails?.username,
@@ -52,7 +52,7 @@ function QuestDetails() {
             // alert('Successfull')
             // const dats = { verfied: true }
             const resp = joinQuest(userDetails?.username, questSelected.id)
-            
+
         }
         setLoading(false)
     }
@@ -116,11 +116,11 @@ function QuestDetails() {
 
                             <div class="flex flex-col justify-center md:-mt-20 -mt-12">
 
-                                <div class="md:w-20 md:h-20 w-12 h-12 overflow-hidden bg-white shadow-md rounded-md z-10 mb-5">
-                                    <div class="w-full md:h-5 bg-rose-500 h-3"></div>
-                                    <div class="grid place-items-center text-black font-semibold md:text-3xl text-lg h-full md:pb-5 pb-3">
+                                <div class="md:w-20 md:h-20 w-12 h-12 overflow-hidden shadow-md rounded-md z-10 mb-5">
+                                    {/* <div class="w-full md:h-5 bg-rose-500 h-3"></div> */}
+                                    {/* <div class="grid place-items-center text-black font-semibold md:text-3xl text-lg h-full md:pb-5 pb-3">
                                         
-                                    </div>
+                                    </div> */}
                                 </div>
 
                                 <div class="flex lg:items-center justify-between max-lg:flex-col max-lg:gap-2">
@@ -136,7 +136,7 @@ function QuestDetails() {
                                     </div>
 
                                     <div>
-                                        <div uk-countdown={"date: " + (questSelected.startDate > Date.now ? questSelected.endDate : questSelected.startDate)}
+                                        <div uk-countdown={"date: " + (questSelected.startDate >= Date.now ? questSelected.endDate : questSelected.startDate)}
                                             class="flex gap-3 text-2xl font-semibold text-primary dark:text-white max-lg:justify-center">
 
                                             <div class="bg-primary-soft/40 flex flex-col items-center justify-center rounded-lg w-16 h-16 lg:border-4 border-white md:shadow dark:border-slate-700">
@@ -170,11 +170,12 @@ function QuestDetails() {
                             <div class="flex items-center gap-2 text-sm py-2 pr-1 lg:order-1">
                                 <button type="button" class="button bg-secondery flex items-center gap-2 py-2 px-3.5 dark:bg-dark3">
                                     <ion-icon name="star-outline" class="text-xl"></ion-icon>
-                                    <span class="text-sm"> Go Now </span>
+                                    <span class="text-sm"> Submit Guess </span>
                                 </button>
                                 <button type="button" class="button bg-secondery flex items-center gap-2 py-2 px-3.5 dark:bg-dark3">
-                                    <ion-icon name="checkmark-circle-outline" class="text-xl"></ion-icon>
-                                    <span class="text-sm"> Going </span>
+
+                                    <ion-icon name="leaf-outline" class="text-xl"></ion-icon>
+                                    <span class="text-sm"> Get Clues </span>
                                 </button>
                                 <button type="button" class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark3">
                                     <ion-icon name="arrow-redo-outline" class="text-xl"></ion-icon>
@@ -197,100 +198,181 @@ function QuestDetails() {
 
                             </div>
 
-                            <nav class="flex gap-0.5 rounded-xl overflow-hidden -mb-px text-gray-500 font-medium text-sm overflow-x-auto dark:text-white/80">
-                                <a href="#" class="inline-block py-3 leading-8 px-3.5 border-b-2 border-blue-600 text-blue-600">About </a>
-                                <a href="#" class="inline-block py-3 leading-8 px-3.5">Discussion</a>
-                            </nav>
+                            <nav class="nav__underline">
 
+                                <ul class="group" uk-switcher="connect: #page-tabs ; animation: uk-animation-slide-right-medium, uk-animation-slide-left-medium">
+
+                                    <li> <a href="#"> About  </a> </li>
+                                    <li> <a href="#"> Guess </a> </li>
+                                </ul>
+                            </nav>
                         </div>
 
 
                     </div>
 
                     <div class="flex 2xl:gap-12 gap-10 mt-8 max-lg:flex-col" id="js-oversized">
+                        <div id="page-tabs" class="uk-switcher mt-10" style={{width: '60%'}}>
+                            <div class="flex-1 space-y-4">
 
-                        <div class="flex-1 space-y-4">
+                                <div class="box p-5 px-6 relative">
 
-                            <div class="box p-5 px-6 relative">
+                                    <h3 class="font-semibold text-lg text-black dark:text-white"> About </h3>
 
-                                <h3 class="font-semibold text-lg text-black dark:text-white"> About </h3>
+                                    <div class="space-y-4 leading-7 tracking-wide mt-4 text-black text-sm dark:text-white">
+                                        <p>{questSelected?.description}</p>
+                                        <p>{questSelected.questContent}</p>
+                                    </div>
 
-                                <div class="space-y-4 leading-7 tracking-wide mt-4 text-black text-sm dark:text-white">
-                                    <p>{questSelected?.description}</p>
-                                    <p>{questSelected.questContent}</p>
                                 </div>
+
+
+
+
+                                {userDetails?.username === questSelected.creator &&
+                                    <div class="box p-5 px-6 relative">
+                                        <h3 class="font-semibold text-lg text-black dark:text-white"> Discussions </h3>
+
+                                        <div class=" text-sm font-normal space-y-4 relative mt-4">
+
+                                            <div class="flex items-start gap-3 relative">
+                                                <a href="timeline.html"> <img src="assets/images/avatars/avatar-3.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
+                                                <div class="flex-1">
+                                                    <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> Monroe Parker </a>
+                                                    <p class="mt-0.5">What a beautiful photo! I love it. 😍 </p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-start gap-3 relative">
+                                                <a href="timeline.html"> <img src="assets/images/avatars/avatar-2.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
+                                                <div class="flex-1">
+                                                    <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> John Michael </a>
+                                                    <p class="mt-0.5">   You captured the moment.😎 </p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-start gap-3 relative">
+                                                <a href="timeline.html"> <img src="assets/images/avatars/avatar-5.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
+                                                <div class="flex-1">
+                                                    <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> James Lewis </a>
+                                                    <p class="mt-0.5">What a beautiful photo! I love it. 😍 </p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-start gap-3 relative">
+                                                <a href="timeline.html"> <img src="assets/images/avatars/avatar-4.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
+                                                <div class="flex-1">
+                                                    <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> Martin Gray </a>
+                                                    <p class="mt-0.5">   You captured the moment.😎 </p>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <button type="button" class="flex items-center gap-1.5 text-blue-500 hover:text-blue-500 my-5">
+                                                    <ion-icon name="chevron-down-outline" class="ml-auto duration-200 group-aria-expanded:rotate-180"></ion-icon>
+                                                    More Comment
+                                                </button>
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="sm:px-4 sm:py-3 p-2.5 border-t border-gray-100 flex items-center gap-1 -m-6 mt-0 bg-secondery/60 dark:border-slate-700/40">
+
+                                            <img src="assets/images/avatars/avatar-7.jpg" alt="" class="w-6 h-6 rounded-full" />
+
+                                            <div class="flex-1 relative overflow-hidden h-10">
+                                                <textarea placeholder="Add Comment...." rows="1" class="w-full resize-none !bg-transparent px-4 py-2 focus:!border-transparent focus:!ring-transparent"></textarea>
+
+                                                <div class="!top-2 pr-2" uk-drop="pos: bottom-right; mode: click">
+                                                    <div class="flex items-center gap-2" uk-scrollspy="target: > svg; cls: uk-animation-slide-right-small; delay: 100 ;repeat: true">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 fill-sky-600">
+                                                            <path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" clip-rule="evenodd" />
+                                                        </svg>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 fill-pink-600">
+                                                            <path d="M3.25 4A2.25 2.25 0 001 6.25v7.5A2.25 2.25 0 003.25 16h7.5A2.25 2.25 0 0013 13.75v-7.5A2.25 2.25 0 0010.75 4h-7.5zM19 4.75a.75.75 0 00-1.28-.53l-3 3a.75.75 0 00-.22.53v4.5c0 .199.079.39.22.53l3 3a.75.75 0 001.28-.53V4.75z" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+
+                                            <button type="submit" class="text-sm rounded-full py-1.5 px-3.5 bg-secondery"> Replay</button>
+                                        </div>
+
+
+                                    </div>}
 
                             </div>
 
+                            <div class="flex-1 space-y-4">
 
-                            <div class="box p-5 px-6 relative">
-                                <h3 class="font-semibold text-lg text-black dark:text-white"> Discussions </h3>
+                                <div class="box p-5 px-6 relative">
+                                    <h3 class="font-semibold text-lg text-black dark:text-white"> Discussions </h3>
 
-                                <div class=" text-sm font-normal space-y-4 relative mt-4">
+                                    <div class=" text-sm font-normal space-y-4 relative mt-4">
 
-                                    <div class="flex items-start gap-3 relative">
-                                        <a href="timeline.html"> <img src="assets/images/avatars/avatar-3.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
-                                        <div class="flex-1">
-                                            <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> Monroe Parker </a>
-                                            <p class="mt-0.5">What a beautiful photo! I love it. 😍 </p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-start gap-3 relative">
-                                        <a href="timeline.html"> <img src="assets/images/avatars/avatar-2.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
-                                        <div class="flex-1">
-                                            <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> John Michael </a>
-                                            <p class="mt-0.5">   You captured the moment.😎 </p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-start gap-3 relative">
-                                        <a href="timeline.html"> <img src="assets/images/avatars/avatar-5.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
-                                        <div class="flex-1">
-                                            <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> James Lewis </a>
-                                            <p class="mt-0.5">What a beautiful photo! I love it. 😍 </p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-start gap-3 relative">
-                                        <a href="timeline.html"> <img src="assets/images/avatars/avatar-4.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
-                                        <div class="flex-1">
-                                            <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> Martin Gray </a>
-                                            <p class="mt-0.5">   You captured the moment.😎 </p>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <button type="button" class="flex items-center gap-1.5 text-blue-500 hover:text-blue-500 my-5">
-                                            <ion-icon name="chevron-down-outline" class="ml-auto duration-200 group-aria-expanded:rotate-180"></ion-icon>
-                                            More Comment
-                                        </button>
-                                    </div>
-
-                                </div>
-
-
-                                <div class="sm:px-4 sm:py-3 p-2.5 border-t border-gray-100 flex items-center gap-1 -m-6 mt-0 bg-secondery/60 dark:border-slate-700/40">
-
-                                    <img src="assets/images/avatars/avatar-7.jpg" alt="" class="w-6 h-6 rounded-full" />
-
-                                    <div class="flex-1 relative overflow-hidden h-10">
-                                        <textarea placeholder="Add Comment...." rows="1" class="w-full resize-none !bg-transparent px-4 py-2 focus:!border-transparent focus:!ring-transparent"></textarea>
-
-                                        <div class="!top-2 pr-2" uk-drop="pos: bottom-right; mode: click">
-                                            <div class="flex items-center gap-2" uk-scrollspy="target: > svg; cls: uk-animation-slide-right-small; delay: 100 ;repeat: true">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 fill-sky-600">
-                                                    <path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" clip-rule="evenodd" />
-                                                </svg>
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 fill-pink-600">
-                                                    <path d="M3.25 4A2.25 2.25 0 001 6.25v7.5A2.25 2.25 0 003.25 16h7.5A2.25 2.25 0 0013 13.75v-7.5A2.25 2.25 0 0010.75 4h-7.5zM19 4.75a.75.75 0 00-1.28-.53l-3 3a.75.75 0 00-.22.53v4.5c0 .199.079.39.22.53l3 3a.75.75 0 001.28-.53V4.75z" />
-                                                </svg>
+                                        <div class="flex items-start gap-3 relative">
+                                            <a href="timeline.html"> <img src="assets/images/avatars/avatar-3.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
+                                            <div class="flex-1">
+                                                <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> Monroe Parker </a>
+                                                <p class="mt-0.5">What a beautiful photo! I love it. 😍 </p>
                                             </div>
                                         </div>
-
+                                        <div class="flex items-start gap-3 relative">
+                                            <a href="timeline.html"> <img src="assets/images/avatars/avatar-2.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
+                                            <div class="flex-1">
+                                                <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> John Michael </a>
+                                                <p class="mt-0.5">   You captured the moment.😎 </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start gap-3 relative">
+                                            <a href="timeline.html"> <img src="assets/images/avatars/avatar-5.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
+                                            <div class="flex-1">
+                                                <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> James Lewis </a>
+                                                <p class="mt-0.5">What a beautiful photo! I love it. 😍 </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start gap-3 relative">
+                                            <a href="timeline.html"> <img src="assets/images/avatars/avatar-4.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
+                                            <div class="flex-1">
+                                                <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> Martin Gray </a>
+                                                <p class="mt-0.5">   You captured the moment.😎 </p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <button type="button" class="flex items-center gap-1.5 text-blue-500 hover:text-blue-500 my-5">
+                                                <ion-icon name="chevron-down-outline" class="ml-auto duration-200 group-aria-expanded:rotate-180"></ion-icon>
+                                                More Comment
+                                            </button>
+                                        </div>
 
                                     </div>
 
-                                    <button type="submit" class="text-sm rounded-full py-1.5 px-3.5 bg-secondery"> Replay</button>
+
+                                    <div class="sm:px-4 sm:py-3 p-2.5 border-t border-gray-100 flex items-center gap-1 -m-6 mt-0 bg-secondery/60 dark:border-slate-700/40">
+
+                                        <img src="assets/images/avatars/avatar-7.jpg" alt="" class="w-6 h-6 rounded-full" />
+
+                                        <div class="flex-1 relative overflow-hidden h-10">
+                                            <textarea placeholder="Add Comment...." rows="1" class="w-full resize-none !bg-transparent px-4 py-2 focus:!border-transparent focus:!ring-transparent"></textarea>
+
+                                            <div class="!top-2 pr-2" uk-drop="pos: bottom-right; mode: click">
+                                                <div class="flex items-center gap-2" uk-scrollspy="target: > svg; cls: uk-animation-slide-right-small; delay: 100 ;repeat: true">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 fill-sky-600">
+                                                        <path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 fill-pink-600">
+                                                        <path d="M3.25 4A2.25 2.25 0 001 6.25v7.5A2.25 2.25 0 003.25 16h7.5A2.25 2.25 0 0013 13.75v-7.5A2.25 2.25 0 0010.75 4h-7.5zM19 4.75a.75.75 0 00-1.28-.53l-3 3a.75.75 0 00-.22.53v4.5c0 .199.079.39.22.53l3 3a.75.75 0 001.28-.53V4.75z" />
+                                                    </svg>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                        <button type="submit" class="text-sm rounded-full py-1.5 px-3.5 bg-secondery"> Replay</button>
+                                    </div>
+
+
                                 </div>
-
-
                             </div>
 
                         </div>
@@ -332,7 +414,10 @@ function QuestDetails() {
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z"></path>
                                             </svg>
-                                            <div> Ending in  <span class="font-semibold text-black dark:text-white"> {formatTimestamp(questSelected.endDate)}</span> </div>
+                                            <div> End on  <span class="font-semibold text-black dark:text-white">
+                                                {/* {formatTimestamp(questSelected.endDate)} */}
+                                                {questSelected.endDate}
+                                            </span> </div>
                                         </li>
 
                                     </ul>
@@ -380,6 +465,17 @@ function QuestDetails() {
 
                                         </ul>
                                     )}
+
+
+                                </div>
+                                <div class="box p-5 px-6 relative">
+
+                                    <h3 class="font-semibold text-lg text-black dark:text-white"> How To Play </h3>
+
+                                    <div class="space-y-4 leading-7 tracking-wide mt-4 text-black text-sm dark:text-white">
+                                        <p>{questSelected?.description}</p>
+                                        <p>{questSelected.questContent}</p>
+                                    </div>
 
                                 </div>
 

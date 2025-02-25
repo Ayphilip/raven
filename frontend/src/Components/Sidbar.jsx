@@ -19,7 +19,7 @@ import { useChats } from '../context/chatContext';
 import { useAddress } from '@chopinframework/react';
 
 
-function Sidbar({ps}) {
+function Sidbar({ ps }) {
     const { address, isLoading, isLoginError, logout, revalidate } = useAddress();
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate } = useLoginService();
     const { tokenBal, token, ptoken, notification } = useOthers();
@@ -47,14 +47,14 @@ function Sidbar({ps}) {
                         <nav id="side" style={{ position: 'relative', height: '80vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
 
                             <ul>
-                                <li class={ps==1 && "active"}>
+                                <li class={ps == 1 && "active"}>
                                     <a href="/" className='text-xl'>
                                         {/* <img src={fly1} alt="feeds" class="w-6" /> */}
                                         <ion-icon name="home-outline"></ion-icon>
                                         <span> Feed </span>
                                     </a>
                                 </li>
-                                <li class={ps==2 && "active"}>
+                                <li class={ps == 2 && "active"}>
                                     <a href="/chat" className='text-xl'>
                                         <ion-icon name="mail-outline"></ion-icon>
                                         <span> messages </span>
@@ -65,7 +65,7 @@ function Sidbar({ps}) {
                                         ).length}</span>}
                                     </a>
                                 </li>
-                                <li class={ps==3 && "active"}>
+                                <li class={ps == 3 && "active"}>
                                     <a href="/notifications" className='text-xl'>
                                         <ion-icon name="notifications-outline"></ion-icon>
                                         <span> Notification </span>
@@ -76,19 +76,19 @@ function Sidbar({ps}) {
                                         )}
                                     </a>
                                 </li>
-                                <li class={ps==4 && "active"}>
+                                <li class={ps == 4 && "active"}>
                                     <a href="/premium" className='text-xl'>
                                         <ion-icon name="checkmark-done-circle-outline"></ion-icon>
                                         <span> Premium </span>
                                     </a>
                                 </li>
-                                <li class={ps==5 && "active"}>
-                                    <a href="pages.html" className='text-xl'>
-                                        <ion-icon name="grid-outline"></ion-icon>
-                                        <span> Pages </span>
+                                <li class={ps == 5 && "active"}>
+                                    <a href="/bookmarks" className='text-xl'>
+                                        <ion-icon name="bookmark-outline"></ion-icon>
+                                        <span> Bookmarks </span>
                                     </a>
                                 </li>
-                                <li class={ps==6 && "active"}>
+                                <li class={ps == 6 && "active"}>
                                     <a href="/ravenhunt" className='text-xl'>
                                         <ion-icon name="flame-outline"></ion-icon>
                                         <span> Treasure Hunt </span>
@@ -137,6 +137,35 @@ function Sidbar({ps}) {
                                     <option value={tkn.id}>{tkn.name}({tkn.symbol})</option>
                                 )}
                             </select>
+
+                            {/* <div className="relative w-64">
+                                {token.filter(tkn => tkn.id === ptoken).map(selectedToken =>
+                                    <button className="w-full flex items-center justify-between p-3 bg-gray-200 rounded-lg">
+                                        <img src={selectedToken?.image} alt={selectedToken.name} className="w-6 h-6 mr-2" />
+                                        {selectedToken.name} ({selectedToken.symbol})
+                                    </button>
+                                )}
+
+                                <div className="absolute mt-2 w-full bg-white shadow-lg rounded-lg">
+                                    {token.map((tkn) => (
+                                        <div
+                                            key={tkn.id}
+                                            onChange={() => {
+                                                setTkn(tkn.id)
+                                                Cookies.set("ptoken", tkn.id);
+                                                window.location.reload()
+                                            }}
+                                            className="flex items-center p-3 hover:bg-gray-100 cursor-pointer"
+                                        >
+                                            <img src={token?.image} alt={token.name} className="w-6 h-6 mr-2" />
+                                            {token.name} ({token.symbol})
+                                        </div>
+                                    ))}
+                                </div>
+                            </div> */}
+
+
+
                             {userDetails && <a href={"/timeline/" + userDetails.username}>
 
                                 <div class="p-1 py-2 flex items-center gap-4">
