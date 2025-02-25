@@ -11,7 +11,7 @@ import { avatars } from '../Components/avatars';
 import formatTimestamp from '../Components/timeStamping';
 import MediaViewer from '../Components/MediaViewer';
 import Sid2bar from '../Components/Sid2bar';
-import { renderContentWithMentions } from '../Components/CapsuleInstance';
+import { LoadingView, renderContentWithMentions } from '../Components/CapsuleInstance';
 import CommentModal from '../Components/Modal';
 import TweetView from '../Components/TweetView';
 
@@ -67,7 +67,7 @@ function BookmarkPage() {
         }
     }, [tweets, retweetTweet])
     return (
-        !tweet ? <div>Loading...</div> : <div>
+        !tweet ? <LoadingView/> : <div>
             <div>
 
 

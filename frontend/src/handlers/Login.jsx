@@ -1,10 +1,11 @@
 import { useAddress } from "@chopinframework/react";
+import { LoadingView } from "../Components/CapsuleInstance";
  
 function MyComponent() {
 const { address, isLoading, isLoginError, login, logout, revalidate } = useAddress();
  
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <LoadingView />;
     }
  
     if (isLoginError) {

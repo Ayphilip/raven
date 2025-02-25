@@ -265,6 +265,20 @@ export const QuestFormModal = ({ isOpen, onClose, onSubmit }) => {
         setFile(e.target.files[0]);
     };
 
+    const makePay2 = () => {
+
+        const data2 = {
+            from: userDetails?.username,
+            amount: formData.reward,
+            to: '',
+            symbol: ptoken
+        }
+
+        const response = makeTransfer(data2)
+        return response;
+
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoadingState(true)
@@ -274,33 +288,63 @@ export const QuestFormModal = ({ isOpen, onClose, onSubmit }) => {
             to: '',
             symbol: ptoken
         }
+
         const response = makeTransfer(data)
+
         if (response) {
             // alert('Successfull')
+            if (formData.rewardType === '1') {
+                const resp = makePay2()
 
+                if (resp) {
+                    let fileURL = "";
 
-            let fileURL = "";
+                    if (file) {
+                        // fileURL = URL.createObjectURL(file); // Replace with actual upload logic (e.g., Firebase Storage)
 
-            if (file) {
-                // fileURL = URL.createObjectURL(file); // Replace with actual upload logic (e.g., Firebase Storage)
+                        fileURL = await uploadMedia(file)
+                    }
 
-                fileURL = await uploadMedia(file)
+                    var questAns = encryptText(formData.answer);
+
+                    onSubmit({
+                        ...formData,
+                        answer: questAns,
+                        questFace: fileURL,
+                        participants: [],
+                        questInstruction: '',
+                        clues: [],
+                        status: "active",
+                        winner: null,
+                        creator: userDetails?.username
+                    });
+                    onClose();
+                }
+            } else {
+                let fileURL = "";
+
+                if (file) {
+                    // fileURL = URL.createObjectURL(file); // Replace with actual upload logic (e.g., Firebase Storage)
+
+                    fileURL = await uploadMedia(file)
+                }
+
+                var questAns = encryptText(formData.answer);
+
+                onSubmit({
+                    ...formData,
+                    answer: questAns,
+                    questFace: fileURL,
+                    participants: [],
+                    questInstruction: '',
+                    clues: [],
+                    status: "active",
+                    winner: null,
+                    creator: userDetails?.username
+                });
+                onClose();
             }
 
-            var questAns = encryptText(formData.answer);
-
-            onSubmit({
-                ...formData,
-                answer: questAns,
-                questFace: fileURL,
-                participants: [],
-                questInstruction: '',
-                clues: [],
-                status: "active",
-                winner: null,
-                creator: userDetails?.username
-            });
-            onClose();
         }
         setLoadingState(false)
     };
@@ -349,7 +393,7 @@ export const QuestFormModal = ({ isOpen, onClose, onSubmit }) => {
                                 <button type="button" onClick={onClose} className="px-8 py-3 bg-gray-400 rounded-lg text-lg">Cancel</button>
                                 {loadingSavingQuest ?
                                     <button type="button" className="px-8 py-3 bg-blue-600 text-white rounded-lg text-lg">Executing...</button>
-                                    : <button type="submit" className="px-8 py-3 bg-blue-600 text-white rounded-lg text-lg" disabled={tokenBal < 100 ? true : false}>Submit for 100 RTT</button>}
+                                    : <button type="submit" className="px-8 py-3 bg-blue-600 text-white rounded-lg text-lg" disabled={formData.rewardType === '1' && (tokenBal < (100 + parseInt(formData.reward))) ? true : tokenBal < 100 ? true : false}>Submit for 100 RTT</button>}
                             </div>
                         </form>
                     </div>

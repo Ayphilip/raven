@@ -89,7 +89,7 @@ function Hunt() {
                                             </a>
                                             <div class="card-body">
                                                 <a href={'/ravenhunt/quest/' + quest.id} ><h4 class="card-title text-sm"> {quest.questTitle} </h4></a>
-                                                <p class="card-text">{quest.participants.length}</p>
+                                                <p class="card-text">{quest.rewardType === '1' ? quest.reward : (quest.participants.length * quest.entryAmount)} {quest.rewardToken}</p>
                                             </div>
                                         </div>
                                         <div class="uk-drop w-80 max-md:!hidden" uk-drop="pos: right-center; boundary: !.content-area; offset: 10; animation: uk-animation-scale-up">
@@ -126,7 +126,7 @@ function Hunt() {
                                             </a>
                                             <div class="card-body">
                                                 <a href={'/ravenhunt/quest/' + quest.id} ><h4 class="card-title text-sm"> {quest.questTitle} </h4></a>
-                                                <p class="card-text">{quest.participants.length}</p>
+                                                <p class="card-text">{quest.rewardType === '1' ? quest.reward : (quest.participants.length * quest.entryAmount)} {quest.rewardToken}</p>
                                             </div>
                                         </div>
                                         <div class="uk-drop w-80 max-md:!hidden" uk-drop="pos: right-center; boundary: !.content-area; offset: 10; animation: uk-animation-scale-up">
@@ -164,7 +164,7 @@ function Hunt() {
                                             </a>
                                             <div class="card-body">
                                                 <a href={'/ravenhunt/quest/' + quest.id} ><h4 class="card-title text-sm"> {quest.questTitle} </h4></a>
-                                                <p class="card-text">{quest.participants.length} Involved</p>
+                                                <p class="card-text">{quest.rewardType === '1' ? quest.reward : (quest.participants.length * quest.entryAmount)} {quest.rewardToken}</p>
                                             </div>
                                         </div>
                                         <div class="uk-drop w-80 max-md:!hidden" uk-drop="pos: right-center; boundary: !.content-area; offset: 10; animation: uk-animation-scale-up">
@@ -175,7 +175,7 @@ function Hunt() {
                                                 </div>
                                                 <div class="card-body" uk-scrollspy="target: > * ; cls: uk-animation-slide-bottom-small ; delay: 60 ;repeat: true">
                                                     <h4 class="card-title text-sm font-semibold"> {quest.questTitle} </h4>
-                                                    <p class="card-text">{quest.participants.length} involved</p>
+                                                    <p class="card-text">{quest.rewardType === '1' ? quest.reward : (quest.participants.length * quest.entryAmount)} {quest.rewardToken}</p>
                                                     <p class="text-sm mt-1.5"> {quest.description}</p>
                                                     <div class="flex gap-2 mt-2" uk-scrollspy-class="uk-animation-slide-top-small">
                                                         {(quest.participants.includes(userDetails?.username) || quest.rewardType === '1') ? <button type="button" onClick={() =>navigate('/ravenhunt/quest/' + quest.id)} class="button bg-secondery flex-1"> Play</button> : <button type="button" onClick={() => navigate('/ravenhunt/quest/' + quest.id)} class="button bg-secondery flex-1"> <ion-icon name="lock-closed-outline"></ion-icon> Enter ({quest.entryAmount} {quest.rewardToken})</button>}
@@ -250,6 +250,8 @@ function Hunt() {
                                             <div> {formatTimestamp(quest.createdAt)}</div>
                                             <div class="md:block hidden">·</div>
                                             <div> {quest.participants.length} involved.</div>
+                                            <div class="md:block hidden">·</div>
+                                            <div> {quest.rewardType === '1' ? quest.reward : (quest.participants.length * quest.entryAmount)} {quest.rewardToken}</div>
                                         </div>
                                     </div>
                                 </div>)}

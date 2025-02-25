@@ -2,12 +2,14 @@ import React from "react";
 import { Tooltip } from "react-tooltip";
 import { avatars } from "./avatars";
 import CryptoJS from 'crypto-js';
+import { useUsers } from "../context/userContext";
 // import { useUsers } from "../context/userContext";
+import Logo from '../asset/images/logo.png'
 
-// const { users, userList, addUser, modifyUser } = useUsers();
 
 const renderContentWithMentions = (text, users, me) => {
     const mentionRegex = /\[@([^\]]+)\]\((0x[a-fA-F0-9]+)\)/g;
+    const { userList, addUser, modifyUser, addFollow } = useUsers();
 
     return text.split(mentionRegex).map((part, index, arr) => {
         if (index % 3 === 1) {
@@ -19,7 +21,7 @@ const renderContentWithMentions = (text, users, me) => {
             if (!user) return userId; // Fallback to raw text if user not found
 
             return (
-                <span key={userId} className="mention inline-flex items-center">
+                <div key={userId} className="mention inline-flex items-center z-200000">
                     <span
                         className="text-blue-500 font-medium cursor-pointer hover:underline"
                         data-tooltip-id={`mention-${userId}`}
@@ -35,7 +37,7 @@ const renderContentWithMentions = (text, users, me) => {
                                 {user.followers.includes(me.username) ? <button class="button bg-secondery flex items-center gap-2 text-white py-2 px-1.5 max-sm:flex-1">
                                     <ion-icon name="add-circle" class="text-sm"></ion-icon>
                                     <span class="text-sm"> Following  </span>
-                                </button> : <button class="button bg-primary flex items-center gap-2 text-white py-2 px-1.5 max-sm:flex-1">
+                                </button> : <button class="button bg-primary flex items-center gap-2 text-white py-2 px-1.5 max-sm:flex-1" onClick={() => addFollow(user.username, me.username)}>
                                     <ion-icon name="add-circle" class="text-sm"></ion-icon>
                                     <span class="text-sm"> Follow  </span>
                                 </button>}
@@ -55,7 +57,7 @@ const renderContentWithMentions = (text, users, me) => {
                                         me?.following?.includes(use.id) && user.followers.includes(use.id)
                                     );
 
-                                    if(!filteredUsers.length > 0){
+                                    if (!filteredUsers.length > 0) {
                                         return 'No one you follow'
                                     }
 
@@ -73,7 +75,7 @@ const renderContentWithMentions = (text, users, me) => {
                             </button>
                         </div>
                     </div>
-                </span>
+                </div>
             );
         }
         if (index % 3 === 0) {
@@ -88,5 +90,66 @@ const encryptText = (data) => {
     return mesg
 }
 
+const LoadingView = () => {
+    return <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100vw",
+      height: "100vh",
+      backgroundColor: "rgba(0, 0, 0, 0.0)", // Transparent background
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 9999, // Ensures it's above everything
+    }}
+  >
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column", // Stack image & loader vertically
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "15px", // Spacing between image and loader
+      }}
+    >
+      {/* Centered Image */}
+      <img
+        src={Logo}
+        alt="Loading"
+        style={{
+          width: "150px", // Adjust size as needed
+          height: "auto",
+          borderRadius: "12px",
+          boxShadow: "0px 4px 10px rgba(255, 255, 255, 0.2)", // Soft glow effect
+        }}
+      />
 
-export { renderContentWithMentions, encryptText };
+      {/* Loader (Spinner) */}
+      <div
+        style={{
+          width: "40px",
+          height: "40px",
+          border: "4px solid rgba(255, 255, 255, 0.3)",
+          borderTop: "4px solid #3396FF",
+          borderRadius: "50%",
+          animation: "spin 1s linear infinite",
+        }}
+      ></div>
+    </div>
+
+    {/* CSS Animation for Loader */}
+    <style>
+      {`
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `}
+    </style>
+  </div>
+}
+
+
+export { renderContentWithMentions, encryptText, LoadingView };
