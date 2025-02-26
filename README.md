@@ -91,6 +91,40 @@ Ensure you have the following installed:
 - Introduce AI moderation to filter spam and inappropriate content.
 - Integrate easters eggs for more user interaction
 
+
+## Project Structure
+RAVEN/
+│── .chopin/              # Chopin framework configuration files
+│── backend/              # Backend application
+│   ├── config/           # Configuration files including Firebase Configuration
+│   ├── controller/       # Controller logic
+│   ├── routes/           # API routes
+│   ├── index.js          # Main backend entry file
+│   ├── util.js           # Utility functions containing all Chopin Framework (Oracle) functionalities
+│
+│── frontend/             # Frontend application
+│   ├── .vite/            # Vite build settings
+│   ├── assets/           # Static assets (images, fonts, etc.)
+│   ├── dist/             # Build output directory
+│   ├── node_modules/     # Installed dependencies
+│   ├── public/           # Public assets (favicon, etc.)
+│   ├── src/              # React source code
+│   ├── .gitignore        # Git ignore rules
+│   ├── eslint.config.js  # ESLint configuration
+│   ├── index.html        # Main HTML file
+│   ├── package.json      # Frontend dependencies
+│   ├── package-lock.json # Dependency lock file
+│   ├── vite.config.js    # Vite configuration
+│
+│── node_modules/         # Root dependencies (if needed)
+│── .env                  # Environment variables
+│── .gitignore            # Git ignore rules
+│── chopin.config.json    # Global Chopin configuration
+│── package.json          # Root dependencies
+│── package-lock.json     # Root lock file
+│── README.md             # Project documentation
+
+
 ## Contributors
 - **Usamah Abduljalil** - Application Manager
 - **Ayomide Philip** - Lead Developer
