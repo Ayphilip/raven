@@ -16,6 +16,7 @@ import {
     serverTimestamp,
     Timestamp,
 } from "./config/firebaseConfig.js";
+import CryptoJS from "crypto-js";
 
 
 // import { Oracle } from "chopinframework";
@@ -33,6 +34,40 @@ export const genId = async () => {
     // console.log(addr.address)
 
     return Id;
+};
+
+export const getIsCorrect = async (item1, item2) => {
+    try {
+        if (!item1 || !item2) {
+            console.error("Error: item1 or item2 is undefined.");
+            return false;
+        }
+
+        var oracle = new Oracle('http://localhost:4000');
+
+        var response = await oracle.notarize(() => {
+            try {
+                // console.log("Decrypting item1:", item1);
+                // console.log("Decrypting item2:", item2);
+
+                var decryptedItem1 = CryptoJS.AES.decrypt(item1, "ravenTestToken").toString(CryptoJS.enc.Utf8);
+                var decryptedItem2 = CryptoJS.AES.decrypt(item2, "ravenTestToken").toString(CryptoJS.enc.Utf8);
+
+                // console.log("Decrypted item1:", decryptedItem1);
+                // console.log("Decrypted item2:", decryptedItem2);
+
+                return decryptedItem1 === decryptedItem2;
+            } catch (error) {
+                console.error("Decryption failed:", error);
+                return false;
+            }
+        });
+
+        return response;
+    } catch (error) {
+        console.error("Error in getIsCorrect:", error);
+        return false;
+    }
 };
 
 export const genId2 = async () => {
@@ -53,6 +88,8 @@ export const genId2 = async () => {
 
     return Id;
 };
+
+
 
 // export const timeStampsChopin = async () => {
 //     var time = Timestamp.now()

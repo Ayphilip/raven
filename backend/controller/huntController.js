@@ -1,6 +1,6 @@
 import { db, doc, getDoc, setDoc, updateDoc, collection, addDoc, arrayUnion, arrayRemove, getDocs, query, where, onSnapshot, serverTimestamp, Timestamp } from "../config/firebaseConfig.js";
 import crypto from "crypto";
-import { genId, sendNotification } from "../util.js";
+import { genId, getIsCorrect, sendNotification } from "../util.js";
 
 // Store active SSE connections
 const subscribers = new Map();
@@ -115,7 +115,9 @@ export const submitGuess = async (req, res) => {
         }
 
         // Check if the guess is correct
-        const isCorrect = guess === questData.answer;
+        const isCorrect = getIsCorrect(guess, questData.answer);
+
+        // console.log(isCorrect)
 
         if (isCorrect) {
             // Update the quest with the winner and set status to "completed"

@@ -159,8 +159,8 @@ function QuestDetails() {
                                     </div>
 
                                     <div>
-                                        Timer to end of quest
-                                    <div uk-countdown={`date: ${questSelected.endDate}`} 
+                                        {questSelected.status === 'active'? 'Timer to end of quest' : 'Quest Ended'}
+                                        {questSelected.status === 'active' &&<div uk-countdown={`date: ${questSelected.endDate}`}
                                             class="flex gap-3 text-2xl font-semibold text-primary dark:text-white max-lg:justify-center">
 
                                             <div class="bg-primary-soft/40 flex flex-col items-center justify-center rounded-lg w-16 h-16 lg:border-4 border-white md:shadow dark:border-slate-700">
@@ -180,7 +180,7 @@ function QuestDetails() {
                                                 <span class="inline-block text-xs">sec </span>
                                             </div>
 
-                                        </div>
+                                        </div>}
                                     </div>
 
                                 </div>
@@ -337,9 +337,9 @@ function QuestDetails() {
                                             users.filter(use => use.username === guess.userId).map(use =>
 
                                                 <div class="flex items-start gap-3 relative">
-                                                    <a href={"/timeline/"+use.username}> <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
+                                                    <a href={"/timeline/" + use.username}> <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
                                                     <div class="flex-1">
-                                                        <a href={"/timeline/"+use.username} class="text-black font-medium inline-block dark:text-white"> {use.name} - {formatTimestamp(guess.createdAt)} </a>
+                                                        <a href={"/timeline/" + use.username} class="text-black font-medium inline-block dark:text-white"> {use.name} - {formatTimestamp(guess.createdAt)} </a>
                                                         <p class="mt-0.5">{CryptoJS.AES.decrypt(guess.guess, "ravenTestToken").toString(CryptoJS.enc.Utf8)} </p>
                                                     </div>
                                                 </div>
@@ -518,16 +518,19 @@ function QuestDetails() {
                         </button>
 
                         {/* Title / Server Response */}
-                        <h1 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">{serverResponse}</h1>
+                        {questSelected?.status === 'active' ? <h1 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">{serverResponse}</h1> : <h1 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Quest Ended</h1>}
+                        {/* <p>{CryptoJS.AES.decrypt(questSelected.answer, "ravenTestToken").toString(CryptoJS.enc.Utf8)}</p> */}
 
                         {/* Guess Input */}
-                        <input
+                        {questSelected.status === 'active' && <input
                             type="text"
                             placeholder="Enter your guess..."
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary dark:bg-dark2 dark:text-white transition"
-                        />
+                        />}
+
+
 
                         {/* Guess Button */}
                         {loadingQuest ? (
@@ -538,7 +541,14 @@ function QuestDetails() {
                             >
                                 Executing...
                             </button>
-                        ) : (
+                        ) : questSelected.status === 'completed' && questSelected.winner === userDetails?.username ? <button
+                            type="button"
+                            // onClick={checkGuess}
+                            className="flex items-center justify-center gap-2 bg-primary px-4 py-2 rounded-lg shadow-md w-full text-white hover:bg-opacity-90 transition mt-4"
+                        >
+                            <ion-icon name="lock-closed-outline"></ion-icon>
+                            Congratulations, Claim {questSelected.rewardType === '1' ? questSelected.reward : (questSelected.participants.length * questSelected.entryAmount)} {questSelected.rewardToken}.
+                        </button> : (
                             <button
                                 type="button"
                                 onClick={checkGuess}
