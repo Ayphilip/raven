@@ -41,6 +41,9 @@ Ensure you have the following installed:
    ```
 3. Initialize Chopin Configuration:
    - npx chopd in the raven folder
+   ```sh
+   npm run build
+   ```
    
 4. Run the application:
    ```sh
