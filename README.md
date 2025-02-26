@@ -1,7 +1,7 @@
-# Twitter (X) Clone
+# RAVEN (X) Clone
 
 ## Overview
-This is a decentralized Twitter (X) clone built with React Vite and hosted on the Celestia blockchain as part of a Mammothon project. The application is developed using the Chopin framework to ensure a fully decentralized, censorship-resistant, and scalable social media experience.
+This is a decentralized Twitter (X) clone built with React Vite for Frontend and ExpressJs and NodeJs for backend with Firebase for database implemented on the Celestia blockchain as part of a Mammothon project. The application is developed using the Chopin framework to ensure a fully decentralized, censorship-resistant, and scalable social media experience.
 
 ## Features
 - **Decentralized Storage**: All tweets, likes, comments, and interactions are stored directly on the Celestia blockchain.
@@ -15,42 +15,40 @@ This is a decentralized Twitter (X) clone built with React Vite and hosted on th
 
 ## Tech Stack
 - **Frontend**: React (Vite)
+- **Backend**: ExpressJs and NodeJs
+- **Storage**: Firebase
 - **Blockchain**: Celestia
-- **Framework**: Chopin
-- **Storage**: On-chain via Celestia, Firebase
-- **API**: Smart contracts interacting with Celestia
+- **Authentication**: Chopin
+- **API**: Chopin Framework
 
 ## Installation & Setup
 ### Prerequisites
 Ensure you have the following installed:
-- Node.js (v16+)
+- Node.js (v20+)
 - Yarn or npm
 
 ### Steps
 1. Clone the repository:
    ```sh
-   git clone https://github.com/your-repo/twitter-clone.git
-   cd twitter-clone
+   git clone https://github.com/Ayphilip/raven.git
+   cd raven
    ```
 2. Install dependencies:
    ```sh
    yarn install
    # or
-   npm install
+   npm run build
    ```
-3. Configure Celestia node:
-   - Follow [Celestia’s documentation](https://docs.celestia.org) to set up your light node.
-   - Add the node URL in the `.env` file:
-     ```
-     REACT_APP_CELESTIA_NODE=https://your-celestia-node
-     ```
+3. Initialize Chopin Configuration:
+   - npx chopd in the raven folder
+   
 4. Run the application:
    ```sh
    yarn dev
    # or
-   npm run dev
+   npm start
    ```
-5. Open `http://localhost:5173/` in your browser.
+5. Open `http://localhost:4000/` in your browser.
 
 ## Smart Contract & Blockchain Interaction
 - **Chopin API Integration**: All API calls are handled through Chopin’s framework to interact with Celestia.
@@ -70,14 +68,16 @@ Ensure you have the following installed:
 - Implement token-based rewards for content engagement.
 - Enable NFT-based profile customization.
 - Introduce AI moderation to filter spam and inappropriate content.
+- Integrate easters eggs for more user interaction
 
 ## Contributors
 - **Ayomide Philip** - Lead Developer
-- [Your Team Members]
+- **Ayomide Philip** - Lead Developer
+- **Ayomide Philip** - Lead Developer
 
 ## License
-This project is open-source under the MIT License.
+This project is open-source built originally for Mammothon using Chopin Framework.
 
 ## Contact
-For queries and contributions, reach out via [your-email@example.com] or join the [Mammothon community](https://mammothon.io).
+For queries and contributions, reach out via [ayolaphilip@gmail.com] or join the [Mammothon community](https://mammothon.io).
 

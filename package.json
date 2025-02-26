@@ -5,7 +5,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --watch backend backend/index.js",
+    "start": "npx chopd",
+    "build": "npm install && cd frontend && npm install && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
