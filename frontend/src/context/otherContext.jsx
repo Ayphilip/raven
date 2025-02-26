@@ -11,6 +11,7 @@ export const OtherProvider = ({ children }) => {
     const [tokenBal, setTokenBal] = useState(0)
     const [notification, setNotifivcations] = useState([])
     const [loadingOthers, setLoading] = useState(false);
+    const [searchResult, setSearchResult] = useState(null)
 
 
     useEffect(() => {
@@ -126,9 +127,19 @@ export const OtherProvider = ({ children }) => {
         }
     };
 
+    const makeSearch = async(word) => {
+        try {
+            const result = await axios.post(`/api/search?query=${word}`)
+            console.log(result.data)
+            setSearchResult(result.data)
+        } catch (error) {
+            console.error("Error conducting search:", error);
+        }
+    }
+
     return (
         <OtherContext.Provider value={{ token, nft, ptoken, tokenBal, loadingOthers, notification, makeTransfer, 
-        mintToken, fetchOthers, createNotification, markNotification, mintNft }}>
+        mintToken, fetchOthers, createNotification, markNotification, mintNft, makeSearch, searchResult }}>
             {children}
         </OtherContext.Provider>
     );

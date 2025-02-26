@@ -107,7 +107,7 @@ function QuestDetails() {
             }
 
             setSelectedQuest(params.id);
-            setSelectedQuests(item || null); // Ensure it does not set undefined
+            setSelectedQuests(item || null); 
             setLoading(false);
         };
 

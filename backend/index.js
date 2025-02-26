@@ -9,6 +9,7 @@ import tokenRoutes from "./routes/tokens.js"
 import chatRoutes from "./routes/chat.js";
 import notifyRoutes from "./routes/notifications.js";
 import treasureRoutes from "./routes/hunt.js";
+import searchRoutes from "./routes/search.js"
 import { fileURLToPath } from "url";
 import { exec } from "child_process";
 import path from "path";
@@ -41,6 +42,7 @@ app.use("/api/tokens", tokenRoutes);
 app.use("/api/chats", chatRoutes);
 app.use("/api/notifications", notifyRoutes);
 app.use("/api/treasurehunt", treasureRoutes);
+app.use("/api/search", searchRoutes)
 
 
 // Store Active Users
