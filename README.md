@@ -42,14 +42,14 @@ Ensure you have the following installed:
 3. Initialize Chopin Configuration:
    - npx chopd in the raven folder
    ```sh
-   npx chopd
+   npx chopd init
    ```
    
 4. Run the application:
    ```sh
    yarn dev
    # or
-   npm start
+   npx chopd
    ```
 5. Open `http://localhost:4000/` in your browser.
 

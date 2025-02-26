@@ -2,20 +2,23 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, doc, getDoc, getDocs, serverTimestamp, Timestamp, setDoc, addDoc, collection, deleteDoc, updateDoc, arrayUnion, arrayRemove, query, orderBy, onSnapshot, where } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL, getStorage } from "firebase/storage";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyAZRK6A-vYIR8FurMptBIIi5ZAh0qfx1bk",
-    authDomain: "hive-b1480.firebaseapp.com",
-    projectId: "hive-b1480",
-    storageBucket: "hive-b1480.firebasestorage.app",
-    messagingSenderId: "995817908165",
-    appId: "1:995817908165:web:6248180db7161c7830cdac",
-    measurementId: "G-YZ3VKR5NSS"
-  };
+import dotenv from "dotenv";
 
+dotenv.config();
+
+const firebaseConfig = {
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
+  measurementId: process.env.FIREBASE_MEASUREMENT_ID,
+};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app)
 
-export { db, doc, getDoc, ref, uploadBytes, getDownloadURL, Timestamp,setDoc, serverTimestamp, getDocs, addDoc, storage, collection, deleteDoc, updateDoc, arrayUnion, where, arrayRemove, query, orderBy, onSnapshot };
+export { db, doc, getDoc, ref, uploadBytes, getDownloadURL, Timestamp, setDoc, serverTimestamp, getDocs, addDoc, storage, collection, deleteDoc, updateDoc, arrayUnion, where, arrayRemove, query, orderBy, onSnapshot };
