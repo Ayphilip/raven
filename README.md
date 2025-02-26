@@ -93,6 +93,7 @@ Ensure you have the following installed:
 
 
 ## Project Structure
+`
 RAVEN/
 │── .chopin/              # Chopin framework configuration files
 │── backend/              # Backend application
@@ -123,7 +124,7 @@ RAVEN/
 │── package.json          # Root dependencies
 │── package-lock.json     # Root lock file
 │── README.md             # Project documentation
-
+`
 
 ## Contributors
 - **Usamah Abduljalil** - Application Manager
