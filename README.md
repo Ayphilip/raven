@@ -4,14 +4,17 @@
 This is a decentralized Twitter (X) clone built with React Vite for Frontend and ExpressJs and NodeJs for backend with Firebase for database implemented on the Celestia blockchain as part of a Mammothon project. The application is developed using the Chopin framework to ensure a fully decentralized, censorship-resistant, and scalable social media experience.
 
 ## Features
-- **Decentralized Storage**: All tweets, likes, comments, and interactions are stored directly on the Celestia blockchain.
+- **Decentralized Storage**: All tweets, likes, comments, and interactions are stored on the database and all post request are directed to the Celestia blockchain.
 - **Chopin Framework Integration**: Utilizes Chopin for seamless blockchain interactions.
-- **Real-Time Updates**: Fetch and display tweets dynamically.
-- **User Authentication**: Secure login and identity verification.
+- **Real-Time Updates**: Fetch and display tweets, treasure hunt lobbies and chats dynamically.
+- **User Authentication**: Secure login and identity verification using chopin.
 - **Tweet Management**: Post, edit, delete, and retrieve tweets.
 - **Like & Retweet**: Engage with tweets through likes and retweets.
+- **In-App Token**: Integration of the Raven Trust Token (RTT).
+- **User Account Upgrade**: Using the In-app token, User can upgrade the account to have other abilities.
+- **In-App Game and Reward**: Treasure Hunt hosted by Upgraded users for other users and winner carries the reward.
 - **Commenting System**: Nested replies to tweets.
-- **Decentralized Chat**: Secure direct messaging using on-chain encryption.
+- **Decentralized Chat**: Secure direct messaging using E2EE and chat post request going on-chain using Chopin.
 
 ## Tech Stack
 - **Frontend**: React (Vite)
@@ -89,13 +92,13 @@ Ensure you have the following installed:
 - Integrate easters eggs for more user interaction
 
 ## Contributors
+- **Usamah Abduljalil** - Application Manager
 - **Ayomide Philip** - Lead Developer
-- **Ayomide Philip** - Lead Developer
-- **Ayomide Philip** - Lead Developer
+- **Nasir Abdul** - QA
 
 ## License
-This project is open-source built originally for Mammothon using Chopin Framework.
+This project is open-source built originally for Celestia Mammothon using Chopin Framework.
 
 ## Contact
-For queries and contributions, reach out via [ayolaphilip@gmail.com] or join the [Mammothon community](https://mammothon.io).
+For queries and contributions, reach out via [usamahabduljalil21@gmail.com], [ayolaphilip@gmail.com] or join the [Raven Telegram Chat](https://t.me/+r0vL7W5gcC1kMDJk).
 
