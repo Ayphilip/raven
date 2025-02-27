@@ -136,6 +136,14 @@ io.on('connection', (socket) => {
     });
 });
 
+app.use((req, res, next) => {
+    if (!req.headers['x-sequencer-secret'] || req.headers['x-sequencer-secret'] !== process.env.SEQUENCER_SECRET) {
+        return res.status(401).send('Unauthorized');
+    }
+
+    next();
+});
+
 
 // Serve Frontend Static Files
 const frontendPath = path.join(__dirname, "../frontend/dist");
