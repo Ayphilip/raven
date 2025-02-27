@@ -7,7 +7,7 @@ import { useOthers } from '../context/otherContext';
 import { useChats } from '../context/chatContext';
 import { encryptText } from './CapsuleInstance';
 
-const socket = io("http://localhost:4000");
+const socket = io("/");
 function ChatUI({ chats, userDetails, userInfo }) {
 
     const { users, addUser, modifyUser } = useUsers();

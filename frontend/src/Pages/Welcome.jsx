@@ -67,35 +67,35 @@ function Welcome() {
         setMedia((prevUrls) => [...prevUrls, ...uploadedFiles]);
     };
 
-    const handleFileChanges = async (event) => {
-        const files = event.target.files;
-        if (!files.length) return;
+    // const handleFileChanges = async (event) => {
+    //     const files = event.target.files;
+    //     if (!files.length) return;
 
-        const fileArray = Array.from(files);
+    //     const fileArray = Array.from(files);
 
-        // Function to upload file and get file ID
-        const uploadFile = async (file) => {
-            try {
-                const formData = new FormData();
-                formData.append("file", file);
+    //     // Function to upload file and get file ID
+    //     const uploadFile = async (file) => {
+    //         try {
+    //             const formData = new FormData();
+    //             formData.append("file", file);
 
-                const response = await axios.post("http://localhost:22045/api/fileUpload", formData, {
-                    headers: { "Content-Type": "multipart/form-data" },
-                });
+    //             const response = await axios.post("http://localhost:22045/api/fileUpload", formData, {
+    //                 headers: { "Content-Type": "multipart/form-data" },
+    //             });
 
-                return response.data.fileId; // Return file ID
-            } catch (error) {
-                console.error("Upload failed:", error);
-                return null;
-            }
-        };
+    //             return response.data.fileId; // Return file ID
+    //         } catch (error) {
+    //             console.error("Upload failed:", error);
+    //             return null;
+    //         }
+    //     };
 
-        // Upload files and store file IDs
-        const uploadedFileIds = await Promise.all(fileArray.map(uploadFile));
+    //     // Upload files and store file IDs
+    //     const uploadedFileIds = await Promise.all(fileArray.map(uploadFile));
 
-        // Remove null values (failed uploads) and update state
-        setMedia((prevIds) => [...prevIds, ...uploadedFileIds.filter(Boolean)]);
-    };
+    //     // Remove null values (failed uploads) and update state
+    //     setMedia((prevIds) => [...prevIds, ...uploadedFileIds.filter(Boolean)]);
+    // };
 
     const extractMentions = (text) => {
         const mentionedUsers = [];

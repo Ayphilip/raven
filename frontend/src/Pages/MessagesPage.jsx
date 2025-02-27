@@ -13,7 +13,7 @@ import formatTimestamp from '../Components/timeStamping';
 
 
 
-const socket = io("http://localhost:4000");
+const socket = io("/");
 
 function MessagesPage() {
 
