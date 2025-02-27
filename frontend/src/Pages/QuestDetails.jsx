@@ -106,7 +106,7 @@ function QuestDetails() {
                 console.warn("Quest not found for ID:", params.id);
             }
 
-            document.title=`${item.status}, ${item.Id} - Quest / Raven`
+            document.title=`${item.questTitle}, ${item.description} - Quest / Raven`
 
             setSelectedQuest(params.id);
             setSelectedQuests(item || null); 

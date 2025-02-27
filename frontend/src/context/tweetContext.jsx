@@ -2,12 +2,14 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { useOthers } from "./otherContext";
 import { useUsers } from "./userContext";
+import { getTopWords } from "../Components/CapsuleInstance";
 
 const TweetContext = createContext();
 
 export const TweetProvider = ({ children }) => {
     const [tweets, setTweets] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [topWords, setTopWords] = useState(null)
     const { createNotification } = useOthers()
     const { fetchUser } = useUsers()
 
@@ -20,8 +22,12 @@ export const TweetProvider = ({ children }) => {
         setLoading(true);
         try {
             const allTweets = await axios.get("/api/tweets")
+            const resp = getTopWords(allTweets.data)
+            
+            setTopWords(resp)
             // getAllTweet();
             setTweets(allTweets.data);
+
         } catch (error) {
             console.error("Error fetching tweets:", error);
         } finally {
@@ -113,7 +119,7 @@ export const TweetProvider = ({ children }) => {
     };
 
     return (
-        <TweetContext.Provider value={{ tweets, loading, addTweet, likeTweet, fetchTweet, retweetTweet }}>
+        <TweetContext.Provider value={{ tweets, loading, addTweet, likeTweet, fetchTweet, retweetTweet, topWords }}>
             {children}
         </TweetContext.Provider>
     );

@@ -15,7 +15,7 @@ function Sid2bar({ ps }) {
     const [isMintAvailable, setIsMintAvailable] = useState(false);
     const [timeLeft, setTimeLeft] = useState("");
 
-    const { tweets, likeTweet, retweetTweet, addTweet } = useTweets();
+    const { tweets, likeTweet, retweetTweet, addTweet, topWords } = useTweets();
     const { users, userList, addUser, modifyUser } = useUsers();
 
     const { address, isLoading, isLoginError, logout, revalidate } = useAddress();
@@ -25,7 +25,7 @@ function Sid2bar({ ps }) {
 
     const [searchWord, setSearchWord] = useState('')
 
-    const [topWords, setTopWords] = useState(null)
+    
 
     const { chats, allChats, fetchMessages } = useChats();
 
@@ -59,12 +59,13 @@ function Sid2bar({ ps }) {
             .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
     };
 
+   
+
+
     useEffect(() => {
 
         const checkMintStatus = () => {
-            const resp = getTopWords(tweets)
-            console.log(resp)
-            setTopWords(resp)
+
             const lastMintTime = localStorage.getItem("lastMintTime");
             if (!lastMintTime) {
                 setIsMintAvailable(true);
@@ -110,7 +111,7 @@ function Sid2bar({ ps }) {
                     </div>
 
                     <div class="space-y-3.5 capitalize text-xs font-normal mt-5 mb-2 text-gray-600 dark:text-white/80">
-                        {topWords?.map(trends => <a href={"/search?q="+trends.word}>
+                        {topWords?.map(trends => <a href={"/search?q=" + trends.word}>
                             <div class="flex items-center gap-3 p">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 -mt-2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
