@@ -16,7 +16,7 @@ function Sid2bar({ ps }) {
     const [timeLeft, setTimeLeft] = useState("");
 
     const { tweets, likeTweet, retweetTweet, addTweet, topWords } = useTweets();
-    const { users, userList, addUser, modifyUser } = useUsers();
+    const { users, userList, addUser, modifyUser, addFollow } = useUsers();
 
     const { address, isLoading, isLoginError, logout, revalidate } = useAddress();
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate } = useLoginService();
@@ -25,13 +25,24 @@ function Sid2bar({ ps }) {
 
     const [searchWord, setSearchWord] = useState('')
 
-    
+
 
     const { chats, allChats, fetchMessages } = useChats();
 
     const { quests } = useTreasureHunt()
 
     const navigate = useNavigate()
+
+    const saveFollow = (userId, user2Id) => {
+
+        var hive = addFollow(userId, user2Id)
+        if (hive) {
+            setStat(true)
+        } else {
+            setStat(false)
+        }
+    }
+
 
     const handleMint = () => {
         if (isMintAvailable) {
@@ -59,7 +70,7 @@ function Sid2bar({ ps }) {
             .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
     };
 
-   
+
 
 
     useEffect(() => {
@@ -91,7 +102,7 @@ function Sid2bar({ ps }) {
         return () => {
 
         }
-    }, [isLoading, isMintAvailable])
+    }, [isLoading, isMintAvailable, users])
     return (
         <div class="2xl:w-[380px] lg:w-[330px] w-full">
 
@@ -132,7 +143,7 @@ function Sid2bar({ ps }) {
 
                     <div class="flex items-baseline justify-between text-black dark:text-white">
                         <h3 class="font-bold text-base"> People you may know </h3>
-                        <a href="#" class="text-sm text-blue-500">See all</a>
+                        {/* <a href="#" class="text-sm text-blue-500">See all</a> */}
                     </div>
 
                     <div class="side-list">
@@ -155,7 +166,7 @@ function Sid2bar({ ps }) {
                                     {use.followers.some(fol => fol === userDetails.username) ? (
                                         <button class="button bg-primary-soft text-primary dark:text-white">unfollow</button>
                                     ) : (
-                                        <button class="button bg-primary-soft text-primary dark:text-white">follow</button>
+                                        <button onClick={()=>saveFollow(use.username, userDetails?.username)} class="button bg-primary-soft text-primary dark:text-white">follow</button>
                                     )}
                                 </div>
                             ))}

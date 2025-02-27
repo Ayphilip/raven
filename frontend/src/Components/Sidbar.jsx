@@ -58,7 +58,7 @@ function Sidbar({ ps }) {
                                     <a href="/chat" className='text-xl'>
                                         <ion-icon name="mail-outline"></ion-icon>
                                         <span> messages </span>
-                                        {allChats.filter(chat =>
+                                        {allChats && allChats?.filter(chat =>
                                             chat.messages.some(message => message.receiverId === userDetails?.username && message.status === 'sent')
                                         ).length > 0 && <span style={{ background: '#3396FF' }} className='p-1 rounded-full border border-white dark:border-slate-800'>{allChats.filter(chat =>
                                             chat.messages.some(message => message.receiverId === userDetails?.username && message.status === 'sent')

@@ -41,6 +41,7 @@ export const UserProvider = ({ children }) => {
             })
             // const allUsers = await addFollower(userId, user2Id);
             // setUsers(allUsers);
+            fetchUsers()
             return allUsers.data;
         } catch (error) {
             console.error("Error fetching users:", error);

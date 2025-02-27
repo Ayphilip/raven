@@ -244,11 +244,11 @@ function Profile2() {
 
                                         <ul class="group" uk-switcher="connect: #page-tabs ; animation: uk-animation-slide-right-medium, uk-animation-slide-left-medium">
 
-                                            <li> <a href="#"> Suggestions  </a> </li>
-                                            <li> <a href="#"> Popular </a> </li>
+                                            <li> <a href="#"> Timeline  </a> </li>
+                                            {/* <li> <a href="#"> Popular </a> </li>
                                             <li> <a href="#"> My pages </a> </li>
                                             <li> <a href="#"> My pages </a> </li>
-                                            <li> <a href="#"> My pages </a> </li>
+                                            <li> <a href="#"> My pages </a> </li> */}
 
                                         </ul>
 
@@ -273,24 +273,11 @@ function Profile2() {
                                             <TweetView tweets={tweets.filter(tweet => (tweet.userId === userInfo.username) || (tweet.retweets.includes(userInfo.username)))} />
                                         )}
 
-
-                                        <div class="flex justify-center my-6 lg:col-span-3 col-span-2">
-                                            <button type="button" class="bg-white py-2 px-5 rounded-full shadow-md font-semibold text-sm dark:bg-dark2">Load more...</button>
-                                        </div>
-
                                     </div>
 
 
 
                                     <div class="gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
-
-
-
-
-
-                                        <div class="flex justify-center my-6 sm:col-span-2">
-                                            <button type="button" class="bg-white py-2 px-5 rounded-full shadow-md font-semibold text-sm dark:bg-dark2">Load more...</button>
-                                        </div>
 
                                     </div>
 

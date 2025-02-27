@@ -550,7 +550,7 @@ function QuestDetails() {
                         >
                             <ion-icon name="lock-closed-outline"></ion-icon>
                             Congratulations, Claim {questSelected.rewardType === '1' ? questSelected.reward : (questSelected.participants.length * questSelected.entryAmount)} {questSelected.rewardToken}.
-                        </button> : (
+                        </button> : questSelected.status === 'active' ? (
                             <button
                                 type="button"
                                 onClick={checkGuess}
@@ -559,7 +559,7 @@ function QuestDetails() {
                                 <ion-icon name="lock-closed-outline"></ion-icon>
                                 Guess
                             </button>
-                        )}
+                        ) : null}
 
                         {/* Cancel Button */}
                         <span
