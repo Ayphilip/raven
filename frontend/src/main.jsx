@@ -4,7 +4,6 @@ import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import { Provider } from 'react-redux'
 // import store from './store.js'
-import { PrivyProvider } from '@privy-io/react-auth'
 
 import '../src/assets/wets/style.css';
 import '../src/assets/wets/tailwind.css';

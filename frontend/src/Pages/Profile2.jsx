@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import Headers from '../Components/Headers'
-import Sidebar from '../Components/Sidebar'
 import Sidbar from '../Components/Sidbar'
 // import avatars from '../Components/avatars'
 import { useLoginService } from '../services/authenticationService'

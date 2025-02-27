@@ -4,7 +4,6 @@ import { useTweets } from '../context/tweetContext';
 import { useUsers } from '../context/userContext';
 import { useChats } from '../context/chatContext';
 import { useLoginService } from '../services/authenticationService';
-import Sidebar from '../Components/Sidebar';
 import Sid2bar from '../Components/Sid2bar';
 import Sidbar from '../Components/Sidbar';
 import { useOthers } from '../context/otherContext';

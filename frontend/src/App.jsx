@@ -2,14 +2,9 @@ import React, { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 // import './App.css'
-import Home from './Pages/Home'
 import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
-import GameInterface from './Pages/Game'
-import New from './Pages/New'
 import Welcome from './Pages/Welcome'
-import Mapscreen from './Pages/Mapscreen'
 import Login from './Pages/Login'
-import Profile from './Pages/Profile'
 import Vids from './asset/images/load.mp4'
 import TweetPage from './Pages/TweetPage'
 import Profile2 from './Pages/Profile2'
@@ -184,9 +179,6 @@ function App() {
             <Route path="/ravenhunt" Component={Hunt} />
             <Route path="/ravenhunt/quest/:id" Component={QuestDetails} />
             <Route path="/notifications" Component={NotificationPage} />
-            <Route path="/welcome" Component={Mapscreen} />
-            <Route path="/newgame" Component={New} />
-            <Route path="/game/:id" Component={GameInterface} />
             <Route path="/tweet/:id" Component={TweetPage} />
             <Route path="/timeline/:id" Component={Profile2} />
             <Route path="/" Component={Welcome} />
