@@ -27,6 +27,7 @@ function Login() {
     }
 
     useEffect(() => {
+        document.title='Welcome to Raven, Login or Signup'
 
         return () => {
 
@@ -56,11 +57,9 @@ function Login() {
                     <form method="#" action="#" class="space-y-7 text-sm text-black font-medium dark:text-white" uk-scrollspy="target: > *; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
 
 
-
-
                         <div class="text-center flex items-center gap-6">
                             <hr class="flex-1 border-slate-200 dark:border-slate-800" />
-                            Authentication by Privy.io
+                            Authentication by <a href='https://chopin.sh'>Chopin Framework</a>
                             <hr class="flex-1 border-slate-200 dark:border-slate-800" />
                         </div>
 
@@ -99,7 +98,7 @@ function Login() {
                                 <div class="max-w-xl w-full mx-auto pb-32 px-5 z-30 relative" uk-scrollspy="target: > *; cls: uk-animation-scale-up; delay: 100 ;repeat: true" >
                                     <img class="w-12" src={Logo} alt="Socialite html template" />
                                     <h4 class="!text-white text-2xl font-semibold mt-7" uk-slideshow-parallax="y: 800,0,0">  Web3 Social Upgrade </h4>
-                                    <p class="!text-white text-lg mt-7 leading-8" uk-slideshow-parallax="y: 800,0,0;"> The hive, X clone application.</p>
+                                    <p class="!text-white text-lg mt-7 leading-8" uk-slideshow-parallax="y: 800,0,0;"> Raven, X clone application.</p>
                                 </div>
                             </div>
                             <div class="w-full h-96 bg-gradient-to-t from-black absolute bottom-0 left-0"></div>

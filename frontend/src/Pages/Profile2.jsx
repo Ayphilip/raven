@@ -54,6 +54,7 @@ function Profile2() {
     }
 
     useEffect(() => {
+        
 
         const getTweet = async () => {
             // console.log(params.id)
@@ -61,6 +62,7 @@ function Profile2() {
                 const fetchedTweet = await fetchUser(params.id); // Wait for the promise to resolve
                 // console.log(fetchedTweet)
                 setUserInfo(fetchedTweet); // Store the resolved tweet
+                document.title=`${fetchedTweet.name}(${fetchedTweet.username}) / Raven`
             } catch (error) {
                 console.error('Error fetching:', error);
             }

@@ -65,6 +65,7 @@ function SearchPage() {
     useEffect(() => {
         makeSearch(searchQuery)
         fetchMessages(selectedUser)
+        document.title=`${searchQuery} - Search / Raven`
         // console.log(searchResult)
     }, [selectedUser, searchQuery]);
 

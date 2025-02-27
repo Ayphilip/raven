@@ -8,6 +8,7 @@ import { useAddress } from '@chopinframework/react';
 import { useTreasureHunt } from '../context/treasureHuntContext';
 import { useChats } from '../context/chatContext';
 import { useNavigate } from 'react-router-dom';
+import { getTopWords } from './CapsuleInstance';
 
 function Sid2bar({ ps }) {
 
@@ -23,6 +24,8 @@ function Sid2bar({ ps }) {
     const { ptoken, mintToken } = useOthers()
 
     const [searchWord, setSearchWord] = useState('')
+
+    const [topWords, setTopWords] = useState(null)
 
     const { chats, allChats, fetchMessages } = useChats();
 
@@ -59,6 +62,9 @@ function Sid2bar({ ps }) {
     useEffect(() => {
 
         const checkMintStatus = () => {
+            const resp = getTopWords(tweets)
+            console.log(resp)
+            setTopWords(resp)
             const lastMintTime = localStorage.getItem("lastMintTime");
             if (!lastMintTime) {
                 setIsMintAvailable(true);
@@ -91,12 +97,12 @@ function Sid2bar({ ps }) {
             <div class="lg:space-y-4 lg:pb-8 max-lg:grid sm:grid-cols-2 max-lg:gap-6"
                 uk-sticky="media: 1024; end: #js-oversized; offset: 80">
 
-                {ps !== 'search' && <form id="search--box" onSubmit={()=>executeSearch(searchWord)} class="xl:w-auto sm:w-96 sm:relative rounded-xl overflow-hidden bg-secondery max-md:hidden w-screen left-0 max-sm:fixed max-sm:top-2 dark:!bg-white/5">
+                {ps !== 'search' && <form id="search--box" onSubmit={() => executeSearch(searchWord)} class="xl:w-auto sm:w-96 sm:relative rounded-xl overflow-hidden bg-secondery max-md:hidden w-screen left-0 max-sm:fixed max-sm:top-2 dark:!bg-white/5">
                     <button type='submit'><ion-icon name="search" class="absolute left-4 top-1/2 -translate-y-1/2"></ion-icon></button>
-                    <input type="text" required onChange={(e)=>setSearchWord(e.target.value)} placeholder="Search Friends, videos .." class="w-full !pl-10 !font-normal !bg-transparent h-12 !text-sm" />
+                    <input type="text" required onChange={(e) => setSearchWord(e.target.value)} placeholder="Search Friends, videos .." class="w-full !pl-10 !font-normal !bg-transparent h-12 !text-sm" />
                 </form>}
 
-                <div class="box p-5 px-6 border1 dark:bg-dark1">
+                {topWords && <div class="box p-5 px-6 border1 dark:bg-dark1">
 
                     <div class="flex justify-between text-black dark:text-white">
                         <h3 class="font-bold text-base"> Trends for you </h3>
@@ -104,54 +110,22 @@ function Sid2bar({ ps }) {
                     </div>
 
                     <div class="space-y-3.5 capitalize text-xs font-normal mt-5 mb-2 text-gray-600 dark:text-white/80">
-                        <a href="#">
+                        {topWords?.map(trends => <a href={"/search?q="+trends.word}>
                             <div class="flex items-center gap-3 p">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 -mt-2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
                                 </svg>
                                 <div class="flex-1">
-                                    <h4 class="font-semibold text-black dark:text-white text-sm">  artificial intelligence </h4>
-                                    <div class="mt-0.5"> 1,245,62 post </div>
+                                    <h4 class="font-semibold text-black dark:text-white text-sm">  {trends.word} </h4>
+                                    <div class="mt-0.5"> {trends.posts} post </div>
                                 </div>
                             </div>
-                        </a>
-                        <a href="#" class="block">
-                            <div class="flex items-center gap-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 -mt-2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
-                                </svg>
-                                <div class="flex-1">
-                                    <h4 class="font-semibold text-black dark:text-white text-sm">  Web developers</h4>
-                                    <div class="mt-0.5"> 1,624 post </div>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="#" class="block">
-                            <div class="flex items-center gap-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 -mt-2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
-                                </svg>
-                                <div class="flex-1">
-                                    <h4 class="font-semibold text-black dark:text-white text-sm">  Ui Designers</h4>
-                                    <div class="mt-0.5"> 820 post </div>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="#" class="block">
-                            <div class="flex items-center gap-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 -mt-2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
-                                </svg>
-                                <div class="flex-1">
-                                    <h4 class="font-semibold text-black dark:text-white text-sm"> affiliate marketing </h4>
-                                    <div class="mt-0.5"> 480 post </div>
-                                </div>
-                            </div>
-                        </a>
+                        </a>)}
+
                     </div>
 
 
-                </div>
+                </div>}
 
                 <div class="box p-5 px-6 border1 dark:bg-dark1">
 

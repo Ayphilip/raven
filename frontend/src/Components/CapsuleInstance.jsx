@@ -8,90 +8,90 @@ import Logo from '../asset/images/logo.png'
 
 
 const renderContentWithMentions = (text, users, me) => {
-    const mentionRegex = /\[@([^\]]+)\]\((0x[a-fA-F0-9]+)\)/g;
-    const { userList, addUser, modifyUser, addFollow } = useUsers();
+  const mentionRegex = /\[@([^\]]+)\]\((0x[a-fA-F0-9]+)\)/g;
+  const { userList, addUser, modifyUser, addFollow } = useUsers();
 
-    return text.split(mentionRegex).map((part, index, arr) => {
-        if (index % 3 === 1) {
-            const userId = arr[index + 1];
-            // console.log(userId)
-            const user = users.find((u) => u.username === userId); // ✅ Find user by ID
-            // const user = users.find((u) => u.username === username);
+  return text.split(mentionRegex).map((part, index, arr) => {
+    if (index % 3 === 1) {
+      const userId = arr[index + 1];
+      // console.log(userId)
+      const user = users.find((u) => u.username === userId); // ✅ Find user by ID
+      // const user = users.find((u) => u.username === username);
 
-            if (!user) return userId; // Fallback to raw text if user not found
+      if (!user) return userId; // Fallback to raw text if user not found
 
-            return (
-                <div key={userId} className="mention inline-flex items-center z-200000">
-                    <span
-                        className="text-blue-500 font-medium cursor-pointer hover:underline"
-                        data-tooltip-id={`mention-${userId}`}
-                    >
-                        {user.name} {/* ✅ Show only name */}
-                    </span>
-                    <div class="p-4 bg-white rounded-lg shadow-md w-80 dark:bg-slate-700 z-[100]"
-                        uk-drop="offset:10;pos: bottom-right ; animation: uk-animation-slide-bottom-small">
+      return (
+        <div key={userId} className="mention inline-flex items-center z-200000">
+          <span
+            className="text-blue-500 font-medium cursor-pointer hover:underline"
+            data-tooltip-id={`mention-${userId}`}
+          >
+            {user.name} {/* ✅ Show only name */}
+          </span>
+          <div class="p-4 bg-white rounded-lg shadow-md w-80 dark:bg-slate-700 z-[100]"
+            uk-drop="offset:10;pos: bottom-right ; animation: uk-animation-slide-bottom-small">
 
-                        <div className="bg-white dark:bg-dark3 xl:space-y-6 space-y-3">
-                            <div style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row' }}>
-                                <img src={user?.profilePicture ? avatars[parseInt(user.profilePicture)] : avatars[0]} alt="" class="w-10 h-10 rounded-full shadow" />
-                                {user.followers.includes(me.username) ? <button class="button bg-secondery flex items-center gap-2 text-white py-2 px-1.5 max-sm:flex-1">
-                                    <ion-icon name="add-circle" class="text-sm"></ion-icon>
-                                    <span class="text-sm"> Following  </span>
-                                </button> : <button class="button bg-primary flex items-center gap-2 text-white py-2 px-1.5 max-sm:flex-1" onClick={() => addFollow(user.username, me.username)}>
-                                    <ion-icon name="add-circle" class="text-sm"></ion-icon>
-                                    <span class="text-sm"> Follow  </span>
-                                </button>}
-                            </div>
-                            <div>
+            <div className="bg-white dark:bg-dark3 xl:space-y-6 space-y-3">
+              <div style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row' }}>
+                <img src={user?.profilePicture ? avatars[parseInt(user.profilePicture)] : avatars[0]} alt="" class="w-10 h-10 rounded-full shadow" />
+                {user.followers.includes(me.username) ? <button class="button bg-secondery flex items-center gap-2 text-white py-2 px-1.5 max-sm:flex-1">
+                  <ion-icon name="add-circle" class="text-sm"></ion-icon>
+                  <span class="text-sm"> Following  </span>
+                </button> : <button class="button bg-primary flex items-center gap-2 text-white py-2 px-1.5 max-sm:flex-1" onClick={() => addFollow(user.username, me.username)}>
+                  <ion-icon name="add-circle" class="text-sm"></ion-icon>
+                  <span class="text-sm"> Follow  </span>
+                </button>}
+              </div>
+              <div>
 
-                                <h6 className="text-sm font-small text-black"><strong>{user.name}</strong></h6>
-                                <h6 className="text-sm font-small text-black">@{user.username.slice(0, 6)}...
-                                    {user.username.slice(-4)}</h6>
-                            </div>
-                            <p className="text-sm font-small text-black">{user.bio}</p>
-                            <h6>{user.followers.length} Followers | {user.following.length} Following</h6>
-                            {user.bio && <p className="text-gray-700 text-sm mt-2">{user.bio}</p>}
-                            <p>
-                                Followed by {(() => {
-                                    const filteredUsers = users.filter(use =>
-                                        me?.following?.includes(use.id) && user.followers.includes(use.id)
-                                    );
+                <h6 className="text-sm font-small text-black"><strong>{user.name}</strong></h6>
+                <h6 className="text-sm font-small text-black">@{user.username.slice(0, 6)}...
+                  {user.username.slice(-4)}</h6>
+              </div>
+              <p className="text-sm font-small text-black">{user.bio}</p>
+              <h6>{user.followers.length} Followers | {user.following.length} Following</h6>
+              {user.bio && <p className="text-gray-700 text-sm mt-2">{user.bio}</p>}
+              <p>
+                Followed by {(() => {
+                  const filteredUsers = users.filter(use =>
+                    me?.following?.includes(use.id) && user.followers.includes(use.id)
+                  );
 
-                                    if (!filteredUsers.length > 0) {
-                                        return 'No one you follow'
-                                    }
+                  if (!filteredUsers.length > 0) {
+                    return 'No one you follow'
+                  }
 
-                                    const firstFour = filteredUsers.slice(0, 4).map(use => use.name);
-                                    const remainingCount = filteredUsers.length - 4;
+                  const firstFour = filteredUsers.slice(0, 4).map(use => use.name);
+                  const remainingCount = filteredUsers.length - 4;
 
-                                    return remainingCount > 0
-                                        ? `${firstFour.join(", ")} and ${remainingCount} others`
-                                        : firstFour.join(", ");
-                                })()}
-                            </p>
-                            <button class="button bg-primary w-100 flex items-center gap-2 text-white py-2 px-1.5 max-sm:flex-1">
-                                <ion-icon name="add-circle" class="text-sm"></ion-icon>
-                                <span class="text-sm"> View Profile  </span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-        if (index % 3 === 0) {
-            return part; // Normal text
-        }
-        return null; // Skip wallet addresses
-    }).filter(Boolean); // Remove null values
+                  return remainingCount > 0
+                    ? `${firstFour.join(", ")} and ${remainingCount} others`
+                    : firstFour.join(", ");
+                })()}
+              </p>
+              <button class="button bg-primary w-100 flex items-center gap-2 text-white py-2 px-1.5 max-sm:flex-1">
+                <ion-icon name="add-circle" class="text-sm"></ion-icon>
+                <span class="text-sm"> View Profile  </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    if (index % 3 === 0) {
+      return part; // Normal text
+    }
+    return null; // Skip wallet addresses
+  }).filter(Boolean); // Remove null values
 };
 
 const encryptText = (data) => {
-    var mesg = CryptoJS.AES.encrypt(data, "ravenTestToken").toString()
-    return mesg
+  var mesg = CryptoJS.AES.encrypt(data, "ravenTestToken").toString()
+  return mesg
 }
 
 const LoadingView = () => {
-    return <div
+  return <div
     style={{
       position: "fixed",
       top: 0,
@@ -151,5 +151,30 @@ const LoadingView = () => {
   </div>
 }
 
+function getTopWords(tweets) {
+  const wordCount = {}; // Tracks total word occurrences
+  const postCount = {}; // Tracks in how many tweets a word appears
 
-export { renderContentWithMentions, encryptText, LoadingView };
+  tweets.forEach(tweet => {
+    const words = tweet.content.toLowerCase().match(/\b\w+\b/g) || []; // Extract words
+    const uniqueWords = new Set(words); // Get unique words in the tweet
+
+    words.forEach(word => {
+      wordCount[word] = (wordCount[word] || 0) + 1; // Count occurrences
+    });
+
+    uniqueWords.forEach(word => {
+      postCount[word] = (postCount[word] || 0) + 1; // Count posts containing the word
+    });
+  });
+
+  // Convert to array and sort by total occurrences
+  const sortedWords = Object.keys(wordCount)
+    .map(word => ({ word, count: wordCount[word], posts: postCount[word] }))
+    .sort((a, b) => b.count - a.count) // Sort descending by count
+    .slice(0, 5); // Get top 10
+
+  return sortedWords;
+}
+
+export { renderContentWithMentions, encryptText, LoadingView, getTopWords };

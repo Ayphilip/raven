@@ -49,6 +49,7 @@ function TweetPage() {
         const readTweet = async () => {
             const response = await fetchTweet(params.id)
             setTweet(response)
+            document.title = `${users.filter(use => use.username === response.userId).map(use => `${use.name} on Raven:`)}${response.content} / Raven`
             // console.log(response)
         }
 
@@ -59,7 +60,7 @@ function TweetPage() {
         }
     }, [tweets, retweetTweet])
     return (
-        !tweet ? <LoadingView/> : <div>
+        !tweet ? <LoadingView /> : <div>
             <div>
 
 
@@ -154,14 +155,14 @@ function TweetPage() {
 
                                     {tweet.media.length === 1 &&
                                         <div class="grid sm:grid-cols-1 gap-1" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
-                                        {tweet.media.map((med, index) => (
-                                            <span key={index} className="w-full">
-                                                <a className="inline" href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
-                                                    <MediaViewer fileUrl={med} />
-                                                </a>
-                                            </span>
-                                        ))}
-                                    </div>
+                                            {tweet.media.map((med, index) => (
+                                                <span key={index} className="w-full">
+                                                    <a className="inline" href="#preview_modal" data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
+                                                        <MediaViewer fileUrl={med} />
+                                                    </a>
+                                                </span>
+                                            ))}
+                                        </div>
                                     }
 
 
@@ -418,7 +419,7 @@ function TweetPage() {
                                             )
                                         )}
 
-                                        
+
 
 
 
