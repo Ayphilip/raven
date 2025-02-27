@@ -4,7 +4,7 @@ import axios from 'axios';
 import { db, collection, doc, getDoc, setDoc, updateDoc, arrayUnion, onSnapshot, Timestamp } from '../Components/firebaseConfig';
 import Cookies from "js-cookie";
 
-const socket = io('http://localhost:4000', { autoConnect: false });
+const socket = io('/', { autoConnect: false });
 
 export const ChatContext = createContext();
 
