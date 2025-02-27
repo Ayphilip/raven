@@ -2,10 +2,10 @@ import { db, doc, getDoc, setDoc, updateDoc, collection, addDoc, arrayUnion, arr
 import crypto from "crypto";
 import { genId, getIsCorrect, sendNotification } from "../util.js";
 
-// Store active SSE connections
+
 const subscribers = new Map();
 
-// 📌 Create a new quest
+
 export const createQuest = async (req, res) => {
     try {
         const {
@@ -24,7 +24,7 @@ export const createQuest = async (req, res) => {
             answer
         } = req.body;
 
-        const questId = await genId(); // Generate a unique ID
+        const questId = await genId(req); // Generate a unique ID
 
         const newQuest = {
             id: questId,
@@ -115,7 +115,7 @@ export const submitGuess = async (req, res) => {
         }
 
         // Check if the guess is correct
-        const isCorrect = getIsCorrect(guess, questData.answer);
+        const isCorrect = getIsCorrect(guess, questData.answer, req);
 
         // console.log(isCorrect)
 
@@ -164,55 +164,32 @@ export const joinQuest = async (req, res) => {
     }
 };
 
-
-// 📌 Submit a guess for a quest
-export const submitGuesss = async (req, res) => {
+export const addClues = async (req, res) => {
     try {
-        const { userId, questId, guess } = req.body;
-        const questRef = doc(db, "guess", questId);
+        const { clue, questId } = req.body;
+        const questRef = doc(db, "quests", questId);
         const questDoc = await getDoc(questRef);
+        const initId = await genId(req)
+        const newClue = {
+            id: initId,
+            clue: clue,
+            access: []
+        }
 
         if (!questDoc.exists()) {
             return res.status(404).json({ error: "Quest not found" });
         }
 
-        const questData = questDoc.data();
-
-        if (questData.status === "completed") {
-            return res.status(400).json({ error: "This quest has already been completed." });
-        }
-
-        const isCorrect = guess.trim().toLowerCase() === questData.answer.trim().toLowerCase();
-
-        if (isCorrect) {
-            // Correct answer - update winner and status
-            await updateDoc(questRef, {
-                winner: userId,
-                status: "completed",
-                clues: arrayUnion({ userId, guess, correct: true, timestamp: serverTimestamp() })
-            });
-
-            res.status(200).json({ success: true, correct: true, message: "Congratulations! Your guess is correct." });
-
-        } else {
-            // Incorrect guess - just add to the clues
-            await updateDoc(questRef, {
-                clues: arrayUnion({ userId, guess, correct: false, timestamp: serverTimestamp() })
-            });
-
-            res.status(200).json({ success: true, correct: false, message: "Incorrect guess. Try again!" });
-        }
-
-        // Notify subscribers of quest updates
-        const updatedQuest = (await getDoc(questRef)).data();
-        notifySubscribers(questId, updatedQuest);
+        await updateDoc(questRef, { clues: arrayUnion(newClue) });
+        return res.status(200).json({ success: true, message: "New clue added" });
     } catch (error) {
-        console.error("Error submitting guess:", error);
+        console.error("Error Adding clue:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
 
-// 📌 Get all quests
+
+
 export const getQuests = async (req, res) => {
     try {
         const querySnapshot = await getDocs(collection(db, "quests"));
@@ -225,7 +202,7 @@ export const getQuests = async (req, res) => {
     }
 };
 
-// 📌 Get a single quest
+
 export const getQuest = async (req, res) => {
     try {
         const { questId } = req.params;
@@ -243,7 +220,7 @@ export const getQuest = async (req, res) => {
     }
 };
 
-// 📌 Subscribe to real-time quest updates
+
 export const subscribeToQuest = (req, res) => {
     const { questId } = req.params;
     res.setHeader("Content-Type", "text/event-stream");
@@ -265,7 +242,7 @@ export const subscribeToQuest = (req, res) => {
     });
 };
 
-// 📌 Notify subscribers of quest updates
+
 export const listenToQuestUpdates = (req, res) => {
     try {
         const { questId } = req.params;

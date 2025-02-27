@@ -21,7 +21,7 @@ import { genId, sendNotification } from "../util.js";
 // Create Tweet
 export const createTweet = async (req, res) => {
     try {
-        const initId = await genId();
+        const initId = await genId(req);
         const { userId, content, media, mentions, parent, visibility, type } = req.body;
         const tweetRef = doc(db, "tweets", initId);
 
@@ -70,7 +70,7 @@ export const createTweet = async (req, res) => {
             }
         }
 
-        await sendNotification(notificationList, initId, 0)
+        await sendNotification(notificationList, initId, 0, req)
 
         return res.status(201).json({ message: "Tweet created successfully" });
     } catch (error) {

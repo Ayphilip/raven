@@ -3,11 +3,11 @@ import { genId } from "../util.js";
 
 
 
-// 📌 Create and send a notification
+
 export const sendNotification = async (req, res) => {
     try {
         const { userId, message, type } = req.body;
-        const initId = await genId();
+        const initId = await genId(req);
         const notificationData = {
             id: initId,
             message,
@@ -32,7 +32,7 @@ export const sendNotification = async (req, res) => {
     }
 };
 
-// 📌 Get all notifications for a user
+
 export const getNotifications = async (req, res) => {
     try {
         const { userId } = req.params;
@@ -50,7 +50,7 @@ export const getNotifications = async (req, res) => {
     }
 };
 
-// 📌 Mark a notification as read
+
 export const markAsRead = async (req, res) => {
     try {
         const { userId } = req.body;  // No need for notifId since we are marking all as read
@@ -77,7 +77,7 @@ export const markAsRead = async (req, res) => {
 };
 
 
-// 📌 Delete a single notification
+
 export const deleteNotification = async (req, res) => {
     try {
         const { userId, notifId } = req.body;
@@ -99,7 +99,7 @@ export const deleteNotification = async (req, res) => {
     }
 };
 
-// 📌 Clear all notifications for a user
+
 export const clearNotifications = async (req, res) => {
     try {
         const { userId } = req.params;

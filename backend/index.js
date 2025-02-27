@@ -13,11 +13,11 @@ import searchRoutes from "./routes/search.js"
 import { fileURLToPath } from "url";
 import { exec } from "child_process";
 import path from "path";
-import { 
+import {
     db, doc, getDoc, setDoc, updateDoc, Timestamp, collection, getDocs, query, where, orderBy, serverTimestamp,
     arrayUnion
 } from "./config/firebaseConfig.js";
-import { genId, genId2 } from "./util.js";
+import { genId } from "./util.js";
 
 // Define __dirname manually for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -143,6 +143,11 @@ app.use(express.static(frontendPath));
 
 app.get("*", (req, res) => {
     res.sendFile(path.join(frontendPath, "index.html"));
+});
+
+app.post("/hello", async (req, res) => {
+    const id = await genId(req)
+    console.log(id)
 });
 
 // Start Server

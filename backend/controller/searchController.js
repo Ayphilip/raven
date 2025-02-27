@@ -2,6 +2,7 @@ import {
     db, doc, getDoc, setDoc, updateDoc, collection, getDocs, query, where, orderBy, serverTimestamp,
     arrayUnion
 } from "../config/firebaseConfig.js";
+import { searchFirestore } from "../util.js";
 
 /**
  * Perform a search across multiple Firestore collections
@@ -20,7 +21,7 @@ export const searchAcrossCollections = async (req, res) => {
 
     const searchCollections = ["users", "tweets", "quests"];
     const searchPromises = searchCollections.map((collectionName) =>
-      searchFirestore(collectionName, query, limit)
+      searchFirestore(collectionName, query, limit, req)
     );
 
     const results = await Promise.all(searchPromises);
@@ -38,33 +39,3 @@ export const searchAcrossCollections = async (req, res) => {
   }
 };
 
-/**
- * Search for documents in a Firestore collection using Firebase SDK
- * @param {string} collectionName - Firestore collection name
- * @param {string} query - Search query
- * @param {number} limit - Max results per collection
- * @returns {Promise<object[]>} - Search results
- */
-const searchFirestore = async (collectionName, query, limit) => {
-  const results = [];
-  const lowercaseQuery = query.toLowerCase();
-
-  // Get reference to the Firestore collection
-  const colRef = collection(db, collectionName);
-  const snapshot = await getDocs(colRef);
-
-  snapshot.forEach((doc) => {
-    const data = doc.data();
-    const matchFound = Object.values(data).some(
-      (value) =>
-        typeof value === "string" &&
-        value.toLowerCase().includes(lowercaseQuery)
-    );
-
-    if (matchFound) {
-      results.push({ id: doc.id, ...data });
-    }
-  });
-
-  return results.slice(0, limit); // Apply limit after filtering
-};

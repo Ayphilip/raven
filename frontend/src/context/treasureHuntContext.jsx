@@ -66,6 +66,18 @@ export const TreasureHuntProvider = ({ children }) => {
         }
     };
 
+    const submitClue = async (data2) => {
+        try {
+            console.log(data2)
+            const { data } = await axios.post('/api/treasurehunt/quest/addClues', data2, {
+                headers: { 'Content-Type': 'application/json' }
+            });
+            return data;
+        } catch (error) {
+            console.error("Error submitting guess:", error);
+        }
+    };
+
     // Real-time listener for quest updates using SSE
     useEffect(() => {
         if (!selectedQuest) return;
@@ -115,7 +127,7 @@ export const TreasureHuntProvider = ({ children }) => {
 
 
     return (
-        <TreasureHuntContext.Provider value={{ quests, guesses, createQuest, joinQuest, submitGuess, setSelectedQuest }}>
+        <TreasureHuntContext.Provider value={{ quests, guesses, createQuest, joinQuest, submitGuess, setSelectedQuest, submitClue }}>
             {children}
         </TreasureHuntContext.Provider>
     );

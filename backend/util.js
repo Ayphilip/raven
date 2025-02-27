@@ -27,23 +27,41 @@ import CryptoJS from "crypto-js";
 //     return result
 // }
 
-export const genId = async () => {
-    var oracle = new Oracle('http://localhost:4000');
-    var Id = await oracle.notarize(() => crypto.randomUUID())
-    // var addr = await useAddress().
-    // console.log(addr.address)
+// export const genId2 = async () => {
+//     var oracle = new Oracle('http://localhost:4000');
+//     // var Id = await oracle.notarize(() =>crypto.randomUUID())
+//     // var name = await oracle.random(50)
+//     // var Id = await oracle.now()
+//     // var Id = await oracle.random()
+//     var Id = await oracle.notarize(() => {
 
+//         return 'Hello World'
+//     }
+//     )
+//     // var id = await Oracle.notarize(() =>crypto.randomUUID())
+//     // var id = crypto.randomUUID()
+//     // var addr = await useAddress().
+//     // console.log(addr.address)
+
+//     return Id;
+// };
+
+export const genId = async (req) => {
+    const callbackUrl = req.headers["x-callback-url"];
+    var oracle = new Oracle(callbackUrl);
+    var Id = await oracle.notarize(() => crypto.randomUUID())
     return Id;
 };
 
-export const getIsCorrect = async (item1, item2) => {
+export const getIsCorrect = async (item1, item2, req) => {
     try {
         if (!item1 || !item2) {
             console.error("Error: item1 or item2 is undefined.");
             return false;
         }
+        const callbackUrl = req.headers["x-callback-url"];
 
-        var oracle = new Oracle('http://localhost:4000');
+        var oracle = new Oracle(callbackUrl);
 
         var response = await oracle.notarize(() => {
             try {
@@ -70,40 +88,14 @@ export const getIsCorrect = async (item1, item2) => {
     }
 };
 
-export const genId2 = async () => {
-    var oracle = new Oracle('http://localhost:4000');
-    // var Id = await oracle.notarize(() =>crypto.randomUUID())
-    // var name = await oracle.random(50)
-    // var Id = await oracle.now()
-    // var Id = await oracle.random()
-    var Id = await oracle.notarize(() => {
 
-        return 'Hello World'
-    }
-    )
-    // var id = await Oracle.notarize(() =>crypto.randomUUID())
-    // var id = crypto.randomUUID()
-    // var addr = await useAddress().
-    // console.log(addr.address)
-
-    return Id;
-};
-
-
-
-// export const timeStampsChopin = async () => {
-//     var time = Timestamp.now()
-//     return time;
-// }
-
-
-export const sendNotification = async (users, message, type) => {
+export const sendNotification = async (users, message, type, req) => {
     try {
         //type 0 = Tweet Notification
         //type 1 = Quest Notification
         await Promise.all(users.map(async (use) => {
 
-            const initId = await genId();
+            const initId = await genId(req);
             const notificationData = {
                 id: initId,
                 message,
@@ -125,3 +117,42 @@ export const sendNotification = async (users, message, type) => {
         console.error("Error sending notification:", error);
     }
 };
+
+/**
+ * Search for documents in a Firestore collection using Firebase SDK
+ * @param {string} collectionName - Firestore collection name
+ * @param {string} query - Search query
+ * @param {number} limit - Max results per collection
+ * @returns {Promise<object[]>} - Search results
+ */
+export const searchFirestore = async (collectionName, query, limit, req) => {
+
+    const callbackUrl = req.headers["x-callback-url"];
+
+    var oracle = new Oracle(callbackUrl);
+    var response = await oracle.notarize(async () => {
+        const results = [];
+        const lowercaseQuery = query.toLowerCase();
+
+        // Get reference to the Firestore collection
+        const colRef = collection(db, collectionName);
+        const snapshot = await getDocs(colRef);
+
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            const matchFound = Object.values(data).some(
+                (value) =>
+                    typeof value === "string" &&
+                    value.toLowerCase().includes(lowercaseQuery)
+            );
+
+            if (matchFound) {
+                results.push({ id: doc.id, ...data });
+            }
+        });
+
+        return results.slice(0, limit); // Apply limit after filtering
+    })
+    return response;
+};
+

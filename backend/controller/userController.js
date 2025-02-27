@@ -7,7 +7,7 @@ export const checkUser = async (req, res) => {
         const { mode, username, name, profilePicture, cover, bio } = req.body;
         const userRef = doc(db, "users", username);
         const snapshot = await getDoc(userRef);
-        const userId = await genId()
+        const userId = await genId(req)
 
         if (snapshot.exists()) {
             return res.status(200).json(snapshot.data());
