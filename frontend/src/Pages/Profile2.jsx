@@ -23,6 +23,48 @@ function Profile2() {
     const { users, addUser, modifyUser, addFollow, removeFollow, fetchUser, addNotifier, loading } = useUsers();
 
     const { allChats, initializeChat } = useChats();
+    const [ openEdit, setOpenEdit ] = useState(false)
+
+    const [name, setName] = useState('')
+    const [bio, setBio] = useState('')
+    const [loadingSavingEdit, setLoadingSavingEdit] = useState(false)
+
+    const openEditModal = () => {
+        setName(userInfo.name)
+        setBio(userInfo.bio)
+        setOpenEdit(true)
+    }
+
+    const closeEditModal = () => {
+        setName('')
+        setBio('')
+        setOpenEdit(false)
+    }
+
+    const saveEditModal = async (e) => {
+        e.preventDefault()
+        setLoadingSavingEdit(true)
+        const dats = {
+            name: name,
+            bio: bio
+        }
+        const resp = await modifyUser(userDetails?.username, dats)
+
+        // window.location.reload()
+        // setUserData(resp)
+
+        setLoadingSavingEdit(false)
+        closeEditModal()
+        window.location.reload()
+
+        
+    }
+
+
+    
+
+
+
 
     const [userInfo, setUserInfo] = useState(null)
     const [stat, setStat] = useState(false)
@@ -54,7 +96,7 @@ function Profile2() {
     }
 
     useEffect(() => {
-        
+
 
         const getTweet = async () => {
             // console.log(params.id)
@@ -62,7 +104,7 @@ function Profile2() {
                 const fetchedTweet = await fetchUser(params.id); // Wait for the promise to resolve
                 // console.log(fetchedTweet)
                 setUserInfo(fetchedTweet); // Store the resolved tweet
-                document.title=`${fetchedTweet.name}(${fetchedTweet.username}) / Raven`
+                document.title = `${fetchedTweet.name}(${fetchedTweet.username}) / Raven`
             } catch (error) {
                 console.error('Error fetching:', error);
             }
@@ -78,7 +120,7 @@ function Profile2() {
         return () => {
 
         }
-    }, [params.id, stat, loading])
+    }, [params.id, stat, loading, users])
 
     return (userInfo && <div>
         <div>
@@ -146,13 +188,13 @@ function Profile2() {
 
                                                 {userDetails?.username !== userInfo.username && userInfo.followers.includes(userDetails?.username) &&
                                                     (userInfo?.notificationList?.includes(userDetails?.username) ?
-                                                    <button onClick={() => addNotifier(userInfo.username, userDetails?.username,)} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
-                                                        <ion-icon name="notifications" class='text-xl'></ion-icon>
-                                                    </button>
-                                                    :
-                                                    <button onClick={() => addNotifier(userInfo.username, userDetails?.username,)} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
-                                                        <ion-icon name="notifications-outline" class='text-xl'></ion-icon>
-                                                    </button>)
+                                                        <button onClick={() => addNotifier(userInfo.username, userDetails?.username,)} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
+                                                            <ion-icon name="notifications" class='text-xl'></ion-icon>
+                                                        </button>
+                                                        :
+                                                        <button onClick={() => addNotifier(userInfo.username, userDetails?.username,)} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
+                                                            <ion-icon name="notifications-outline" class='text-xl'></ion-icon>
+                                                        </button>)
                                                 }
 
                                                 {userDetails?.username !== userInfo.username && userInfo.followers.includes(userDetails?.username) && (userDetails?.verified || userInfo.following.includes(userDetails?.username)) &&
@@ -161,7 +203,7 @@ function Profile2() {
                                                     </button>
                                                 }
 
-                                                {userInfo.userId === userDetails.userId ? <button class="button bg-black dark:bg-secondery dark:bg-dark2 flex items-center gap-2 text-white py-2 px-3.5 max-md:flex-1">
+                                                {userInfo.userId === userDetails.userId ? <button class="button bg-black dark:bg-secondery dark:bg-dark2 flex items-center gap-2 text-white py-2 px-3.5 max-md:flex-1" onClick={openEditModal}>
                                                     <ion-icon name="add-circle" class="text-xl"></ion-icon>
                                                     <span class="text-sm"> edit profile  </span>
                                                 </button> : userInfo.followers.some(fol => fol === userDetails.username) ? <button class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
@@ -186,7 +228,7 @@ function Profile2() {
                                                     userDetails.following.includes(user.id) && userInfo.followers.includes(user.id)
                                                 );
 
-                                                if(!filteredUsers.length > 0){
+                                                if (!filteredUsers.length > 0) {
                                                     return 'No one you follow'
                                                 }
 
@@ -439,335 +481,38 @@ function Profile2() {
 
 
 
-            <div>
-                <button type="button" class="sm:m-10 m-5 px-4 py-2.5 rounded-2xl bg-gradient-to-tr from-blue-500 to-blue-700 text-white shadow fixed bottom-0 right-0 group flex items-center gap-2">
+            {openEdit && <div className=" uk-modal lg:p-20 z-[1] uk-open">
+                <div class="uk-modal-dialog tt relative overflow-auto mx-auto bg-white shadow-xl rounded-lg md:w-[520px] w-full dark:bg-dark1">
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                        alignContent: 'end',
+                        alignItems: 'end',
+                        alignSelf: 'end'
+                    }}
+                    >
+                        {/* <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"> */}
+                        <div className="p-10 rounded-2xl shadow-2xl w-full max-w-6xl">
+                            <h2 className="text-4xl font-bold mb-8 text-center text-gray-800">Edit Profile</h2>
+                            <form onSubmit={saveEditModal} className="grid grid-cols-2 gap-6">
+                                <input type="text" value={name} name="Name" placeholder="Name" className="w-full p-4 border border-gray-300 rounded-lg col-span-2" onChange={(e) => setName(e.target.value)} required />
+                                <textarea name="Bio" value={bio} placeholder="Bio" className="w-full p-4 border border-gray-300 rounded-lg col-span-2" onChange={(e) => setBio(e.target.value)} required />
 
-                    <svg class="w-6 h-6 group-aria-expanded:hidden duration-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"></path>
-                    </svg>
-
-                    <div class="text-base font-semibold max-sm:hidden"> Chat </div>
-
-                    <svg class="w-6 h-6 -mr-1 hidden group-aria-expanded:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clip-rule="evenodd" />
-                    </svg>
-
-                </button>
-                <div class="bg-white rounded-xl drop-shadow-xl  sm:w-80 w-screen border-t dark:bg-dark3 dark:border-slate-600" id="chat__box"
-                    uk-drop="offset:10;pos: bottom-right; animate-out: true; animation: uk-animation-scale-up uk-transform-origin-bottom-right; mode: click">
-
-                    <div class="relative">
-                        <div class="p-5">
-                            <h1 class="text-lg font-bold text-black"> Chats </h1>
+                                <div className="col-span-2 flex justify-between mt-8">
+                                    <button type="button" onClick={closeEditModal} className="px-8 py-3 bg-gray-400 rounded-lg text-lg">Cancel</button>
+                                    {loadingSavingEdit ?
+                                        <button type="button" className="px-8 py-3 bg-blue-600 text-white rounded-lg text-lg">Executing...</button>
+                                        : <button type="submit" className="px-8 py-3 bg-blue-600 text-white rounded-lg text-lg">Confirm</button>}
+                                </div>
+                            </form>
                         </div>
-
-
-                        <div class="bg-white p-3 absolute w-full top-11 border-b flex gap-2 hidden dark:border-slate-600 dark:bg-slate-700 z-10"
-                            uk-scrollspy="cls:uk-animation-slide-bottom-small ; repeat: true; duration:0" id="search__chat">
-
-                            <div class="relative w-full">
-                                <input type="text" class="w-full rounded-3xl dark:!bg-white/10" placeholder="Search" />
-
-                                <button type="button" class="absolute  right-0  rounded-full shrink-0 px-2 -translate-y-1/2 top-1/2"
-                                    uk-toggle="target: #search__chat ; cls: hidden">
-
-                                    <ion-icon name="close-outline" class="text-xl flex"></ion-icon>
-                                </button>
-                            </div>
-
-                        </div>
-
-
-                        <div class="absolute top-0 -right-1 m-5 flex gap-2 text-xl">
-                            <button uk-toggle="target: #search__chat ; cls: hidden">
-                                <ion-icon name="search-outline"></ion-icon>
-                            </button>
-                            <button uk-toggle="target: #chat__box ; cls: uk-open">
-                                <ion-icon name="close-outline"></ion-icon>
-                            </button>
-                        </div>
-
-
-                        <div class="page-heading bg-slat e-50 ">
-
-                            <nav class="nav__underline -mt-7 px-5">
-
-                                <ul class="group" uk-switcher="connect: #chat__tabs ; animation: uk-animation-slide-right-medium, uk-animation-slide-left-medium">
-
-                                    <li> <a href="#" class="inline-block py-[18px] border-b-2 border-transparent aria-expanded:text-black aria-expanded:border-black aria-expanded:dark:text-white aria-expanded:dark:border-white"> Friends  </a> </li>
-                                    <li> <a href="#"> Groups </a> </li>
-
-                                </ul>
-
-                            </nav>
-
-                        </div>
-
-
-                        <div class="grid grid-cols-2 px-3 py-2 bg-slate-50  -mt-12 relative z-10 text-sm border-b  hidden" uk-switcher="connect: #chat__tabs; toggle: * > button ; animation: uk-animation-slide-right uk-animation-slide-top">
-                            <button class="bg-white shadow rounded-md py-1.5"> Friends </button>
-                            <button> Groups </button>
-                        </div>
-
-
-                        <div class="uk-switcher overflow-hidden rounded-xl -mt-8" id="chat__tabs">
-
-
-                            <div class="space-y -m t-5 p-3 text-sm font-medium h-[280px] overflow-y-auto">
-
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-1.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> Jesse Steeve </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-2.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> John Michael </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-3.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> Monroe Parker </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-5.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> James Lewis </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-4.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> Martin Gray </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-6.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> Alexa stella </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-1.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> Jesse Steeve </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-2.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> John Michael </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-3.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> Monroe Parker </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-5.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> James Lewis </div>
-                                    </div>
-                                </a>
-
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-4.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> Martin Gray </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-6.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> Alexa stella </div>
-                                    </div>
-                                </a>
-
-
-                            </div>
-
-
-                            <div class="space-y -m t-5 p-3 text-sm font-medium h-[280px] overflow-y-auto">
-
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-1.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> Jesse Steeve </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-2.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> John Michael </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-3.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> Monroe Parker </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-5.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> James Lewis </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-4.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> Martin Gray </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-6.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> Alexa stella </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-1.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> Jesse Steeve </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-2.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> John Michael </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-3.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> Monroe Parker </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-5.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> James Lewis </div>
-                                    </div>
-                                </a>
-
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-4.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> Martin Gray </div>
-                                    </div>
-                                </a>
-                                <a href="#" class="block">
-                                    <div class="flex items-center gap-3.5 rounded-lg p-2 hover:bg-secondery dark:hover:bg-white/10">
-                                        <img src="assets/images/avatars/avatar-6.jpg" alt="" class="w-7 rounded-full" />
-                                        <div> Alexa stella </div>
-                                    </div>
-                                </a>
-
-
-                            </div>
-
-                        </div>
-
-
                     </div>
-
-                    <div class="w-3.5 h-3.5 absolute -bottom-2 right-5 bg-white rotate-45 dark:bg-dark3"></div>
                 </div>
-            </div>
+            </div>}
 
 
-            <div class="hidden lg:p-20 uk- open" id="create-status" uk-modal="">
 
-                <div class="uk-modal-dialog tt relative overflow-hidden mx-auto bg-white shadow-xl rounded-lg md:w-[520px] w-full dark:bg-dark2">
-
-                    <div class="text-center py-4 border-b mb-0 dark:border-slate-700">
-                        <h2 class="text-sm font-medium text-black"> Create Status </h2>
-
-
-                        <button type="button" class="button-icon absolute top-0 right-0 m-2.5 uk-modal-close">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-
-                    </div>
-
-                    <div class="space-y-5 mt-3 p-2">
-                        <textarea class="w-full !text-black placeholder:!text-black !bg-white !border-transparent focus:!border-transparent focus:!ring-transparent !font-normal !text-xl   dark:!text-white dark:placeholder:!text-white dark:!bg-slate-800" name="" id="" rows="6" placeholder="What do you have in mind?"></textarea>
-                    </div>
-
-                    <div class="flex items-center gap-2 text-sm py-2 px-4 font-medium flex-wrap">
-                        <button type="button" class="flex items-center gap-1.5 bg-sky-50 text-sky-600 rounded-full py-1 px-2 border-2 border-sky-100 dark:bg-sky-950 dark:border-sky-900">
-                            <ion-icon name="image" class="text-base"></ion-icon>
-                            Image
-                        </button>
-                        <button type="button" class="flex items-center gap-1.5 bg-teal-50 text-teal-600 rounded-full py-1 px-2 border-2 border-teal-100 dark:bg-teal-950 dark:border-teal-900">
-                            <ion-icon name="videocam" class="text-base"></ion-icon>
-                            Video
-                        </button>
-                        <button type="button" class="flex items-center gap-1.5 bg-orange-50 text-orange-600 rounded-full py-1 px-2 border-2 border-orange-100 dark:bg-yellow-950 dark:border-yellow-900">
-                            <ion-icon name="happy" class="text-base"></ion-icon>
-                            Feeling
-                        </button>
-                        <button type="button" class="flex items-center gap-1.5 bg-red-50 text-red-600 rounded-full py-1 px-2 border-2 border-rose-100 dark:bg-rose-950 dark:border-rose-900">
-                            <ion-icon name="location" class="text-base"></ion-icon>
-                            Check in
-                        </button>
-                        <button type="button" class="grid place-items-center w-8 h-8 text-xl rounded-full bg-secondery">
-                            <ion-icon name="ellipsis-horizontal"></ion-icon>
-                        </button>
-                    </div>
-
-                    <div class="p-5 flex justify-between items-center">
-                        <div>
-                            <button class="inline-flex items-center py-1 px-2.5 gap-1 font-medium text-sm rounded-full bg-slate-50 border-2 border-slate-100 group aria-expanded:bg-slate-100 aria-expanded: dark:text-white dark:bg-slate-700 dark:border-slate-600" type="button">
-                                Everyone
-                                <ion-icon name="chevron-down-outline" class="text-base duration-500 group-aria-expanded:rotate-180"></ion-icon>
-                            </button>
-
-                            <div class="p-2 bg-white rounded-lg shadow-lg text-black font-medium border border-slate-100 w-60 dark:bg-slate-700"
-                                uk-drop="offset:10;pos: bottom-left; reveal-left;animate-out: true; animation: uk-animation-scale-up uk-transform-origin-bottom-left ; mode:click">
-
-                                <form>
-                                    <label>
-                                        <input type="radio" name="radio-status" id="monthly1" class="peer appearance-none hidden" checked />
-                                        <div class=" relative flex items-center justify-between cursor-pointer rounded-md p-2 px-3 hover:bg-secondery peer-checked:[&_.active]:block dark:bg-dark3">
-                                            <div class="text-sm">  Everyone </div>
-                                            <ion-icon name="checkmark-circle" class="hidden active absolute -translate-y-1/2 right-2 text-2xl text-blue-600 uk-animation-scale-up"></ion-icon>
-                                        </div>
-                                    </label>
-                                    <label>
-                                        <input type="radio" name="radio-status" id="monthly1" class="peer appearance-none hidden" />
-                                        <div class=" relative flex items-center justify-between cursor-pointer rounded-md p-2 px-3 hover:bg-secondery peer-checked:[&_.active]:block dark:bg-dark3">
-                                            <div class="text-sm"> Friends </div>
-                                            <ion-icon name="checkmark-circle" class="hidden active absolute -translate-y-1/2 right-2 text-2xl text-blue-600 uk-animation-scale-up"></ion-icon>
-                                        </div>
-                                    </label>
-                                    <label>
-                                        <input type="radio" name="radio-status" id="monthly" class="peer appearance-none hidden" />
-                                        <div class=" relative flex items-center justify-between cursor-pointer rounded-md p-2 px-3 hover:bg-secondery peer-checked:[&_.active]:block dark:bg-dark3">
-                                            <div class="text-sm"> Only me </div>
-                                            <ion-icon name="checkmark-circle" class="hidden active absolute -translate-y-1/2 right-2 text-2xl text-blue-600 uk-animation-scale-up"></ion-icon>
-                                        </div>
-                                    </label>
-                                </form>
-
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button type="button" class="button bg-blue-500 text-white py-2 px-12 text-[14px]"> Create</button>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
         </div >
     </div>
     )

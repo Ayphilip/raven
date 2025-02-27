@@ -101,7 +101,7 @@ function PremiumPage() {
 
                                     <ul class="flex gap-3 text-sm text-center text-gray-600 capitalize font-semibold dark:text-white/80">
 
-                                        <li>
+                                        {/* <li>
                                             <button type="button" class="button p-2 px-3 bg-white shadow-sm gap-1 border1 dark:bg-slate-700 group">
                                                 <ion-icon name="location-outline" class="text-lg"></ion-icon>
                                                 My location
@@ -198,7 +198,7 @@ function PremiumPage() {
                                                 <div class="w-3 h-3 absolute -top-1.5 left-3 bg-white rotate-45 border-l border-t dark:bg-dark3 dark:border-transparent"></div>
                                             </div>
 
-                                        </li>
+                                        </li> */}
                                         <li>
                                             <button type="button" onClick={handleOpenModal} class="button p-2 px-3 bg-white shadow-sm gap-1 border1 dark:bg-slate-700">
                                                 <ion-icon name="add" class="text-lg"></ion-icon>
