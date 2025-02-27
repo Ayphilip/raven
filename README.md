@@ -132,7 +132,7 @@ RAVEN/
 ## Contributors
 - **Usamah Abduljalil** - Application Manager
 - **Ayomide Philip** - Lead Developer
-- **Nasir Abdul** - QA Engineer
+- **Nasir Abdulganiu** - QA Engineer
 
 ## License
 This project is open-source and was originally built for the Celestia Mammothon using the Chopin Framework.
