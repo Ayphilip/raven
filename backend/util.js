@@ -71,8 +71,8 @@ export const getIsCorrect = async (item1, item2, req) => {
                 var decryptedItem1 = CryptoJS.AES.decrypt(item1, "ravenTestToken").toString(CryptoJS.enc.Utf8);
                 var decryptedItem2 = CryptoJS.AES.decrypt(item2, "ravenTestToken").toString(CryptoJS.enc.Utf8);
 
-                // console.log("Decrypted item1:", decryptedItem1);
-                // console.log("Decrypted item2:", decryptedItem2);
+                console.log("Decrypted item1:", decryptedItem1);
+                console.log("Decrypted item2:", decryptedItem2);
 
                 return decryptedItem1 === decryptedItem2;
             } catch (error) {

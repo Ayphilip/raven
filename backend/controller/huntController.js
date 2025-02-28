@@ -134,7 +134,7 @@ export const submitGuess = async (req, res) => {
 
         // console.log(isCorrect)
 
-        if (isCorrect) {
+        if (await isCorrect) {
             // Update the quest with the winner and set status to "completed"
             await updateDoc(questRef, {
                 winner: userId,
