@@ -69,7 +69,7 @@ export const TreasureHuntProvider = ({ children }) => {
     const updateQuest = async (questId, data2) => {
         try {
             // console.log(data2)
-            const { data } = await axios.post(`/api/treasurehunt/questId/${questId}`, data2, {
+            const { data } = await axios.put(`/api/treasurehunt/questId/${questId}`, data2, {
                 headers: { 'Content-Type': 'application/json' }
             });
             return data;
