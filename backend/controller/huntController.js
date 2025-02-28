@@ -19,7 +19,6 @@ export const createQuest = async (req, res) => {
             questContent,
             questInstruction,
             entryAmount,
-            startDate,
             endDate,
             answer
         } = req.body;
@@ -42,7 +41,6 @@ export const createQuest = async (req, res) => {
             clues: [],
             status: "active",
             winner: null,
-            startDate,
             endDate,
             creator,
             createdAt: serverTimestamp(),

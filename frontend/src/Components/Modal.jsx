@@ -315,7 +315,6 @@ export const QuestFormModal = ({ isOpen, onClose, onSubmit }) => {
                         clues: [],
                         status: "active",
                         winner: null,
-                        startDate: '',
                         creator: userDetails?.username
                     });
                     onClose();

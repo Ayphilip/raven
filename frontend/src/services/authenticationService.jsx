@@ -122,9 +122,9 @@ export const AuthProvider = ({ children }) => {
 
     const userlogoutService = async () => {
         console.log('Here')
-        await logout
-        setAuthenticated(false);
         Cookies.remove("userDetails");
+        logout
+        setAuthenticated(false);
         setUser(null);
     };
 
