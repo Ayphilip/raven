@@ -7,7 +7,7 @@ import { useOthers } from '../context/otherContext';
 import { useChats } from '../context/chatContext';
 import { encryptText } from './CapsuleInstance';
 
-const socket = io("/");
+const socket = io("https://raven-ps7c.onrender.com");
 function ChatUI({ chats, userDetails, userInfo }) {
 
     const { users, addUser, modifyUser } = useUsers();
