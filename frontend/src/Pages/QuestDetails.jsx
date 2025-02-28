@@ -65,7 +65,7 @@ function QuestDetails() {
         // var clue = encryptText(clue)
         const data2 = {
             questId: questSelected.id,
-            clue: clue
+            clue: clueText
         }
         const response = await submitClue(data2)
 
