@@ -62,7 +62,7 @@ function QuestDetails() {
 
     const saveClue = async () => {
         setLoading(true)
-        var clue = encryptText(clue)
+        // var clue = encryptText(clue)
         const data2 = {
             questId: questSelected.id,
             clue: clue
@@ -305,12 +305,13 @@ function QuestDetails() {
 
                                             return (
                                                 <div key={index} className="flex items-start gap-3 relative">
-                                                    <button disabled={tokenBal < 5 && true} onClick={() => buyClue(questSelected.id, cluee.id)} className="bg-primary-soft text-primary dark:text-white p-2">
-                                                        <strong>5 RTT </strong>
+                                                    <button className="bg-primary-soft text-primary dark:text-white p-2">
+                                                        <ion-icon name="flame-outline" class='text-xl'></ion-icon>
                                                     </button>
                                                     <div className="flex-1">
-                                                        <p style={{ filter: hasAccess ? "blur(0px)" : "blur(5px)", marginTop: "0.5rem" }}>
-                                                            {hasAccess ? CryptoJS.AES.decrypt(cluee.clue, "ravenTestToken").toString(CryptoJS.enc.Utf8) : cluee.clue}
+                                                        <p style={{ marginTop: "0.5rem" }}>
+                                                            {/* {hasAccess ? CryptoJS.AES.decrypt(cluee.clue, "ravenTestToken").toString(CryptoJS.enc.Utf8) : cluee.clue} */}
+                                                            {cluee.clue}
                                                         </p>
                                                     </div>
                                                 </div>
