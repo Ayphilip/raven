@@ -32,9 +32,7 @@ export const AuthProvider = ({ children }) => {
         //     }
         // }
         // if(address) initUser()
-        if (!address) {
-            Cookies.remove("userDetails");
-        }
+        
 
         const storedUser = Cookies.get("userDetails");
         // console.log(storedUser)
