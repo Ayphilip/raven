@@ -47,7 +47,7 @@ Ensure you have the following installed:
    cd frontend
    npm install
    ```
-4. Initialize Chopin Configuration:
+4. Initialize Chopin Configuration in the root folder:
    ```sh
    npx chopd init
    ```
@@ -80,7 +80,7 @@ Create a `.env` file in the root directory and add the following:
    ```
 
 ## Deployment
-1. Build the application:
+1. Build the application in the root folder:
    ```sh
    yarn build
    # or
