@@ -22,7 +22,9 @@ import SearchPage from './Pages/SearchPage'
 
 function App() {
   const { address, isLoading, isLoginError, login, logout, revalidate } = useAddress();
-  const { loading, userDetails } = useLoginService()
+  const { loading, userDetails, userlogoutService } = useLoginService()
+
+  
 
 
 

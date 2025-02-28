@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
         // console.log(isLoading)
 
         // console.log(storedUser)const storedTkn = Cookies.get("ptoken");
-            
+
         // const initUser = async () => {
         //     if (address) {
         //         const allTweets = await axios.get(`/api/users/${address}`);
@@ -32,6 +32,9 @@ export const AuthProvider = ({ children }) => {
         //     }
         // }
         // if(address) initUser()
+        if (!address) {
+            Cookies.remove("userDetails");
+        }
 
         const storedUser = Cookies.get("userDetails");
         // console.log(storedUser)
@@ -39,8 +42,8 @@ export const AuthProvider = ({ children }) => {
             setUser(JSON.parse(storedUser));
             setAuthenticated(true);
         }
-            // console.log('here')
-        setLoading(false); 
+        // console.log('here')
+        setLoading(false);
     }, []);
 
     function getRandomBetween() {
