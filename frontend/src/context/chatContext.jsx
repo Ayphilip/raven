@@ -93,7 +93,7 @@ export const ChatProvider = ({ children }) => {
     };
 
     // Send a new message
-    const sendMessage = async (receiverId, message) => {
+    const sendMessage = async (data) => {
         if (!user) return;
         const newMessage = {
             senderId: user.username,
@@ -103,7 +103,7 @@ export const ChatProvider = ({ children }) => {
             status: "sent",
         };
 
-        const response = await axios.post('/api/chats/send', newMessage);
+        const response = await axios.post('/api/chats/send', data);
 
 
         // socket.emit('sendMessage', newMessage);

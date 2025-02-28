@@ -16,16 +16,22 @@ function ChatUI({ chats, userDetails, userInfo }) {
     const [amount, setAmount] = useState(0)
 
     const { ptoken, tokenBal, makeTransfer } = useOthers()
-    const { markMessages } = useChats()
+    const { markMessages, sendMessage } = useChats()
 
-    const sendMessage = () => {
+    const sendMessageUi = async () => {
         
         var mesg = encryptText(newMessage)
-        socket.emit("sendMessage", {
+        // socket.emit("sendMessage", {
+        //     senderId: userDetails.username,
+        //     receiverId: userInfo,
+        //     message: mesg,
+        // });
+        const data = {
             senderId: userDetails.username,
             receiverId: userInfo,
             message: mesg,
-        });
+        }
+        const response = await sendMessage(data)
         setNewMessage("");
     };
     const sendMessage2 = (message) => {
