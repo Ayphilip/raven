@@ -16,22 +16,22 @@ function ChatUI({ chats, userDetails, userInfo }) {
     const [amount, setAmount] = useState(0)
 
     const { ptoken, tokenBal, makeTransfer } = useOthers()
-    const { markMessages, sendMessage } = useChats()
+    const { markMessages } = useChats()
 
-    const sendMessageUi = async () => {
+    const sendMessage = async () => {
         
         var mesg = encryptText(newMessage)
-        // socket.emit("sendMessage", {
-        //     senderId: userDetails.username,
-        //     receiverId: userInfo,
-        //     message: mesg,
-        // });
-        const data = {
+        socket.emit("sendMessage", {
             senderId: userDetails.username,
             receiverId: userInfo,
             message: mesg,
-        }
-        const response = await sendMessage(data)
+        });
+        // const data = {
+        //     senderId: userDetails.username,
+        //     receiverId: userInfo,
+        //     message: mesg,
+        // }
+        // const response = await sendMessage(data)
         setNewMessage("");
     };
     const sendMessage2 = (message) => {
@@ -231,7 +231,7 @@ function ChatUI({ chats, userDetails, userInfo }) {
 
                         <textarea placeholder="Write your message" value={newMessage} onChange={(e) => setNewMessage(e.target.value)} rows="1" class="w-full resize-none bg-secondery rounded-full px-4 p-2"></textarea>
 
-                        <button type="submit" disabled={newMessage ? false : true} onClick={sendMessageUi} class="shrink-0 p-2 absolute right-0.5 top-0">
+                        <button type="submit" disabled={newMessage ? false : true} onClick={sendMessage} class="shrink-0 p-2 absolute right-0.5 top-0">
                             <ion-icon class="text-xl flex" name="send-outline"></ion-icon>
                         </button>
 
