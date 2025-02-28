@@ -186,7 +186,7 @@ function QuestDetails() {
                                 <div class="flex lg:items-center justify-between max-lg:flex-col max-lg:gap-2">
 
                                     <div class="flex-1">
-                                        <p class="text-sm font-semibold text-rose-600 mb-1.5"> {questSelected.startDate} – {questSelected.endDate} </p>
+                                        <p class="text-sm font-semibold text-rose-600 mb-1.5">{questSelected.endDate} </p>
                                         <h3 class="md:text-2xl text-base font-bold text-black dark:text-white"> {questSelected.questTitle} </h3>
                                         <p class="font-normal text-gray-500 mt-2 flex gap-2 dark:text-white/80">
                                             <span> {questSelected.status} </span>
