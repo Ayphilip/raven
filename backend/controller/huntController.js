@@ -126,16 +126,16 @@ export const submitGuess = async (req, res) => {
                 status: "completed",
             });
 
-            return res.status(200).json({ 
-                success: true, 
-                correct: true, 
+            return res.status(200).json({
+                success: true,
+                correct: true,
                 message: "Congratulations! Your guess is correct."
             });
         }
 
-        return res.status(200).json({ 
-            success: true, 
-            correct: false, 
+        return res.status(200).json({
+            success: true,
+            correct: false,
             message: "Incorrect guess. Try again!"
         });
 
@@ -185,6 +185,54 @@ export const addClues = async (req, res) => {
     } catch (error) {
         console.error("Error Adding clue:", error);
         res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+export const buyClues = async (req, res) => {
+    const { questId, clueId } = req.params;
+    const { userId } = req.body;
+
+    if (!userId) {
+        return res.status(400).json({ error: "User ID is required" });
+    }
+
+    try {
+        const questRef = doc(db, "quests", questId);
+        const questSnapshot = await getDoc(questRef);
+
+        if (!questSnapshot.exists()) {
+            return res.status(404).json({ error: "Quest not found" });
+        }
+
+        let questData = questSnapshot.data();
+        let clues = questData.clues || [];
+
+        // Find the correct clue by ID
+        let clueIndex = clues.findIndex(clue => clue.id === clueId);
+        if (clueIndex === -1) {
+            return res.status(404).json({ error: "Clue not found" });
+        }
+
+        // Ensure the `access` array exists
+        if (!Array.isArray(clues[clueIndex].access)) {
+            clues[clueIndex].access = [];
+        }
+
+        // Check if the user is already in the access list
+        if (clues[clueIndex].access.includes(userId)) {
+            return res.status(400).json({ error: "User already has access" });
+        }
+
+        // Add user to the access list
+        clues[clueIndex].access.push(userId);
+
+        // Update Firestore
+        await updateDoc(questRef, { clues });
+
+        return res.status(200).json({ message: "User added to access list" });
+    } catch (error) {
+        console.error("Error updating access list:", error);
+        return res.status(500).json({ error: "Internal server error" });
     }
 };
 

@@ -246,7 +246,6 @@ export const QuestFormModal = ({ isOpen, onClose, onSubmit }) => {
         questFace: "",
         entryAmount: "",
         answer: "",
-        startDate: "",
         endDate: "",
     });
 
@@ -316,6 +315,7 @@ export const QuestFormModal = ({ isOpen, onClose, onSubmit }) => {
                         clues: [],
                         status: "active",
                         winner: null,
+                        startDate: '',
                         creator: userDetails?.username
                     });
                     onClose();
@@ -387,8 +387,11 @@ export const QuestFormModal = ({ isOpen, onClose, onSubmit }) => {
                             {formData.rewardType === "1" && <input type="number" name="reward" placeholder="Reward" className="w-full p-4 border border-gray-300 rounded-lg" onChange={handleChange} required />}
                             {formData.rewardType === "0" && <input type="number" name="entryAmount" placeholder="Entry Amount" className="w-full p-4 border border-gray-300 rounded-lg" onChange={handleChange} required />}
 
-                            <input type="date" name="startDate" className="w-full p-4 border border-gray-300 rounded-lg" onChange={handleChange} placeholder='Start Date' required />
-                            <input type="date" name="endDate" className="w-full p-4 border border-gray-300 rounded-lg" onChange={handleChange} required />
+
+                            <div>
+                                <label htmlFor='endDate'>End Date</label>
+                                <input type="date" name="endDate" className="w-full p-4 border border-gray-300 rounded-lg" onChange={handleChange} required />
+                            </div>
                             <div className="col-span-2 flex justify-between mt-8">
                                 <button type="button" onClick={onClose} className="px-8 py-3 bg-gray-400 rounded-lg text-lg">Cancel</button>
                                 {loadingSavingQuest ?

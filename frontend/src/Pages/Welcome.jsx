@@ -145,9 +145,6 @@ function Welcome() {
             <div>
 
 
-                {/* <Headers /> */}
-
-
                 <Sidbar ps={1} />
 
 
@@ -203,7 +200,6 @@ function Welcome() {
                                                 )}
                                             />
                                         </MentionsInput>
-                                        {/* <textarea class="w-full !text-black placeholder:!text-black !bg-white !border-transparent focus:!border-transparent focus:!ring-transparent !font-normal !text-xl   dark:!text-white dark:placeholder:!text-white dark:!bg-slate-800" name="" id="" onChange={(e) => setContent(e.target.value)} value={content} placeholder="What do you have in mind?"></textarea> */}
                                     </div>
 
                                     <div style={{ display: 'flex', flexDirection: 'row' }}>

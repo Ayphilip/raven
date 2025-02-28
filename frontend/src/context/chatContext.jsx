@@ -25,7 +25,7 @@ export const ChatProvider = ({ children }) => {
 
     const markMessages = async (userId, receiverId) => {
         try {
-            console.log('Here')
+            // console.log('Here')
             await axios.post(`/api/chats/seen/${userId}/${receiverId}`);
             // setAllChats(response.data);
             fetchAllChats(user.username)
@@ -103,7 +103,10 @@ export const ChatProvider = ({ children }) => {
             status: "sent",
         };
 
-        socket.emit('sendMessage', newMessage);
+        const response = await axios.post('/api/chats/send', newMessage);
+
+
+        // socket.emit('sendMessage', newMessage);
     };
 
     return (

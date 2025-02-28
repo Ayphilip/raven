@@ -71,6 +71,7 @@ function PremiumPage() {
 
 
     useEffect(() => {
+        document.title=`${userDetails?.name}: Premium / Raven`
 
 
         return () => {
@@ -94,7 +95,7 @@ function PremiumPage() {
 
                             <div class="page-heading mb-2">
 
-                                <h1 class="page-title has:[.ww]:text-sky-500 ww">Events  </h1>
+                                <h1 class="page-title has:[.ww]:text-sky-500 ww">Create Treasure Quest  </h1>
 
 
                                 <nav class="borde-b dark:border-slate-700 mt-6 pb-3">
@@ -218,7 +219,7 @@ function PremiumPage() {
 
                                 {quests.filter(quest => quest.creator === userDetails?.username).map(quest => <>
                                     <div class="card-list">
-                                        <a href="timeline-event.html">
+                                        <a href={'/ravenhunt/quest/' + quest.id}>
                                             <div class="card-list-media md:w-40 md:h-full w-full h-36">
                                                 <img src={quest.questFace} alt="" />
                                             </div>
@@ -226,7 +227,7 @@ function PremiumPage() {
                                         <div class="md:flex gap-10 md:items-end flex-1">
                                             <div class="card-list-body">
                                                 <p class="text-xs font-medium  text-red-600 mb-1"> {formatTimestamp(quest.createdAt)} </p>
-                                                <a href="timeline-event.html">
+                                                <a href={'/ravenhunt/quest/' + quest.id}>
                                                     <h3 class="card-list-title text-base line-clamp-1"> {quest.questTitle}  </h3>
                                                 </a>
                                                 <p class="text-xs font-medium mb-1 mt-3 text-black dark:text-white">Reward: {quest.rewardType === '1' ? quest.reward : (quest.participants.length * quest.entryAmount)} {quest.rewardToken}</p>
@@ -251,9 +252,7 @@ function PremiumPage() {
 
                             </div>
 
-                            <div class="flex justify-center my-6">
-                                <button type="button" class="bg-white py-2 px-5 rounded-full shadow-md font-semibold text-sm dark:bg-dark2">Load more...</button>
-                            </div>
+                            
 
                         </div>
 

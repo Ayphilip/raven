@@ -57,8 +57,13 @@ function Sid2bar({ ps }) {
         }
     };
 
-    const executeSearch = (searchWord) => {
-        navigate(`/search?q=${searchWord}`);
+    const executeSearch = (word, event) => {
+        event.preventDefault(); // Prevents form from reloading the page
+        if (!word) {
+            console.error("Search word is empty!");
+            return;
+        }
+        navigate(`/search?q=${encodeURIComponent(word)}`);
     };
 
     const formatTime = (ms) => {
@@ -109,7 +114,7 @@ function Sid2bar({ ps }) {
             <div class="lg:space-y-4 lg:pb-8 max-lg:grid sm:grid-cols-2 max-lg:gap-6"
                 uk-sticky="media: 1024; end: #js-oversized; offset: 80">
 
-                {ps !== 'search' && <form id="search--box" onSubmit={() => executeSearch(searchWord)} class="xl:w-auto sm:w-96 sm:relative rounded-xl overflow-hidden bg-secondery max-md:hidden w-screen left-0 max-sm:fixed max-sm:top-2 dark:!bg-white/5">
+                {ps !== 'search' && <form onSubmit={(e) => executeSearch(searchWord, e)} class="xl:w-auto sm:w-96 sm:relative rounded-xl overflow-hidden bg-secondery max-md:hidden w-screen left-0 max-sm:fixed max-sm:top-2 dark:!bg-white/5">
                     <button type='submit'><ion-icon name="search" class="absolute left-4 top-1/2 -translate-y-1/2"></ion-icon></button>
                     <input type="text" required onChange={(e) => setSearchWord(e.target.value)} placeholder="Search Friends, videos .." class="w-full !pl-10 !font-normal !bg-transparent h-12 !text-sm" />
                 </form>}
@@ -166,7 +171,7 @@ function Sid2bar({ ps }) {
                                     {use.followers.some(fol => fol === userDetails.username) ? (
                                         <button class="button bg-primary-soft text-primary dark:text-white">unfollow</button>
                                     ) : (
-                                        <button onClick={()=>saveFollow(use.username, userDetails?.username)} class="button bg-primary-soft text-primary dark:text-white">follow</button>
+                                        <button onClick={() => saveFollow(use.username, userDetails?.username)} class="button bg-primary-soft text-primary dark:text-white">follow</button>
                                     )}
                                 </div>
                             ))}

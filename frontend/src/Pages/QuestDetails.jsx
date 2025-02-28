@@ -25,7 +25,7 @@ function QuestDetails() {
     const { address, isLoading, isLoginError, logout, revalidate } = useAddress();
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate, useBookmark } = useLoginService();
 
-    const { quests, guesses, setSelectedQuest, joinQuest, submitGuess } = useTreasureHunt()
+    const { quests, guesses, setSelectedQuest, joinQuest, submitGuess, submitClue, getClue } = useTreasureHunt()
     const { tokenBal, ptoken, makeTransfer } = useOthers()
 
     const [loadingQuest, setLoading] = useState(false)
@@ -44,6 +44,8 @@ function QuestDetails() {
 
     const [serverResponse, setServerResponse] = useState('')
 
+    const [clueText, setClueText] = useState('')
+
     const checkGuess = async () => {
         setLoading(true)
         var mesg = encryptText(password)
@@ -56,6 +58,39 @@ function QuestDetails() {
         setServerResponse(response.message)
         // console.log(response.message)
         setLoading(false)
+    }
+
+    const saveClue = async () => {
+        setLoading(true)
+        var clue = encryptText(clue)
+        const data2 = {
+            questId: questSelected.id,
+            clue: clue
+        }
+        const response = await submitClue(data2)
+
+
+        setLoading(false)
+        setClueText('')
+    }
+
+    const buyClue = async (questId, clueId) => {
+        const data = {
+            from: userDetails?.username,
+            amount: 5,
+            to: '',
+            symbol: ptoken
+        }
+        const response = makeTransfer(data)
+        if (response) {
+            const data2 = {
+                questId: questId,
+                clueId: clueId,
+                userId: userDetails?.username
+            }
+            await getClue(data2)
+        }
+
     }
 
 
@@ -106,10 +141,10 @@ function QuestDetails() {
                 console.warn("Quest not found for ID:", params.id);
             }
 
-            document.title=`${item.questTitle}, ${item.description} - Quest / Raven`
+            document.title = `${item.questTitle}, ${item.description} - Quest / Raven`
 
             setSelectedQuest(params.id);
-            setSelectedQuests(item || null); 
+            setSelectedQuests(item || null);
             setLoading(false);
         };
 
@@ -161,8 +196,8 @@ function QuestDetails() {
                                     </div>
 
                                     <div>
-                                        {questSelected.status === 'active'? 'Timer to end of quest' : 'Quest Ended'}
-                                        {questSelected.status === 'active' &&<div uk-countdown={`date: ${questSelected.endDate}`}
+                                        {questSelected.status === 'active' ? 'Timer to end of quest' : 'Quest Ended'}
+                                        {questSelected.status === 'active' && <div uk-countdown={`date: ${questSelected.endDate}`}
                                             class="flex gap-3 text-2xl font-semibold text-primary dark:text-white max-lg:justify-center">
 
                                             <div class="bg-primary-soft/40 flex flex-col items-center justify-center rounded-lg w-16 h-16 lg:border-4 border-white md:shadow dark:border-slate-700">
@@ -213,11 +248,11 @@ function QuestDetails() {
                                     </button>
                                     <div class="w-[240px]" uk-dropdown="pos: bottom-right; animation: uk-animation-scale-up uk-transform-origin-top-right; animate-out: true; mode: click;offset:10">
                                         <nav>
-                                            <a href="#"> <ion-icon class="text-xl" name="bookmark-outline"></ion-icon> Save </a>
+                                            {/* <a href="#"> <ion-icon class="text-xl" name="bookmark-outline"></ion-icon> Save </a>
                                             <a href="#"> <ion-icon class="text-xl" name="flag-outline"></ion-icon>  Add to page </a>
                                             <a href="#"> <ion-icon class="text-xl" name="calendar-number-outline"></ion-icon> Add to calender </a>
                                             <a href="#"> <ion-icon class="text-xl" name="share-outline"></ion-icon> Share profile </a>
-                                            <a href="#"> <ion-icon class="text-xl" name="information-circle-outline"></ion-icon>  Report Event</a>
+                                            <a href="#"> <ion-icon class="text-xl" name="information-circle-outline"></ion-icon>  Report Event</a> */}
                                         </nav>
                                     </div>
                                 </div>
@@ -255,76 +290,51 @@ function QuestDetails() {
 
 
 
-                                {userDetails?.username === questSelected.creator &&
-                                    <div class="box p-5 px-6 relative">
-                                        <h3 class="font-semibold text-lg text-black dark:text-white"> Discussions </h3>
 
-                                        <div class=" text-sm font-normal space-y-4 relative mt-4">
+                                <div class="box p-5 px-6 relative">
+                                    <h3 class="font-semibold text-lg text-black dark:text-white"> Quest Clues </h3>
 
-                                            <div class="flex items-start gap-3 relative">
-                                                <a href="timeline.html"> <img src="assets/images/avatars/avatar-3.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
-                                                <div class="flex-1">
-                                                    <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> Monroe Parker </a>
-                                                    <p class="mt-0.5">What a beautiful photo! I love it. 😍 </p>
-                                                </div>
-                                            </div>
-                                            <div class="flex items-start gap-3 relative">
-                                                <a href="timeline.html"> <img src="assets/images/avatars/avatar-2.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
-                                                <div class="flex-1">
-                                                    <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> John Michael </a>
-                                                    <p class="mt-0.5">   You captured the moment.😎 </p>
-                                                </div>
-                                            </div>
-                                            <div class="flex items-start gap-3 relative">
-                                                <a href="timeline.html"> <img src="assets/images/avatars/avatar-5.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
-                                                <div class="flex-1">
-                                                    <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> James Lewis </a>
-                                                    <p class="mt-0.5">What a beautiful photo! I love it. 😍 </p>
-                                                </div>
-                                            </div>
-                                            <div class="flex items-start gap-3 relative">
-                                                <a href="timeline.html"> <img src="assets/images/avatars/avatar-4.jpg" alt="" class="w-6 h-6 mt-1 rounded-full" /> </a>
-                                                <div class="flex-1">
-                                                    <a href="timeline.html" class="text-black font-medium inline-block dark:text-white"> Martin Gray </a>
-                                                    <p class="mt-0.5">   You captured the moment.😎 </p>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <button type="button" class="flex items-center gap-1.5 text-blue-500 hover:text-blue-500 my-5">
-                                                    <ion-icon name="chevron-down-outline" class="ml-auto duration-200 group-aria-expanded:rotate-180"></ion-icon>
-                                                    More Comment
-                                                </button>
-                                            </div>
+                                    <div class=" text-sm font-normal space-y-4 relative mt-4 mb-4">
+                                        {!questSelected?.clues?.length && <p>No Clues available yet</p>}
 
-                                        </div>
+                                        {questSelected?.clues?.map((cluee, index) => {
+                                            const hasAccess = userDetails?.username === questSelected.creator || cluee.access.includes(userDetails?.username);
+
+                                            // let decryptedClue = cluee.clue;
 
 
-                                        <div class="sm:px-4 sm:py-3 p-2.5 border-t border-gray-100 flex items-center gap-1 -m-6 mt-0 bg-secondery/60 dark:border-slate-700/40">
-
-                                            <img src="assets/images/avatars/avatar-7.jpg" alt="" class="w-6 h-6 rounded-full" />
-
-                                            <div class="flex-1 relative overflow-hidden h-10">
-                                                <textarea placeholder="Add Comment...." rows="1" class="w-full resize-none !bg-transparent px-4 py-2 focus:!border-transparent focus:!ring-transparent"></textarea>
-
-                                                <div class="!top-2 pr-2" uk-drop="pos: bottom-right; mode: click">
-                                                    <div class="flex items-center gap-2" uk-scrollspy="target: > svg; cls: uk-animation-slide-right-small; delay: 100 ;repeat: true">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 fill-sky-600">
-                                                            <path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" clip-rule="evenodd" />
-                                                        </svg>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 fill-pink-600">
-                                                            <path d="M3.25 4A2.25 2.25 0 001 6.25v7.5A2.25 2.25 0 003.25 16h7.5A2.25 2.25 0 0013 13.75v-7.5A2.25 2.25 0 0010.75 4h-7.5zM19 4.75a.75.75 0 00-1.28-.53l-3 3a.75.75 0 00-.22.53v4.5c0 .199.079.39.22.53l3 3a.75.75 0 001.28-.53V4.75z" />
-                                                        </svg>
+                                            return (
+                                                <div key={index} className="flex items-start gap-3 relative">
+                                                    <button disabled={tokenBal < 5 && true} onClick={() => buyClue(questSelected.id, cluee.id)} className="bg-primary-soft text-primary dark:text-white p-2">
+                                                        <strong>5 RTT </strong>
+                                                    </button>
+                                                    <div className="flex-1">
+                                                        <p style={{ filter: hasAccess ? "blur(0px)" : "blur(5px)", marginTop: "0.5rem" }}>
+                                                            {hasAccess ? CryptoJS.AES.decrypt(cluee.clue, "ravenTestToken").toString(CryptoJS.enc.Utf8) : cluee.clue}
+                                                        </p>
                                                     </div>
                                                 </div>
+                                            );
+                                        })}
 
 
+                                    </div>
+
+
+                                    {userDetails?.username === questSelected.creator &&
+                                        <div class="sm:px-4 sm:py-3 p-2.5 border-t border-gray-100 flex items-center gap-1 -m-6 mt-0 bg-secondery/60 dark:border-slate-700/40">
+
+                                            <img src={userDetails?.profilePicture ? avatars[parseInt(userDetails.profilePicture)] : avatars[0]} alt="" class="w-6 h-6 rounded-full" />
+
+                                            <div class="flex-1 relative overflow-hidden h-10">
+                                                <textarea onChange={(e) => setClueText(e.target.value)} value={clueText} placeholder="Add Clue...." rows="1" class="w-full resize-none !bg-transparent px-4 py-2 focus:!border-transparent focus:!ring-transparent"></textarea>
                                             </div>
 
-                                            <button type="submit" class="text-sm rounded-full py-1.5 px-3.5 bg-secondery"> Replay</button>
-                                        </div>
+                                            <button type="submit" disabled={!clueText && true} onClick={saveClue} class="text-sm rounded-full py-1.5 px-3.5 bg-secondery"> Submit</button>
+                                        </div>}
 
 
-                                    </div>}
+                                </div>
 
                             </div>
 
@@ -451,8 +461,22 @@ function QuestDetails() {
                                     <h3 class="font-semibold text-lg text-black dark:text-white"> How To Play </h3>
 
                                     <div class="space-y-4 leading-7 tracking-wide mt-4 text-black text-sm dark:text-white">
-                                        <p>{questSelected?.description}</p>
-                                        <p>{questSelected.questContent}</p>
+                                        <h2>Rules:</h2>
+                                        <ul>
+                                            <li>Follow the clues in sequence to find the quest answer.</li>
+                                            <li>Some clues may require solving riddles, puzzles, or performing tasks to proceed.</li>
+                                            <li>Players must respect the game and other players.</li>
+                                            <li>If stuck, a hint system (if provided) may be used, with some token .</li>
+                                            <li>Each player/team receives the first clue to begin the hunt randomly from clues provided by the organizer.</li>
+                                            <li>The first player or team to find the final treasure wins the game.</li>
+                                        </ul>
+                                        <h2>Winning and Prizes:</h2>
+                                        <ul>
+                                            <li>The first player/team to reach the treasure is the winner.</li>
+                                            <li>Prizes can vary depending on the organizer’s setup.</li>
+                                        </ul>
+
+                                        <p>Enjoy the adventure and happy hunting on Raven App!</p>
                                     </div>
 
                                 </div>

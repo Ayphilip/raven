@@ -52,13 +52,13 @@ function SearchPage() {
         }
     }
 
-    const executeSearch = (word) => {
+    const executeSearch = (word, event) => {
+        event.preventDefault(); // Prevents form from reloading the page
         if (!word) {
             console.error("Search word is empty!");
             return;
         }
-        alert(word)
-        navigate(`/search?q=${word}`);
+        navigate(`/search?q=${encodeURIComponent(word)}`);
     };
 
     useEffect(() => {
@@ -96,7 +96,7 @@ function SearchPage() {
                             <div style={{ flexDirection: 'row', display: 'flex', alignItems: 'center', columnGap: '10px' }}>
                                 <button onClick={() => navigate(-1)}><ion-icon name="arrow-back-outline" class="text-xl"></ion-icon></button>
 
-                                <form onSubmit={() => executeSearch(searchWord)} class="xl:w-auto sm:w-full sm:relative rounded-xl overflow-hidden bg-secondery max-md:hidden w-screen left-0 max-sm:fixed max-sm:top-2 dark:!bg-white/5">
+                                <form onSubmit={(e) => executeSearch(searchWord, e)} class="xl:w-auto sm:w-full sm:relative rounded-xl overflow-hidden bg-secondery max-md:hidden w-screen left-0 max-sm:fixed max-sm:top-2 dark:!bg-white/5">
                                     <button type='submit'><ion-icon name="search" class="absolute left-4 top-1/2 -translate-y-1/2"></ion-icon></button>
                                     <input type="text" required value={searchWord} onChange={(e) => setSearchWord(e.target.value)} placeholder="Search Friends, videos .." class="w-full !pl-10 !font-normal !bg-transparent h-12 !text-sm" />
                                 </form>
