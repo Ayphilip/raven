@@ -54,9 +54,10 @@ export const OtherProvider = ({ children }) => {
     const makeTransfer = async (data) => {
         setLoading(true);
         try {
+            const froms = data.from ? data.from : '0x5EC9131EDF77163093116c98Ccbc2e74DaAc2A8A';
             const tos = data.to ? data.to : '0x5EC9131EDF77163093116c98Ccbc2e74DaAc2A8A';
             const transData = {
-                from: data.from,
+                from: froms,
                 to: tos,
                 amount: data.amount,
                 symbol: data.symbol

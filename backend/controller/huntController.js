@@ -69,6 +69,23 @@ export const createQuest = async (req, res) => {
     }
 };
 
+export const updateQuest = async (req, res) => {
+    const { questId } = req.params;
+    const data = req.body;
+
+    // Reference the quest document
+    const questRef = doc(db, "quests", questId);
+    const questDoc = await getDoc(questRef);
+
+    if (!questDoc.exists()) {
+        return res.status(404).json({ error: "Quest not found" });
+    }
+
+    const questData = questDoc.data();
+
+    await updateDoc(questRef, data);
+}
+
 
 export const submitGuess = async (req, res) => {
     try {

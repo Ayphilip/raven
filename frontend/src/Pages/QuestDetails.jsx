@@ -25,7 +25,7 @@ function QuestDetails() {
     const { address, isLoading, isLoginError, logout, revalidate } = useAddress();
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate, useBookmark } = useLoginService();
 
-    const { quests, guesses, setSelectedQuest, joinQuest, submitGuess, submitClue, getClue } = useTreasureHunt()
+    const { quests, guesses, setSelectedQuest, joinQuest, submitGuess, submitClue, getClue, updateQuest } = useTreasureHunt()
     const { tokenBal, ptoken, makeTransfer } = useOthers()
 
     const [loadingQuest, setLoading] = useState(false)
@@ -74,21 +74,19 @@ function QuestDetails() {
         setClueText('')
     }
 
-    const buyClue = async (questId, clueId) => {
+    const claimHunt = async (amount) => {
         const data = {
-            from: userDetails?.username,
-            amount: 5,
-            to: '',
+            from: '',
+            amount: amount,
+            to: userDetails?.username,
             symbol: ptoken
         }
         const response = makeTransfer(data)
         if (response) {
             const data2 = {
-                questId: questId,
-                clueId: clueId,
-                userId: userDetails?.username
+                status: 'finished'
             }
-            await getClue(data2)
+            await updateQuest(questSelected.id, data2)
         }
 
     }
@@ -492,7 +490,7 @@ function QuestDetails() {
 
             </main>
 
-            {!questSelected.participants.includes(userDetails?.username) && questSelected.creator !== userDetails?.username &&
+            {questSelected.status === 'active' && !questSelected.participants.includes(userDetails?.username) && questSelected.creator !== userDetails?.username &&
                 <div className=" uk-modal lg:p-20 z-[1] uk-open">
                     <div class="uk-modal-dialog tt relative overflow-auto mx-auto bg-white shadow-xl rounded-lg md:w-[auto] dark:bg-dark1">
                         <div className="relative bg-white dark:bg-dark1 p-6 rounded-lg shadow-xl w-96 text-center">
@@ -570,7 +568,7 @@ function QuestDetails() {
                             </button>
                         ) : questSelected.status === 'completed' && questSelected.winner === userDetails?.username ? <button
                             type="button"
-                            // onClick={checkGuess}
+                            onClick={()=>claimHunt(questSelected.rewardType === '1' ? questSelected.reward : (questSelected.participants.length * questSelected.entryAmount))}
                             className="flex items-center justify-center gap-2 bg-primary px-4 py-2 rounded-lg shadow-md w-full text-white hover:bg-opacity-90 transition mt-4"
                         >
                             <ion-icon name="lock-closed-outline"></ion-icon>

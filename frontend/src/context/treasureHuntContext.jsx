@@ -66,6 +66,18 @@ export const TreasureHuntProvider = ({ children }) => {
         }
     };
 
+    const updateQuest = async (questId, data2) => {
+        try {
+            // console.log(data2)
+            const { data } = await axios.post(`/api/treasurehunt/questId/${questId}`, data2, {
+                headers: { 'Content-Type': 'application/json' }
+            });
+            return data;
+        } catch (error) {
+            console.error("Error submitting guess:", error);
+        }
+    };
+
     const getClue = async (data2) => {
         try {
             // console.log(data2)
@@ -139,7 +151,7 @@ export const TreasureHuntProvider = ({ children }) => {
 
 
     return (
-        <TreasureHuntContext.Provider value={{ quests, guesses, createQuest, getClue, joinQuest, submitGuess, setSelectedQuest, submitClue }}>
+        <TreasureHuntContext.Provider value={{ quests, guesses, createQuest, getClue, updateQuest, joinQuest, submitGuess, setSelectedQuest, submitClue }}>
             {children}
         </TreasureHuntContext.Provider>
     );
