@@ -35,12 +35,37 @@
     localStorage.removeItem('theme')
 
   </script>
+  <script>
+    function copyToClipboard() {
+      var textToCopy = document.getElementById("copyText");
+
+      // Select the text
+      textToCopy.select();
+      textToCopy.setSelectionRange(0, 99999); // For mobile
+
+      // Copy the text
+      document.execCommand("copy");
+
+      // Show alert popup
+      var alertPopup = document.getElementById("alertPopup");
+      alertPopup.style.display = "block";
+
+      // Hide popup after 2 seconds
+      setTimeout(() => {
+        alertPopup.style.display = "none";
+      }, 2000);
+    }
+  </script>
 
 
 </head>
 
 <body>
   <div id="root"></div>
+  <div id="alertPopup"
+    style="display: none; position: fixed; top: 10px; right: 10px; background: green; color: white; padding: 10px; border-radius: 5px;">
+    Copied!
+  </div>
   <script type="module" src="./src/main.jsx"></script>
 
   <!-- <script src="assets/js/uikit.min.js"></script>

@@ -21,7 +21,7 @@ function Profile2() {
     const { users, addUser, modifyUser, addFollow, removeFollow, fetchUser, addNotifier, loading } = useUsers();
 
     const { allChats, initializeChat } = useChats();
-    const [ openEdit, setOpenEdit ] = useState(false)
+    const [openEdit, setOpenEdit] = useState(false)
 
     const [name, setName] = useState('')
     const [bio, setBio] = useState('')
@@ -55,17 +55,24 @@ function Profile2() {
         closeEditModal()
         window.location.reload()
 
-        
+
     }
 
 
-    
+    const [showAlert, setShowAlert] = useState(false);
 
-
-
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(textToCopy)
+            .then(() => {
+                setShowAlert(true);
+                setTimeout(() => setShowAlert(false), 2000); // Hide alert after 2 seconds
+            })
+            .catch(err => console.error("Error copying text:", err));
+    };
 
     const [userInfo, setUserInfo] = useState(null)
     const [stat, setStat] = useState(false)
+    const textToCopy = userInfo?.username;
 
     const params = useParams();
 
@@ -133,327 +140,346 @@ function Profile2() {
 
                     <div class="flex max-lg:flex-col 2xl:gap-12 gap-10 2xl:max-w-[1220px] max-w-[1065px] mx-auto" id="js-oversized">
 
-                        
 
-                            <div class="mx-auto">
 
-                                <div class="page-heading">
-                                    <div style={{ flexDirection: 'row', display: 'flex', alignItems: 'center' }}>
-                                        <button onClick={() => navigate(-1)}><ion-icon name="arrow-back-outline" class="text-xl"></ion-icon></button>
-                                        <div className='p-3'>
-                                            <h1 class="page-title"> {userInfo.name} </h1>
-                                            <span>{tweets.filter(tweet => tweet.userId === userInfo.username).length} posts</span>
-                                        </div>
+                        <div class="mx-auto">
+
+                            <div class="page-heading">
+                                <div style={{ flexDirection: 'row', display: 'flex', alignItems: 'center' }}>
+                                    <button onClick={() => navigate(-1)}><ion-icon name="arrow-back-outline" class="text-xl"></ion-icon></button>
+                                    <div className='p-3'>
+                                        <h1 class="page-title"> {userInfo.name} </h1>
+                                        <span>{tweets.filter(tweet => tweet.userId === userInfo.username).length} posts</span>
                                     </div>
+                                </div>
 
-                                    {/* <img src={Img} style={{width: '100%', maxHeight: '30vh'}}/> */}
+                                {/* <img src={Img} style={{width: '100%', maxHeight: '30vh'}}/> */}
 
 
-                                    <div class="relative overflow-hidden w-full lg:h-72 h-48">
-                                        <img src={Img} alt="" class="h-full w-full object-cover inset-0" />
+                                <div class="relative overflow-hidden w-full lg:h-72 h-48">
+                                    <img src={Img} alt="" class="h-full w-full object-cover inset-0" />
 
-                                        <div class="w-full bottom-0 absolute left-0 bg-gradient-to-t from-black/60 pt-20 z-10"></div>
+                                    <div class="w-full bottom-0 absolute left-0 bg-gradient-to-t from-black/60 pt-20 z-10"></div>
 
-                                        {/* <div class="absolute bottom-0 right-0 m-4 z-20">
+                                    {/* <div class="absolute bottom-0 right-0 m-4 z-20">
                                             <div class="flex items-center gap-3">
                                                 <button class="button bg-white/20 text-white flex items-center gap-2 backdrop-blur-small">Crop</button>
                                                 <button class="button bg-black/10 text-white flex items-center gap-2 backdrop-blur-small">Edit</button>
                                             </div>
                                         </div> */}
 
-                                    </div>
-                                    <div class="p-3">
+                                </div>
+                                <div class="p-3">
 
-                                        <div class="flex flex-col justify-start md:items-start lg:-mt-60 -mt-20" style={{ flexDirection: 'row', display: 'flex', alignItems: 'end', justifyContent: 'space-between' }}>
+                                    <div class="flex flex-col justify-start md:items-start lg:-mt-60 -mt-20" style={{ flexDirection: 'row', display: 'flex', alignItems: 'end', justifyContent: 'space-between' }}>
 
-                                            <div class="relative lg:h-30 lg:w-30 w-28 h-28 mb-4 z-10" >
-                                                <div class="relative overflow-hidden rounded-full md:border-[6px] border-gray-100 shrink-0 dark:border-slate-900 shadow">
-                                                    <img src={userInfo?.profilePicture ? avatars[parseInt(userInfo.profilePicture)] : avatars[0]} alt="" class="h-full w-full object-cover inset-0" />
-                                                </div>
-                                                {/* <button type="button" class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white shadow p-1.5 rounded-full sm:flex hidden"> <ion-icon name="camera" class="text-2xl md hydrated" role="img" aria-label="camera"></ion-icon></button> */}
-
+                                        <div class="relative lg:h-30 lg:w-30 w-28 h-28 mb-4 z-10" >
+                                            <div class="relative overflow-hidden rounded-full md:border-[6px] border-gray-100 shrink-0 dark:border-slate-900 shadow">
+                                                <img src={userInfo?.profilePicture ? avatars[parseInt(userInfo.profilePicture)] : avatars[0]} alt="" class="h-full w-full object-cover inset-0" />
                                             </div>
-                                            <div style={{ flexDirection: 'row', display: 'flex', rowGap: '10px', columnGap: '10px' }}>
+                                            {/* <button type="button" class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white shadow p-1.5 rounded-full sm:flex hidden"> <ion-icon name="camera" class="text-2xl md hydrated" role="img" aria-label="camera"></ion-icon></button> */}
 
-                                                {userDetails?.username === userInfo.username && (userDetails?.verified ?
-                                                    <button onClick={() => navigate('/premiumpage')} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
-                                                        <ion-icon name="flame-outline" class='text-xl'></ion-icon>
-                                                    </button> :
-                                                    <button onClick={() => navigate('/premium')} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
-                                                        <ion-icon name="flame-outline" class='text-xl'></ion-icon>
-                                                    </button>)
-                                                }
-
-                                                {userDetails?.username !== userInfo.username && userInfo.followers.includes(userDetails?.username) &&
-                                                    (userInfo?.notificationList?.includes(userDetails?.username) ?
-                                                        <button onClick={() => addNotifier(userInfo.username, userDetails?.username,)} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
-                                                            <ion-icon name="notifications" class='text-xl'></ion-icon>
-                                                        </button>
-                                                        :
-                                                        <button onClick={() => addNotifier(userInfo.username, userDetails?.username,)} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
-                                                            <ion-icon name="notifications-outline" class='text-xl'></ion-icon>
-                                                        </button>)
-                                                }
-
-                                                {userDetails?.username !== userInfo.username && userInfo.followers.includes(userDetails?.username) && (userDetails?.verified || userInfo.following.includes(userDetails?.username)) &&
-                                                    <button onClick={() => initializeChat(userDetails?.username, userInfo.username)} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
-                                                        <ion-icon name="mail-outline" class='text-xl'></ion-icon>
-                                                    </button>
-                                                }
-
-                                                {userInfo.userId === userDetails.userId ? <button class="button bg-black dark:bg-secondery dark:bg-dark2 flex items-center gap-2 text-white py-2 px-3.5 max-md:flex-1" onClick={openEditModal}>
-                                                    <ion-icon name="add-circle" class="text-xl"></ion-icon>
-                                                    <span class="text-sm"> edit profile  </span>
-                                                </button> : userInfo.followers.some(fol => fol === userDetails.username) ? <button class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
-                                                    <span class="text-sm"> Following  </span>
-                                                </button> : <button onClick={() => saveFollow(userInfo.username, userDetails?.username)} class="button bg-primary flex items-center gap-2 text-white py-2 px-3.5 max-md:flex-1">
-                                                    <ion-icon name="add-circle" class="text-xl"></ion-icon>
-                                                    <span class="text-sm"> Follow  </span>
-                                                </button>}
-                                            </div>
                                         </div>
+                                        <div style={{ flexDirection: 'row', display: 'flex', rowGap: '10px', columnGap: '10px' }}>
 
+                                            {userDetails?.username === userInfo.username && (userDetails?.verified ?
+                                                <button onClick={() => navigate('/premiumpage')} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
+                                                    <ion-icon name="flame-outline" class='text-xl'></ion-icon>
+                                                </button> :
+                                                <button onClick={() => navigate('/premium')} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
+                                                    <ion-icon name="flame-outline" class='text-xl'></ion-icon>
+                                                </button>)
+                                            }
+
+                                            {userDetails?.username !== userInfo.username && userInfo.followers.includes(userDetails?.username) &&
+                                                (userInfo?.notificationList?.includes(userDetails?.username) ?
+                                                    <button onClick={() => addNotifier(userInfo.username, userDetails?.username,)} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
+                                                        <ion-icon name="notifications" class='text-xl'></ion-icon>
+                                                    </button>
+                                                    :
+                                                    <button onClick={() => addNotifier(userInfo.username, userDetails?.username,)} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
+                                                        <ion-icon name="notifications-outline" class='text-xl'></ion-icon>
+                                                    </button>)
+                                            }
+
+                                            {userDetails?.username !== userInfo.username && userInfo.followers.includes(userDetails?.username) && (userDetails?.verified || userInfo.following.includes(userDetails?.username)) &&
+                                                <button onClick={() => initializeChat(userDetails?.username, userInfo.username)} class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
+                                                    <ion-icon name="mail-outline" class='text-xl'></ion-icon>
+                                                </button>
+                                            }
+
+                                            {userInfo.userId === userDetails.userId ? <button class="button bg-black dark:bg-secondery dark:bg-dark2 flex items-center gap-2 text-white py-2 px-3.5 max-md:flex-1" onClick={openEditModal}>
+                                                <ion-icon name="add-circle" class="text-xl"></ion-icon>
+                                                <span class="text-sm"> edit profile  </span>
+                                            </button> : userInfo.followers.some(fol => fol === userDetails.username) ? <button class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark2">
+                                                <span class="text-sm"> Following  </span>
+                                            </button> : <button onClick={() => saveFollow(userInfo.username, userDetails?.username)} class="button bg-primary flex items-center gap-2 text-white py-2 px-3.5 max-md:flex-1">
+                                                <ion-icon name="add-circle" class="text-xl"></ion-icon>
+                                                <span class="text-sm"> Follow  </span>
+                                            </button>}
+                                        </div>
                                     </div>
 
-                                    <div className='xl:space-y-6 space-y-3'>
-                                        <h1 className='text-xl '><strong>{userInfo.name} {userInfo?.verified && <ion-icon name="shield-checkmark-outline" class="text-blue-500 font-medium text-xl"></ion-icon>}</strong></h1>
-                                        <span className='text-sm '>{userDetails.username.slice(0, 6)}...{userDetails.username.slice(-4)}</span>
-                                        <p>{!userInfo.bio && <button class="button bg-black flex items-center gap-2 text-white py-2 px-3.5 max-md:flex-1">Add bio</button>}{userInfo.bio}</p>
-                                        <p><h6>{userInfo.followers.length} Followers | {userInfo.following.length} Following</h6></p>
-                                        <p>
-                                            Followed by {(() => {
-                                                const filteredUsers = users.filter(user =>
-                                                    userDetails.following.includes(user.id) && userInfo.followers.includes(user.id)
-                                                );
+                                </div>
 
-                                                if (!filteredUsers.length > 0) {
-                                                    return 'No one you follow'
-                                                }
+                                <div className='xl:space-y-6 space-y-3'>
+                                    <h1 className='text-xl '><strong>{userInfo.name} {userInfo?.verified && <ion-icon name="shield-checkmark-outline" class="text-blue-500 font-medium text-xl"></ion-icon>}</strong></h1>
+                                    <span className='text-sm '><kdb>{userDetails.username.slice(0, 6)}...{userDetails.username.slice(-4)}</kdb> <span onClick={copyToClipboard} ><ion-icon name="copy-outline"></ion-icon></span></span>
+                                    <p>{!userInfo.bio && <button class="button bg-black flex items-center gap-2 text-white py-2 px-3.5 max-md:flex-1">Add bio</button>}{userInfo.bio}</p>
+                                    <p><h6>{userInfo.followers.length} Followers | {userInfo.following.length} Following</h6></p>
+                                    <p>
+                                        Followed by {(() => {
+                                            const filteredUsers = users.filter(user =>
+                                                userDetails.following.includes(user.id) && userInfo.followers.includes(user.id)
+                                            );
 
-                                                const firstFour = filteredUsers.slice(0, 4).map(user => user.name);
-                                                const remainingCount = filteredUsers.length - 4;
+                                            if (!filteredUsers.length > 0) {
+                                                return 'No one you follow'
+                                            }
 
-                                                return remainingCount > 0
-                                                    ? `${firstFour.join(", ")} and ${remainingCount} others`
-                                                    : firstFour.join(", ");
-                                            })()}
-                                        </p>
-                                    </div>
+                                            const firstFour = filteredUsers.slice(0, 4).map(user => user.name);
+                                            const remainingCount = filteredUsers.length - 4;
 
-                                    <nav class="nav__underline">
+                                            return remainingCount > 0
+                                                ? `${firstFour.join(", ")} and ${remainingCount} others`
+                                                : firstFour.join(", ");
+                                        })()}
+                                    </p>
+                                </div>
 
-                                        <ul class="group" uk-switcher="connect: #page-tabs ; animation: uk-animation-slide-right-medium, uk-animation-slide-left-medium">
 
-                                            <li> <a href="#"> Timeline  </a> </li>
-                                            {/* <li> <a href="#"> Popular </a> </li>
+
+                                <nav class="nav__underline">
+
+                                    <ul class="group" uk-switcher="connect: #page-tabs ; animation: uk-animation-slide-right-medium, uk-animation-slide-left-medium">
+
+                                        <li> <a href="#"> Timeline  </a> </li>
+                                        {/* <li> <a href="#"> Popular </a> </li>
                                             <li> <a href="#"> My pages </a> </li>
                                             <li> <a href="#"> My pages </a> </li>
                                             <li> <a href="#"> My pages </a> </li> */}
 
-                                        </ul>
+                                    </ul>
 
 
-                                    </nav>
+                                </nav>
+
+                            </div>
+
+
+
+
+                            <div id="page-tabs" class="uk-switcher mt-10">
+
+
+
+                                <div class="gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
+
+                                    {!tweets.filter(tweet => tweet.userId === userInfo.username || (tweet.retweets.includes(userInfo.username))).length && <div>No Post or Tweet</div>}
+
+
+                                    {tweets.filter(tweet => tweet.userId === userInfo.username || (tweet.retweets.includes(userInfo.username))).map(tweet =>
+                                        <TweetView tweets={tweets.filter(tweet => (tweet.userId === userInfo.username) || (tweet.retweets.includes(userInfo.username)))} />
+                                    )}
+
+                                </div>
+
+
+
+                                <div class="gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
 
                                 </div>
 
 
 
 
-                                <div id="page-tabs" class="uk-switcher mt-10">
+                                <div class="grid sm:grid-cols-3 grid-cols-2 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
 
+                                    <div class="card">
+                                        <div class="card-media sm:h-24 h-16">
+                                            <img src="assets/images/group/group-cover-1.jpg" alt="" />
+                                            <div class="card-overly"></div>
+                                        </div>
+                                        <div class="card-body relative z-10">
+                                            <img src="assets/images/avatars/avatar-1.jpg" alt="" class="w-10 rounded-full sm:mb-2 mb-1 shadow -mt-8 relative border-2 border-white" />
+                                            <h4 class="card-title"> Jesse Steeve </h4>
+                                            <p class="card-text"> 125k Following1 </p>
 
+                                            <div class="flex gap-2">
+                                                <button type="button" class="button bg-primary text-white flex-1">Join</button>
+                                                <button type="button" class="button bg-secondery !w-auto">View</button>
+                                            </div>
 
-                                    <div class="gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-media sm:h-24 h-16">
+                                            <img src="assets/images/group/group-cover-2.jpg" alt="" />
+                                            <div class="card-overly"></div>
+                                        </div>
+                                        <div class="card-body relative z-10">
+                                            <img src="assets/images/avatars/avatar-2.jpg" alt="" class="w-10 rounded-full sm:mb-2 mb-1 shadow -mt-8 relative border-2 border-white" />
+                                            <h4 class="card-title"> John Michael </h4>
+                                            <p class="card-text"> 260k Following </p>
 
-                                        {!tweets.filter(tweet => tweet.userId === userInfo.username || (tweet.retweets.includes(userInfo.username))).length && <div>No Post or Tweet</div>}
+                                            <div class="flex gap-2">
+                                                <button type="button" class="button bg-primary text-white flex-1">Join</button>
+                                                <button type="button" class="button bg-secondery !w-auto">View</button>
+                                            </div>
 
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-media sm:h-24 h-16">
+                                            <img src="assets/images/group/group-cover-3.jpg" alt="" />
+                                            <div class="card-overly"></div>
+                                        </div>
+                                        <div class="card-body relative z-10">
+                                            <img src="assets/images/avatars/avatar-3.jpg" alt="" class="w-10 rounded-full sm:mb-2 mb-1 shadow -mt-8 relative border-2 border-white" />
+                                            <h4 class="card-title"> Monroe Parker </h4>
+                                            <p class="card-text"> 125k Following </p>
 
-                                        {tweets.filter(tweet => tweet.userId === userInfo.username || (tweet.retweets.includes(userInfo.username))).map(tweet =>
-                                            <TweetView tweets={tweets.filter(tweet => (tweet.userId === userInfo.username) || (tweet.retweets.includes(userInfo.username)))} />
-                                        )}
+                                            <div class="flex gap-2">
+                                                <button type="button" class="button bg-primary text-white flex-1">Join</button>
+                                                <button type="button" class="button bg-secondery !w-auto">View</button>
+                                            </div>
 
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-media sm:h-24 h-16">
+                                            <img src="assets/images/group/group-cover-4.jpg" alt="" />
+                                            <div class="card-overly"></div>
+                                        </div>
+                                        <div class="card-body relative z-10">
+                                            <img src="assets/images/avatars/avatar-4.jpg" alt="" class="w-10 rounded-full sm:mb-2 mb-1 shadow -mt-8 relative border-2 border-white" />
+                                            <h4 class="card-title"> Martin Gray </h4>
+                                            <p class="card-text"> 320k Following </p>
+
+                                            <div class="flex gap-2">
+                                                <button type="button" class="button bg-primary text-white flex-1">Join</button>
+                                                <button type="button" class="button bg-secondery !w-auto">View</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-media sm:h-24 h-16">
+                                            <img src="assets/images/group/group-cover-5.jpg" alt="" />
+                                            <div class="card-overly"></div>
+                                        </div>
+                                        <div class="card-body relative z-10">
+                                            <img src="assets/images/avatars/avatar-5.jpg" alt="" class="w-10 rounded-full sm:mb-2 mb-1 shadow -mt-8 relative border-2 border-white" />
+                                            <h4 class="card-title"> James Lewis </h4>
+                                            <p class="card-text"> 192k Following </p>
+
+                                            <div class="flex gap-2">
+                                                <button type="button" class="button bg-primary text-white flex-1">Join</button>
+                                                <button type="button" class="button bg-secondery !w-auto">View</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-media sm:h-24 h-16">
+                                            <img src="assets/images/group/group-cover-1.jpg" alt="" />
+                                            <div class="card-overly"></div>
+                                        </div>
+                                        <div class="card-body relative z-10">
+                                            <img src="assets/images/avatars/avatar-1.jpg" alt="" class="w-10 rounded-full sm:mb-2 mb-1 shadow -mt-8 relative border-2 border-white" />
+                                            <h4 class="card-title"> Jesse Steeve </h4>
+                                            <p class="card-text"> 125k Following1 </p>
+
+                                            <div class="flex gap-2">
+                                                <button type="button" class="button bg-primary text-white flex-1">Join</button>
+                                                <button type="button" class="button bg-secondery !w-auto">View</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-media sm:h-24 h-16">
+                                            <img src="assets/images/group/group-cover-1.jpg" alt="" />
+                                            <div class="card-overly"></div>
+                                        </div>
+                                        <div class="card-body relative z-10">
+                                            <img src="assets/images/avatars/avatar-1.jpg" alt="" class="w-10 rounded-full sm:mb-2 mb-1 shadow -mt-8 relative border-2 border-white" />
+                                            <h4 class="card-title"> Jesse Steeve </h4>
+                                            <p class="card-text"> 125k Following1 </p>
+
+                                            <div class="flex gap-2">
+                                                <button type="button" class="button bg-primary text-white flex-1">Join</button>
+                                                <button type="button" class="button bg-secondery !w-auto">View</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-media sm:h-24 h-16">
+                                            <img src="assets/images/group/group-cover-3.jpg" alt="" />
+                                            <div class="card-overly"></div>
+                                        </div>
+                                        <div class="card-body relative z-10">
+                                            <img src="assets/images/avatars/avatar-3.jpg" alt="" class="w-10 rounded-full sm:mb-2 mb-1 shadow -mt-8 relative border-2 border-white" />
+                                            <h4 class="card-title"> Monroe Parker </h4>
+                                            <p class="card-text"> 125k Following </p>
+
+                                            <div class="flex gap-2">
+                                                <button type="button" class="button bg-primary text-white flex-1">Join</button>
+                                                <button type="button" class="button bg-secondery !w-auto">View</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-media sm:h-24 h-16">
+                                            <img src="assets/images/group/group-cover-2.jpg" alt="" />
+                                            <div class="card-overly"></div>
+                                        </div>
+                                        <div class="card-body relative z-10">
+                                            <img src="assets/images/avatars/avatar-2.jpg" alt="" class="w-10 rounded-full sm:mb-2 mb-1 shadow -mt-8 relative border-2 border-white" />
+                                            <h4 class="card-title"> John Michael </h4>
+                                            <p class="card-text"> 260k Following </p>
+
+                                            <div class="flex gap-2">
+                                                <button type="button" class="button bg-primary text-white flex-1">Join</button>
+                                                <button type="button" class="button bg-secondery !w-auto">View</button>
+                                            </div>
+
+                                        </div>
                                     </div>
 
 
-
-                                    <div class="gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
-
+                                    <div class="flex justify-center my-6 lg:col-span-3 col-span-2">
+                                        <button type="button" class="bg-white py-2 px-5 rounded-full shadow-md font-semibold text-sm dark:bg-dark2">Load more...</button>
                                     </div>
 
-
-
-
-                                    <div class="grid sm:grid-cols-3 grid-cols-2 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
-
-                                        <div class="card">
-                                            <div class="card-media sm:h-24 h-16">
-                                                <img src="assets/images/group/group-cover-1.jpg" alt="" />
-                                                <div class="card-overly"></div>
-                                            </div>
-                                            <div class="card-body relative z-10">
-                                                <img src="assets/images/avatars/avatar-1.jpg" alt="" class="w-10 rounded-full sm:mb-2 mb-1 shadow -mt-8 relative border-2 border-white" />
-                                                <h4 class="card-title"> Jesse Steeve </h4>
-                                                <p class="card-text"> 125k Following1 </p>
-
-                                                <div class="flex gap-2">
-                                                    <button type="button" class="button bg-primary text-white flex-1">Join</button>
-                                                    <button type="button" class="button bg-secondery !w-auto">View</button>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                        <div class="card">
-                                            <div class="card-media sm:h-24 h-16">
-                                                <img src="assets/images/group/group-cover-2.jpg" alt="" />
-                                                <div class="card-overly"></div>
-                                            </div>
-                                            <div class="card-body relative z-10">
-                                                <img src="assets/images/avatars/avatar-2.jpg" alt="" class="w-10 rounded-full sm:mb-2 mb-1 shadow -mt-8 relative border-2 border-white" />
-                                                <h4 class="card-title"> John Michael </h4>
-                                                <p class="card-text"> 260k Following </p>
-
-                                                <div class="flex gap-2">
-                                                    <button type="button" class="button bg-primary text-white flex-1">Join</button>
-                                                    <button type="button" class="button bg-secondery !w-auto">View</button>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                        <div class="card">
-                                            <div class="card-media sm:h-24 h-16">
-                                                <img src="assets/images/group/group-cover-3.jpg" alt="" />
-                                                <div class="card-overly"></div>
-                                            </div>
-                                            <div class="card-body relative z-10">
-                                                <img src="assets/images/avatars/avatar-3.jpg" alt="" class="w-10 rounded-full sm:mb-2 mb-1 shadow -mt-8 relative border-2 border-white" />
-                                                <h4 class="card-title"> Monroe Parker </h4>
-                                                <p class="card-text"> 125k Following </p>
-
-                                                <div class="flex gap-2">
-                                                    <button type="button" class="button bg-primary text-white flex-1">Join</button>
-                                                    <button type="button" class="button bg-secondery !w-auto">View</button>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                        <div class="card">
-                                            <div class="card-media sm:h-24 h-16">
-                                                <img src="assets/images/group/group-cover-4.jpg" alt="" />
-                                                <div class="card-overly"></div>
-                                            </div>
-                                            <div class="card-body relative z-10">
-                                                <img src="assets/images/avatars/avatar-4.jpg" alt="" class="w-10 rounded-full sm:mb-2 mb-1 shadow -mt-8 relative border-2 border-white" />
-                                                <h4 class="card-title"> Martin Gray </h4>
-                                                <p class="card-text"> 320k Following </p>
-
-                                                <div class="flex gap-2">
-                                                    <button type="button" class="button bg-primary text-white flex-1">Join</button>
-                                                    <button type="button" class="button bg-secondery !w-auto">View</button>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                        <div class="card">
-                                            <div class="card-media sm:h-24 h-16">
-                                                <img src="assets/images/group/group-cover-5.jpg" alt="" />
-                                                <div class="card-overly"></div>
-                                            </div>
-                                            <div class="card-body relative z-10">
-                                                <img src="assets/images/avatars/avatar-5.jpg" alt="" class="w-10 rounded-full sm:mb-2 mb-1 shadow -mt-8 relative border-2 border-white" />
-                                                <h4 class="card-title"> James Lewis </h4>
-                                                <p class="card-text"> 192k Following </p>
-
-                                                <div class="flex gap-2">
-                                                    <button type="button" class="button bg-primary text-white flex-1">Join</button>
-                                                    <button type="button" class="button bg-secondery !w-auto">View</button>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                        <div class="card">
-                                            <div class="card-media sm:h-24 h-16">
-                                                <img src="assets/images/group/group-cover-1.jpg" alt="" />
-                                                <div class="card-overly"></div>
-                                            </div>
-                                            <div class="card-body relative z-10">
-                                                <img src="assets/images/avatars/avatar-1.jpg" alt="" class="w-10 rounded-full sm:mb-2 mb-1 shadow -mt-8 relative border-2 border-white" />
-                                                <h4 class="card-title"> Jesse Steeve </h4>
-                                                <p class="card-text"> 125k Following1 </p>
-
-                                                <div class="flex gap-2">
-                                                    <button type="button" class="button bg-primary text-white flex-1">Join</button>
-                                                    <button type="button" class="button bg-secondery !w-auto">View</button>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                        <div class="card">
-                                            <div class="card-media sm:h-24 h-16">
-                                                <img src="assets/images/group/group-cover-1.jpg" alt="" />
-                                                <div class="card-overly"></div>
-                                            </div>
-                                            <div class="card-body relative z-10">
-                                                <img src="assets/images/avatars/avatar-1.jpg" alt="" class="w-10 rounded-full sm:mb-2 mb-1 shadow -mt-8 relative border-2 border-white" />
-                                                <h4 class="card-title"> Jesse Steeve </h4>
-                                                <p class="card-text"> 125k Following1 </p>
-
-                                                <div class="flex gap-2">
-                                                    <button type="button" class="button bg-primary text-white flex-1">Join</button>
-                                                    <button type="button" class="button bg-secondery !w-auto">View</button>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                        <div class="card">
-                                            <div class="card-media sm:h-24 h-16">
-                                                <img src="assets/images/group/group-cover-3.jpg" alt="" />
-                                                <div class="card-overly"></div>
-                                            </div>
-                                            <div class="card-body relative z-10">
-                                                <img src="assets/images/avatars/avatar-3.jpg" alt="" class="w-10 rounded-full sm:mb-2 mb-1 shadow -mt-8 relative border-2 border-white" />
-                                                <h4 class="card-title"> Monroe Parker </h4>
-                                                <p class="card-text"> 125k Following </p>
-
-                                                <div class="flex gap-2">
-                                                    <button type="button" class="button bg-primary text-white flex-1">Join</button>
-                                                    <button type="button" class="button bg-secondery !w-auto">View</button>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                        <div class="card">
-                                            <div class="card-media sm:h-24 h-16">
-                                                <img src="assets/images/group/group-cover-2.jpg" alt="" />
-                                                <div class="card-overly"></div>
-                                            </div>
-                                            <div class="card-body relative z-10">
-                                                <img src="assets/images/avatars/avatar-2.jpg" alt="" class="w-10 rounded-full sm:mb-2 mb-1 shadow -mt-8 relative border-2 border-white" />
-                                                <h4 class="card-title"> John Michael </h4>
-                                                <p class="card-text"> 260k Following </p>
-
-                                                <div class="flex gap-2">
-                                                    <button type="button" class="button bg-primary text-white flex-1">Join</button>
-                                                    <button type="button" class="button bg-secondery !w-auto">View</button>
-                                                </div>
-
-                                            </div>
-                                        </div>
-
-
-                                        <div class="flex justify-center my-6 lg:col-span-3 col-span-2">
-                                            <button type="button" class="bg-white py-2 px-5 rounded-full shadow-md font-semibold text-sm dark:bg-dark2">Load more...</button>
-                                        </div>
-
-
-                                    </div>
 
                                 </div>
 
                             </div>
 
+                        </div>
 
-                        
+                        {showAlert && (
+                            <div style={{
+                                position: "fixed",
+                                top: "80%",
+                                alignSelf: 'center',
+                                // right: "10px",
+                                background: "green",
+                                color: "white",
+                                fontSize: '12px',
+                                padding: "10px 15px",
+                                borderRadius: "5px",
+                                transition: "opacity 0.5s ease-in-out",
+                                opacity: showAlert ? 1 : 0
+                            }}>
+                                ✅Copied!
+                            </div>)}
+
+
+
 
                         <Sid2bar ps={0} />
 

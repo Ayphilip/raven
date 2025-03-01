@@ -275,7 +275,7 @@ function Hunt() {
                             </div>
 
                             <div class="flex justify-center my-6">
-                                <button type="button" class="bg-white py-2 px-5 rounded-full shadow-md font-semibold text-sm dark:bg-dark2">Load more...</button>
+                                {/* <button type="button" class="bg-white py-2 px-5 rounded-full shadow-md font-semibold text-sm dark:bg-dark2">Load more...</button> */}
                             </div>
 
 

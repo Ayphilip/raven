@@ -228,13 +228,9 @@ function QuestDetails() {
 
                             <div class="flex items-center gap-2 text-sm py-2 pr-1 lg:order-1">
                                 <button type="button" onClick={() => setOpenGuess(true)} class="button bg-secondery flex items-center gap-2 py-2 px-3.5 dark:bg-dark3">
-                                    <ion-icon name="star-outline" class="text-xl"></ion-icon>
-                                    <span class="text-sm"> Submit Guess </span>
-                                </button>
-                                <button type="button" class="button bg-secondery flex items-center gap-2 py-2 px-3.5 dark:bg-dark3">
-
+                                    
                                     <ion-icon name="leaf-outline" class="text-xl"></ion-icon>
-                                    <span class="text-sm"> Get Clues </span>
+                                    <span class="text-sm"> Submit Guess </span>
                                 </button>
                                 <button type="button" class="rounded-lg bg-secondery flex px-2.5 py-2 dark:bg-dark3">
                                     <ion-icon name="arrow-redo-outline" class="text-xl"></ion-icon>
@@ -271,7 +267,7 @@ function QuestDetails() {
                     </div>
 
                     <div class="flex 2xl:gap-12 gap-10 mt-8 max-lg:flex-col" id="js-oversized">
-                        <div id="page-tabs" class="uk-switcher mt-10" style={{ width: '60%' }}>
+                        <div id="page-tabs" class="uk-switcher mt-10" style={{ width: '100%' }}>
                             <div class="flex-1 space-y-4">
 
                                 <div class="box p-5 px-6 relative">
@@ -306,8 +302,8 @@ function QuestDetails() {
                                                     <button className="bg-primary-soft text-primary dark:text-white p-2">
                                                         <ion-icon name="flame-outline" class='text-xl'></ion-icon>
                                                     </button>
-                                                    <div className="flex-1">
-                                                        <p style={{ marginTop: "0.5rem" }}>
+                                                    <div className="flex">
+                                                        <p style={{ marginTop: "0.5rem", textWrap: 'wrap' }} >
                                                             {/* {hasAccess ? CryptoJS.AES.decrypt(cluee.clue, "ravenTestToken").toString(CryptoJS.enc.Utf8) : cluee.clue} */}
                                                             {cluee.clue}
                                                         </p>
@@ -364,7 +360,7 @@ function QuestDetails() {
 
                         </div>
 
-                        <div class="lg:w-[400px]">
+                        <div class="lg:w-[500px]">
 
                             <div class="lg:space-y-4 lg:pb-8 max-lg:grid sm:grid-cols-2 max-lg:gap-6"
                                 uk-sticky="media: 1024; end: #js-oversized; offset: 80">

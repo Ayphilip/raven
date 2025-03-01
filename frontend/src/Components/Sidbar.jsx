@@ -43,14 +43,20 @@ function Sidbar({ ps }) {
                     <div class="2xl:w-[--w-side] lg:w-[--w-side-sm]">
 
 
-                        <div class="flex items-center gap-1">
+                        <div class="flex items-center gap-1" style={{display: 'flex', width: '95vw', flexDirection:'row', justifyContent: 'space-between', alignItems: 'center'}}>
 
 
                             <button uk-toggle="target: #site__sidebar ; cls :!-translate-x-0"
-                                class="flex items-center justify-center w-8 h-8 text-xl rounded-full hover:bg-gray-100 xl:hidden dark:hover:bg-slate-600 group">
+                                class="py-5 flex items-center justify-center w-8 h-8 text-xl rounded-full hover:bg-gray-100 xl:hidden dark:hover:bg-slate-600 group">
                                 <ion-icon name="menu-outline" class="text-2xl group-aria-expanded:hidden"></ion-icon>
                                 <ion-icon name="close-outline" class="hidden text-2xl group-aria-expanded:block"></ion-icon>
                             </button>
+                            <a href={"/timeline/"+userDetails?.username}>
+                                <div class="p-4 py-5 flex items-center gap-4">
+                                    <img src={userDetails?.profilePicture ? avatars[parseInt(userDetails.profilePicture)] : avatars[0]} alt="" class="w-10 h-10 rounded-full shadow"/>
+                                        
+                                </div>
+                            </a>
 
                         </div>
 
