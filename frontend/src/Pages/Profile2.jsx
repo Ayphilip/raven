@@ -25,17 +25,20 @@ function Profile2() {
 
     const [name, setName] = useState('')
     const [bio, setBio] = useState('')
+    const [pp, setPP] = useState(0)
     const [loadingSavingEdit, setLoadingSavingEdit] = useState(false)
 
     const openEditModal = () => {
         setName(userInfo.name)
         setBio(userInfo.bio)
+        setPP(userInfo.profilePicture)
         setOpenEdit(true)
     }
 
     const closeEditModal = () => {
         setName('')
         setBio('')
+        setPP(0)
         setOpenEdit(false)
     }
 
@@ -44,7 +47,8 @@ function Profile2() {
         setLoadingSavingEdit(true)
         const dats = {
             name: name,
-            bio: bio
+            bio: bio,
+            profilePicture: pp
         }
         const resp = await modifyUser(userDetails?.username, dats)
 
@@ -506,6 +510,34 @@ function Profile2() {
                         <div className="p-10 rounded-2xl shadow-2xl w-full max-w-6xl">
                             <h2 className="text-4xl font-bold mb-8 text-center text-gray-800">Edit Profile</h2>
                             <form onSubmit={saveEditModal} className="grid grid-cols-2 gap-6">
+                                <div class="relative capitalize font-medium text-sm text-center mt-4 mb-2 w-full" tabindex="-1" uk-slider="">
+
+                                    <div class="overflow-hidden uk-slider-container">
+
+                                        <ul class="-ml-2 uk-slider-items">
+
+                                            {avatars.map((quest, index) => <li class="w-1 pr-2">
+
+                                                <div>
+                                                    <div class="relative overflow-hidden rounded-lg">
+                                                        <div class="relative w-full h-40">
+                                                            <img src={quest} alt="" class="object-cover w-full h-full inset-0" />
+                                                        </div>
+                                                        {/* <div class="absolute right-0 top-0 m-2 bg-white/60 rounded-full py-0.5 px-2 text-sm font-semibold dark:bg-slate-800/60"> {quest.rewardType === '1' ? quest.reward : (quest.participants.length * quest.entryAmount)} {quest.rewardToken} </div> */}
+                                                    </div>
+                                                    <div class="mt-3 w-full">{Math.round(pp) == (index) ? 'selected' : <button onClick={() => setPP(index)} class="button bg-primary-soft text-primary dark:text-white">select</button>} </div>
+                                                </div>
+                                            </li>)}
+
+
+                                        </ul>
+
+                                        <button type="button" class="absolute bg-white rounded-full top-16 -left-4 grid w-9 h-9 place-items-center shadow dark:bg-dark3" uk-slider-item="previous"> <ion-icon name="chevron-back" class="text-2xl"></ion-icon></button>
+                                        <button type="button" class="absolute -right-4 bg-white rounded-full top-16 grid w-9 h-9 place-items-center shadow dark:bg-dark3" uk-slider-item="next"> <ion-icon name="chevron-forward" class="text-2xl"></ion-icon></button>
+
+                                    </div>
+
+                                </div>
                                 <input type="text" value={name} name="Name" placeholder="Name" className="w-full p-4 border border-gray-300 rounded-lg col-span-2" onChange={(e) => setName(e.target.value)} required />
                                 <textarea name="Bio" value={bio} placeholder="Bio" className="w-full p-4 border border-gray-300 rounded-lg col-span-2" onChange={(e) => setBio(e.target.value)} required />
 
