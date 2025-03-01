@@ -292,7 +292,7 @@ function Welcome() {
 
 
 
-                                {tweets.length && <TweetView tweets={tweets} />}
+                                {tweets.length && <TweetView tweets={tweets.filter(tweet => tweet.type !== 1)} />}
 
                                 {!tweets.length && <div>No Post or Tweet</div>}
 

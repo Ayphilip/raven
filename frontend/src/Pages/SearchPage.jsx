@@ -97,7 +97,7 @@ function SearchPage() {
                                 <button onClick={() => navigate(-1)}><ion-icon name="arrow-back-outline" class="text-xl"></ion-icon></button>
 
                                 <form onSubmit={(e) => executeSearch(searchWord, e)} style={{justifyContent: 'space-between', display: 'flex', flexDirection: 'column'}}  class="rounded-xl bg-secondery  max-sm:top-2 dark:!bg-white/5">
-                                    <input type="text" required value={searchWord} onChange={(e) => setSearchWord(e.target.value)} placeholder="Search Friends, videos .." class="w-full !pl-10 !font-normal !bg-transparent h-12 !text-sm" />
+                                    <input type="text" required value={searchWord} onChange={(e) => setSearchWord(e.target.value)} placeholder="Search Friends, videos .." class="w-full !pl-10 !font-normal w-[100%] !bg-transparent h-12 !text-sm" />
                                     {/* <button type='submit'><ion-icon name="search" class="absolute left-4 top-1/2 -translate-y-1/2"></ion-icon></button> */}
                                 </form>
 
