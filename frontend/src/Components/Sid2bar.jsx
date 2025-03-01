@@ -116,46 +116,48 @@ function Sid2bar({ ps }) {
 
                 <button
                     onClick={() => navigate('/')}
-                    className={`flex flex-col items-center text-gray-500 dark:text-gray-400 
-                               ${ps==1 ? "text-blue-500 dark:text-blue-400" : ""}`}
+                    className={`flex flex-col items-center
+                               ${ps == 1 ? "text-blue-500 dark:text-blue-400" : ""}`}
                 >
                     <ion-icon name="home-outline" class="text-xl"></ion-icon>
                     <span className="text-xs">Home</span>
                 </button>
                 <button
                     onClick={() => navigate('/search')}
-                    className={`flex flex-col items-center text-gray-500 dark:text-gray-400 
-                               ${ps==10 ? "text-blue-500 dark:text-blue-400" : ""}`}
+                    className={`flex flex-col items-center
+                               ${ps == 10 ? "text-blue-500 dark:text-blue-400" : ""}`}
                 >
                     <ion-icon name="search-outline" class="text-xl"></ion-icon>
                     <span className="text-xs">Search</span>
                 </button>
                 <button
                     onClick={() => navigate('/notifications')}
-                    className={`flex flex-col items-center text-gray-500 dark:text-gray-400 
-                               ${ps==3 ? "text-blue-500 dark:text-blue-400" : ""}`}
+                    className={`flex flex-col items-center
+                               ${ps == 3 ? "text-blue-500 dark:text-blue-400" : ""}`}
                 >
                     <ion-icon name="notifications-outline" class="text-xl"></ion-icon>
                     <span className="text-xs">Notifications</span>
                 </button>
                 <button
                     onClick={() => navigate('/chat')}
-                    className={`flex flex-col items-center text-gray-500 dark:text-gray-400 
-                               ${ps==2 ? "text-blue-500 dark:text-blue-400" : ""}`}
+                    className={`flex flex-col items-center
+                               ${ps == 2 ? "text-blue-500 dark:text-blue-400" : ""}`}
                 >
                     <ion-icon name="mail-outline" class="text-xl"></ion-icon>
                     <span className="text-xs">Chat</span>
                 </button>
                 <button
-                    onClick={() => navigate('/timeline/'+userDetails?.username)}
-                    className={`flex flex-col items-center text-gray-500 dark:text-gray-400 
-                               ${ps==0 ? "text-blue-500 dark:text-blue-400" : ""}`}
+                    onClick={handleMint}
+                    disabled={!isMintAvailable}
+
+                    className={`flex flex-col items-center 
+                               ${isMintAvailable ? "text-blue-500 dark:text-blue-400" : ""}`}
                 >
-                    <ion-icon name="person-outline" class="text-xl"></ion-icon>
-                    <span className="text-xs">Profile</span>
+                    <ion-icon name="diamond-outline" class="text-xl"></ion-icon>
+                    <span className="text-xs">{isMintAvailable ? `Mint ${ptoken}` : `${timeLeft}`}</span>
                 </button>
-                
-                
+
+
 
             </nav>
             <div class="hidden lg:block 2xl:w-[380px] lg:w-[330px] w-full">
