@@ -113,37 +113,30 @@ function TweetView({ tweets }) {
                         </div>
                     </a>
 
-                    {tweet.media.length === 3 && <div class="grid sm:grid-cols-3 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
+                    <div className={`grid gap-1 sm:gap-3 max-w-xl mx-auto overflow-hidden
+    ${tweet.media.length === 1 ? 'grid-cols-1' : ''}
+    ${tweet.media.length === 2 ? 'grid-cols-2' : ''}
+    ${tweet.media.length === 3 ? 'grid-cols-2 auto-rows-[1fr]' : ''}
+    ${tweet.media.length === 4 ? 'grid-cols-2 grid-rows-2' : ''}`}>
+
                         {tweet.media.map((med, index) => (
-                            <span key={index} className="w-full">
-                                <a className="inline" onClick={() => { setItemViewId(tweet.tweetId) }} data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
-                                    <MediaViewer fileUrl={med} />
+                            <span key={index} className={`relative w-full h-full overflow-hidden rounded-lg 
+            ${tweet.media.length === 1 ? 'max-h-[70vh]' : 'aspect-[16/9]'}`}>
+
+                                <a
+                                    className="block w-full h-full"
+                                    onClick={() => setItemViewId(tweet.tweetId)}
+                                    data-caption={tweet.content}
+                                >
+                                    <MediaViewer
+                                        fileUrl={med}
+                                        className="w-full h-full object-cover"
+                                    />
                                 </a>
                             </span>
                         ))}
-                    </div>}
+                    </div>
 
-                    {(tweet.media.length === 2 || tweet.media.length === 4) && <div class="grid sm:grid-cols-2 gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
-                        {tweet.media.map((med, index) => (
-                            <span key={index} className="w-full">
-                                <a className="inline" onClick={() => { setItemViewId(tweet.tweetId) }} data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
-                                    <MediaViewer fileUrl={med} />
-                                </a>
-                            </span>
-                        ))}
-                    </div>}
-
-                    {tweet.media.length === 1 &&
-                        <div class="grid sm:grid-cols-1 gap-1" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
-                            {tweet.media.map((med, index) => (
-                                <span key={index} className="w-full">
-                                    <a className="inline" onClick={() => { setItemViewId(tweet.tweetId) }} data-caption={tweet.content} style={{ maxHeight: '20vh' }}>
-                                        <MediaViewer fileUrl={med} />
-                                    </a>
-                                </span>
-                            ))}
-                        </div>
-                    }
 
                 </div>
 
@@ -160,7 +153,7 @@ function TweetView({ tweets }) {
                     >
                         <button type="button" class="button-icon bg-slate-200/70 dark:bg-slate-700"> <ion-icon class="text-lg" name="chatbubble-ellipses"></ion-icon> </button>
                         <motion.span
-                            key={tweet.comments.length} 
+                            key={tweet.comments.length}
                             initial={{ y: 5, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             exit={{ y: -5, opacity: 0 }}
@@ -262,7 +255,7 @@ function TweetView({ tweets }) {
                 </div>
 
 
-                
+
             </div>
         )}
 

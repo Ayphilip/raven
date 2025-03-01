@@ -35,16 +35,42 @@ function Sidbar({ ps }) {
     }
 
     return (
-        authenticate && <div>
-            <div id="site__sidebar" class="fixed top-0 left-0 z-[0] overflow-hidden transition-transform xl:duration-500 max-xl:w-full max-xl:-translate-x-full">
+        authenticate && <>
+            <header class="relative z-[100] h-[--m-top] fixed top-0 left-0 w-full flex items-center bg-white/80 sky-50 backdrop-blur-xl border-b border-slate-200 dark:bg-dark2 dark:border-slate-800 block md:hidden">
+
+                <div class="flex items-center w-full xl:px-6 px-2 max-lg:gap-10">
+
+                    <div class="2xl:w-[--w-side] lg:w-[--w-side-sm]">
+
+
+                        <div class="flex items-center gap-1">
+
+
+                            <button uk-toggle="target: #site__sidebar ; cls :!-translate-x-0"
+                                class="flex items-center justify-center w-8 h-8 text-xl rounded-full hover:bg-gray-100 xl:hidden dark:hover:bg-slate-600 group">
+                                <ion-icon name="menu-outline" class="text-2xl group-aria-expanded:hidden"></ion-icon>
+                                <ion-icon name="close-outline" class="hidden text-2xl group-aria-expanded:block"></ion-icon>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </header>
+            <div id="site__sidebar" class="fixed top-0 left-0 z-[99] pt-[--m-top] overflow-hidden transition-transform xl:duration-500 max-xl:w-full max-xl:-translate-x-full">
                 <img src={Logo} style={{ width: '20%' }} />
 
 
-                <div class="p-2 max-xl:bg-white shadow-sm 2xl:w-72 sm:w-64 w-[80%] h-[calc(100vh-64px)] relative z-30 max-lg:border-r dark:max-xl:!bg-slate-700 dark:border-slate-700">
+                <div class="p-2 max-xl:bg-white shadow-sm 2xl:w-72 sm:w-64 w-[80%] h-screen relative z-30 max-lg:border-r dark:max-xl:!bg-slate-700 dark:border-slate-700">
 
                     <div class="pr-4" data-simplebar>
 
-                        <nav id="side" style={{ position: 'relative', height: '80vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <nav id="side"
+                            style={{ position: 'relative', height: '80vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+                        >
 
                             <ul>
                                 <li class={ps == 1 && "active"}>
@@ -194,7 +220,7 @@ function Sidbar({ ps }) {
                     uk-toggle="target: #site__sidebar ; cls :!-translate-x-0">
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 

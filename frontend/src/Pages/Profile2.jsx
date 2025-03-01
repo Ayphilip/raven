@@ -133,9 +133,9 @@ function Profile2() {
 
                     <div class="flex max-lg:flex-col 2xl:gap-12 gap-10 2xl:max-w-[1220px] max-w-[1065px] mx-auto" id="js-oversized">
 
-                        <div class="">
+                        
 
-                            <div class="w-[680px] mx-auto">
+                            <div class="mx-auto">
 
                                 <div class="page-heading">
                                     <div style={{ flexDirection: 'row', display: 'flex', alignItems: 'center' }}>
@@ -453,10 +453,9 @@ function Profile2() {
                             </div>
 
 
-                        </div>
+                        
 
-
-                        <Sid2bar />
+                        <Sid2bar ps={0} />
 
                     </div>
 

@@ -25,7 +25,7 @@ function MessagesPage() {
 
     // const fileInputRef = useRef(null);
 
-    
+
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate, useBookmark } = useLoginService();
 
     const navigate = useNavigate()
@@ -71,7 +71,7 @@ function MessagesPage() {
     }, [])
     return (
         <div id='wrapper'>
-            <Sidbar ps={2}/>
+            <Sidbar ps={2} />
 
             <main id="site__main" class="2xl:ml-[--w-side]  xl:ml-[--w-side-sm] p-2.5 h-[calc(100vh-var(--m-top))] mt-[--m-top]">
 
@@ -80,9 +80,14 @@ function MessagesPage() {
                     <div class="flex bg-white dark:bg-dark2">
 
 
-                        <div class="md:w-[360px] relative border-r dark:border-slate-700">
+                        <div class="flex-1 relative border-r dark:border-slate-700">
 
-                            <div id="side-chat" class="top-0 left-0 max-md:fixed max-md:w-5/6 max-md:h-screen bg-white z-50 max-md:shadow max-md:-translate-x-full dark:bg-dark2">
+                            <div
+                                id="side-chat"
+                                className={`top-0 left-0 max-md:fixed max-md:w-5/6 max-md:h-screen bg-white z-50 max-md:shadow dark:bg-dark2
+                        transition-transform duration-300 ease-in-out
+                        ${selectedUser ? "max-md:-translate-x-full" : "max-md:translate-x-0"}`}
+                            >
 
 
                                 <div class="p-4 border-b dark:border-slate-700">
@@ -147,7 +152,7 @@ function MessagesPage() {
                                                 </div>
                                                 {chat?.messages.length > 0 && <div class="font-medium overflow-hidden text-ellipsis text-sm whitespace-nowrap">
 
-                                                   {chat.messages[chat.messages.length - 1].senderId === userDetails?.username && 'Me:'} {CryptoJS.AES.decrypt(chat.messages[chat.messages.length - 1].message, "ravenTestToken").toString(CryptoJS.enc.Utf8)}
+                                                    {chat.messages[chat.messages.length - 1].senderId === userDetails?.username && 'Me:'} {CryptoJS.AES.decrypt(chat.messages[chat.messages.length - 1].message, "ravenTestToken").toString(CryptoJS.enc.Utf8)}
                                                 </div>}
                                             </div>
                                         </a>)

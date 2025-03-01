@@ -258,7 +258,7 @@ function PremiumPage() {
 
                     </div>
 
-                    <Sid2bar />
+                    <Sid2bar ps={4} />
                     <QuestFormModal
                         isOpen={isModalOpen}
                         onClose={handleCloseModal}

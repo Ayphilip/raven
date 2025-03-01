@@ -164,6 +164,8 @@ function SearchPage() {
                                 <br />
                                 <br />
 
+                                {searchQuery && !searchResult?.tweet?.length && <p>No result for: {searchQuery}</p>}
+
                                 {searchResult?.tweets?.length > 0 && (
                                     <TweetView
                                         tweets={tweets.filter(tweet =>
@@ -203,7 +205,7 @@ function SearchPage() {
 
                         </div>
                     </div>
-                    <Sid2bar ps={'search'} />
+                    <Sid2bar ps={10} />
 
                 </div>
 

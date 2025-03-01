@@ -129,7 +129,7 @@ function NotificationPage() {
 
                         </div>
                     </div>
-                    <Sid2bar />
+                    <Sid2bar ps={3}/>
 
                 </div>
 

@@ -16,6 +16,7 @@ import TweetView from '../Components/TweetView';
 import { Mention, MentionsInput } from 'react-mentions';
 import Sid2bar from '../Components/Sid2bar';
 import { useAddress } from '@chopinframework/react';
+import Headers from '../Components/Headers';
 
 function Welcome() {
 
@@ -141,8 +142,8 @@ function Welcome() {
     }, [])
 
     return (
-        <div>
-            <div>
+        
+            <div id="wrapper">
 
 
                 <Sidbar ps={1} />
@@ -153,10 +154,10 @@ function Welcome() {
 
                     <div class="lg:flex 2xl:gap-16 gap-12 max-w-[1065px] mx-auto" id="js-oversized">
 
-                        <div class="w-[680px] mx-auto">
+                        <div class="mx-auto">
 
 
-                            <div class="md:max-w-[580px] mx-auto flex-1">
+                            <div class="mx-auto flex-1">
 
 
                                 <div class="bg-white shadow-sm md:p-4 p-2 space-y-4 text-sm font-medium border1 dark:bg-dark1">
@@ -326,7 +327,7 @@ function Welcome() {
                         </div>
 
 
-                        <Sid2bar />
+                        <Sid2bar ps={1} />
 
                     </div>
 
@@ -344,7 +345,7 @@ function Welcome() {
 
             
 
-        </div>
+        
     )
 }
 

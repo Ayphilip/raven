@@ -136,7 +136,9 @@ io.on('connection', (socket) => {
     });
 });
 
+
 // app.use((req, res, next) => {
+//     console.log(req.headers)
 //     if ((!req.headers['x-sequencer-secret'] || req.headers['x-sequencer-secret'] !== process.env.SEQUENCER_SECRET) && !req.path.startsWith('/socket.io')) {
 //         return res.status(401).send('Unauthorized');
 //     }

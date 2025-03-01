@@ -82,7 +82,7 @@ function BookmarkPage() {
 
                     <div class="lg:flex 2xl:gap-16 gap-12 max-w-[1065px] mx-auto" id="js-oversized">
 
-                        <div class="w-[680px] mx-auto">
+                        <div class="mx-auto">
 
                             <div class="page-heading">
                                 <div style={{ flexDirection: 'row', display: 'flex', alignItems: 'center' }}>
