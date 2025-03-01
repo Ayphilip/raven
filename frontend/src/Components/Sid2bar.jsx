@@ -111,7 +111,7 @@ function Sid2bar({ ps }) {
     }, [isLoading, isMintAvailable, users])
     return (
         <>
-            <nav className="fixed bottom-0 left-0 w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 
+            <nav className="fixed bottom-0 left-0 w-full bg-white dark:bg-dark1 border-t border-gray-200 dark:border-gray-700 
                         flex justify-around items-center py-3 md:hidden z-50">
 
                 <button
@@ -163,7 +163,7 @@ function Sid2bar({ ps }) {
                 <div class="lg:space-y-4 lg:pb-8 max-lg:grid sm:grid-cols-2 max-lg:gap-6"
                     uk-sticky="media: 1024; end: #js-oversized; offset: 80">
 
-                    {ps !== 'search' && !ps && <form onSubmit={(e) => executeSearch(searchWord, e)} class="xl:w-auto sm:w-96 sm:relative rounded-xl overflow-hidden bg-secondery max-md:hidden w-screen left-0 max-sm:fixed max-sm:top-2 dark:!bg-white/5">
+                    {ps !== 10 && <form onSubmit={(e) => executeSearch(searchWord, e)} class="xl:w-auto sm:w-96 sm:relative rounded-xl overflow-hidden bg-secondery max-md:hidden w-screen left-0 max-sm:fixed max-sm:top-2 dark:!bg-white/5">
                         <button type='submit'><ion-icon name="search" class="absolute left-4 top-1/2 -translate-y-1/2"></ion-icon></button>
                         <input type="text" required onChange={(e) => setSearchWord(e.target.value)} placeholder="Search Friends, videos .." class="w-full !pl-10 !font-normal !bg-transparent h-12 !text-sm" />
                     </form>}

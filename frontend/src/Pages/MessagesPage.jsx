@@ -73,14 +73,14 @@ function MessagesPage() {
         <div id='wrapper'>
             <Sidbar ps={2} />
 
-            <main id="site__main" class="2xl:ml-[--w-side]  xl:ml-[--w-side-sm] p-2.5 h-[calc(100vh-var(--m-top))] mt-[--m-top]">
+            <main id="site__main" class="2xl:ml-[--w-side]  xl:ml-[--w-side-sm] p-2.5 h-[calc(100vh-var(--m-top))]">
 
                 <div class="relative overflow-hidden border -m-2.5 dark:border-slate-700">
 
                     <div class="flex bg-white dark:bg-dark2">
 
 
-                        <div class="flex-1 relative border-r dark:border-slate-700">
+                        <div class="md:w-[360px] relative border-r dark:border-slate-700">
 
                             <div
                                 id="side-chat"

@@ -64,7 +64,7 @@ function SearchPage() {
     useEffect(() => {
         makeSearch(searchQuery)
         fetchMessages(selectedUser)
-        document.title=`${searchQuery} - Search / Raven`
+        document.title = `${searchQuery} - Search / Raven`
         // console.log(searchResult)
     }, [selectedUser, searchQuery]);
 
@@ -96,13 +96,13 @@ function SearchPage() {
                             <div style={{ flexDirection: 'row', display: 'flex', alignItems: 'center', columnGap: '10px' }}>
                                 <button onClick={() => navigate(-1)}><ion-icon name="arrow-back-outline" class="text-xl"></ion-icon></button>
 
-                                <form onSubmit={(e) => executeSearch(searchWord, e)} class="xl:w-auto sm:w-full sm:relative rounded-xl overflow-hidden bg-secondery max-md:hidden w-screen left-0 max-sm:fixed max-sm:top-2 dark:!bg-white/5">
-                                    <button type='submit'><ion-icon name="search" class="absolute left-4 top-1/2 -translate-y-1/2"></ion-icon></button>
+                                <form onSubmit={(e) => executeSearch(searchWord, e)} style={{justifyContent: 'space-between', display: 'flex', flexDirection: 'column'}}  class="rounded-xl bg-secondery  max-sm:top-2 dark:!bg-white/5">
                                     <input type="text" required value={searchWord} onChange={(e) => setSearchWord(e.target.value)} placeholder="Search Friends, videos .." class="w-full !pl-10 !font-normal !bg-transparent h-12 !text-sm" />
+                                    {/* <button type='submit'><ion-icon name="search" class="absolute left-4 top-1/2 -translate-y-1/2"></ion-icon></button> */}
                                 </form>
 
 
-                                
+
                             </div>
 
                             <nav class="nav__underline">
@@ -137,7 +137,7 @@ function SearchPage() {
                                                     <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} class="absolute w-full h-full inset-0 rounded-md object-cover shadow-sm" alt="" />
                                                 </div>
                                                 <div class="flex-1">
-                                                    <a href={"/timeline/"+use.username} class="md:text-lg text-base font-semibold capitalize text-black dark:text-white"> {use.name}   </a>
+                                                    <a href={"/timeline/" + use.username} class="md:text-lg text-base font-semibold capitalize text-black dark:text-white"> {use.name}   </a>
                                                     <div class="flex space-x-2 items-center text-sm font-normal">
                                                         <p>{use.bio}</p>
                                                     </div>
@@ -164,7 +164,7 @@ function SearchPage() {
                                 <br />
                                 <br />
 
-                                {searchQuery && !searchResult?.tweet?.length && <p>No result for: {searchQuery}</p>}
+                                {searchQuery && !searchResult?.tweets?.length && <p>No result for: {searchQuery}</p>}
 
                                 {searchResult?.tweets?.length > 0 && (
                                     <TweetView

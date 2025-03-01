@@ -24,7 +24,7 @@ function App() {
   const { address, isLoading, isLoginError, login, logout, revalidate } = useAddress();
   const { loading, userDetails, userlogoutService } = useLoginService()
 
-  
+
 
 
 
@@ -145,62 +145,65 @@ function App() {
 
 
   return (
-
-    <BrowserRouter>
-
+    
 
 
+      <BrowserRouter>
 
-      <Routes>
 
-        {/* <Route path='/chat' Component={MessagesPage} />
+
+
+        <Routes>
+
+          {/* <Route path='/chat' Component={MessagesPage} />
         <Route path='/premium' Component={Premium} />
         <Route path='/ravenhunt' Component={Hunt} />
         <Route path='/notifications' Component={NotificationPage}/>
         <Route path='/welcome' Component={Mapscreen} />
         <Route path='/newgame' Component={New} />
         <Route path='/game'>
-          <Route path=':id' Component={GameInterface} />
+        <Route path=':id' Component={GameInterface} />
         </Route>
         <Route path='/tweet'>
-          <Route path=':id' Component={TweetPage} />
+        <Route path=':id' Component={TweetPage} />
         </Route>
         <Route path='/timeline'>
           <Route path=':id' Component={Profile2} />
-        </Route>
-        <Route path='/login' Component={Login} />
-        <Route path='/' Component={Welcome} /> */}
+          </Route>
+          <Route path='/login' Component={Login} />
+          <Route path='/' Component={Welcome} /> */}
 
-        {isAuthenticated ? (
-          <>
-            <Route path="/bookmarks" Component={BookmarkPage} />
-            <Route path="/search" Component={SearchPage} />
-            <Route path="/chat" Component={MessagesPage} />
-            <Route path="/premium" Component={Premium} />
-            <Route path="/premiumpage" Component={PremiumPage} />
-            <Route path="/ravenhunt" Component={Hunt} />
-            <Route path="/ravenhunt/quest/:id" Component={QuestDetails} />
-            <Route path="/notifications" Component={NotificationPage} />
-            <Route path="/tweet/:id" Component={TweetPage} />
-            <Route path="/timeline/:id" Component={Profile2} />
-            <Route path="/" Component={Welcome} />
-            {/* Redirect unknown routes to home */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </>
-        ) : (
+          {isAuthenticated ? (
+            <>
+              <Route path="/bookmarks" Component={BookmarkPage} />
+              <Route path="/search" Component={SearchPage} />
+              <Route path="/chat" Component={MessagesPage} />
+              <Route path="/premium" Component={Premium} />
+              <Route path="/premiumpage" Component={PremiumPage} />
+              <Route path="/ravenhunt" Component={Hunt} />
+              <Route path="/ravenhunt/quest/:id" Component={QuestDetails} />
+              <Route path="/notifications" Component={NotificationPage} />
+              <Route path="/tweet/:id" Component={TweetPage} />
+              <Route path="/timeline/:id" Component={Profile2} />
+              <Route path="/" Component={Welcome} />
+              {/* Redirect unknown routes to home */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </>
+          ) : (
 
-          <>
-            <Route path="/login" Component={Login} />
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          </>
-        )}
-
-
-        {/* <Route path='/login' Component={Signin}/> */}
-      </Routes>
+            <>
+              <Route path="/login" Component={Login} />
+              <Route path="*" element={<Navigate to="/login" replace />} />
+            </>
+          )}
 
 
-    </BrowserRouter>
+          {/* <Route path='/login' Component={Signin}/> */}
+        </Routes>
+
+
+      </BrowserRouter>
+    
 
   )
 }
