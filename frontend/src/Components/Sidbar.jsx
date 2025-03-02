@@ -66,7 +66,7 @@ function Sidbar({ ps }) {
                 </div>
 
             </header>
-            <div id="site__sidebar" class="fixed top-0 left-0 z-[0] overflow-hidden transition-transform xl:duration-500 max-xl:w-full max-xl:-translate-x-full">
+            <div id="site__sidebar" class="fixed top-0 left-0 z-[99] overflow-hidden transition-transform xl:duration-500 max-xl:w-full max-xl:-translate-x-full">
                 <img src={Logo} style={{ width: '20%' }} />
 
 
