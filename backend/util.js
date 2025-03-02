@@ -88,6 +88,57 @@ export const getIsCorrect = async (item1, item2, req) => {
     }
 };
 
+export const getUrlMetaData = async (url, req) => {
+    try {
+        const apiKey = process.env.API_KEY;
+        if (!apiKey) throw new Error("API Key is missing");
+        // console.log(`https://jsonlink.io/api/extract?url=${encodeURIComponent(url)}&api_key=${apiKey}`)
+        const apiUrl = `https://jsonlink.io/api/extract?url=${encodeURIComponent(url)}&api_key=${apiKey}`;
+        
+        const response = await fetch(apiUrl);
+        console.log(response.json)
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} - ${response.statusText}`);
+        }
+
+        return await response.json(); // Return parsed JSON
+    } catch (error) {
+        console.error("Failed to fetch URL metadata:", error.message);
+        return null; // Return null instead of undefined
+    }
+};
+
+export const getUrlMetaDataOracle = async (url, req) => {
+    try {
+        const apiKey = process.env.API_KEY;
+        if (!apiKey) throw new Error("API Key is missing");
+        // console.log(`https://jsonlink.io/api/extract?url=${encodeURIComponent(url)}&api_key=${apiKey}`)
+        const callbackUrl = req.headers["x-callback-url"];
+
+        var oracle = new Oracle(callbackUrl);
+        const apiUrl = `https://jsonlink.io/api/extract?url=${encodeURIComponent(url)}&api_key=${apiKey}`;
+        var resp = await oracle.fetch(apiUrl)
+        // console.log(resp.json)
+
+        // var response = await oracle.notarize(async() => {
+
+            
+        //     const response = await fetch(apiUrl);
+        //     console.log(response.json)
+        //     if (!response.ok) {
+        //         // throw new Error(`Error: ${response.status} - ${response.statusText}`);
+        //         return null;
+        //     }
+    
+        //     return await response.json(); // Return parsed JSON
+        // })
+        return resp.json;
+    } catch (error) {
+        console.error("Failed to fetch URL metadata:", error.message);
+        return null; // Return null instead of undefined
+    }
+};
+
 
 export const sendNotification = async (users, message, type, req) => {
     try {
@@ -104,11 +155,14 @@ export const sendNotification = async (users, message, type, req) => {
                 timestamp: Timestamp.now()
             };
 
+            console.log('Im here')
+
             const userNotifRef = doc(db, "notifications", use);
             const userNotifDoc = await getDoc(userNotifRef);
+            console.log(use)
 
             if (!userNotifDoc.exists()) {
-                await setDoc(userNotifRef, { userId, notifications: [notificationData] });
+                await setDoc(userNotifRef, { use, notifications: [notificationData] });
             } else {
                 await updateDoc(userNotifRef, { notifications: arrayUnion(notificationData) });
             }

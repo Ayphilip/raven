@@ -19,13 +19,31 @@ export default function CommentModal({ isOpen, onClose, type, item }) {
     const [content, setContent] = useState('')
     const [visibility, setVisible] = useState(0)
     const [media3, setMedia3] = useState([])
+    const [preview, setPreview] = useState(null);
 
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const fetchPreview = async (url) => {
+        try {
+            console.log(url)
+            const response = await fetch(`/api/search/url?url=${encodeURIComponent(url)}`);
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} - ${response.statusText}`);
+            }
+            const data = await response.json();
+            console.log(data)
+            setPreview(data);
+        } catch (error) {
+            console.error("An error occurred:", error);
+        }
+    };
     const handleFileChangeModal = async (event) => {
 
         const files = event.target.files;
         if (!files.length) return;
 
         const fileArray = Array.from(files);
+
+
 
         // Upload files and get URLs
         const uploadedFiles = await Promise.all(fileArray.map(uploadMedia));
@@ -54,6 +72,7 @@ export default function CommentModal({ isOpen, onClose, type, item }) {
             userId: userDetails.username,
             content: content,
             media: media3,
+            preview: preview,
             parent: item.tweetId,
             visibility: visibility,
             mentions: mentionedUserIds,
@@ -63,6 +82,7 @@ export default function CommentModal({ isOpen, onClose, type, item }) {
 
         addTweet(data);
         setVisible(1)
+        setPreview(null)
         setContent('')
         setMedia3([])
         onClose()
@@ -70,6 +90,20 @@ export default function CommentModal({ isOpen, onClose, type, item }) {
     }
 
     if (!isOpen) return null;
+
+    useEffect(() => {
+
+        const match = content.match(urlRegex);
+        if (match) {
+            fetchPreview(match[0]); // Fetch metadata for first detected URL
+        } else {
+            setPreview(null);
+        }
+
+        return () => {
+
+        }
+    }, [content])
 
     return (
 
@@ -128,44 +162,89 @@ export default function CommentModal({ isOpen, onClose, type, item }) {
 
 
 
+
                     <MentionsInput
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         placeholder="Post a reply!"
+                        className='bg-white dark:bg-dark1'
                         style={{
                             padding: "12px",
                             width: "100%",
-                            // backgroundColor: "#000",
-                            color: "#fff",
-                            fontSize: "14px",
-                            borderRadius: "8px",
-                            // border: "1px solid #444",
+                            fontSize: "22px",
                             outline: "none",
                             minHeight: "40px",
                             resize: "none",
+                            border: "1px solid #333",
+                            suggestions: {
+                                list: {
+                                    maxHeight: 200,
+                                    overflowY: 'auto',
+                                },
+                            },
                         }}
                     >
                         <Mention
                             trigger="@"
                             data={userList}
+                            className='bg-white dark:bg-dark1'
                             displayTransform={(id, display) => `${display}`}
                             renderSuggestion={(suggestion, search, highlighted) => (
-                                <span
+                                <div
+                                    className='bg-white dark:bg-dark1'
                                     style={{
-                                        padding: "8px 12px",
+                                        padding: "10px",
                                         cursor: "pointer",
-                                        backgroundColor: highlighted ? "#1DA1F2" : "#222", // Highlighted item in blue
-                                        color: highlighted ? "#fff" : "#ccc", // White text when highlighted
-                                        borderRadius: "6px",
-                                        display: "block",
-                                        marginBottom: "4px",
+
                                     }}
                                 >
                                     {suggestion.display}
-                                </span>
+                                </div>
                             )}
+
+                            style={{
+                                borderRadius: "6px",
+                                boxShadow: "0px 4px 10px rgba(0,0,0,0.3)",
+                                maxHeight: "150px",  // ✅ Set max height for scrolling
+                                overflowY: "auto",   // ✅ Enable scrolling
+                                width: "250px",      // ✅ Adjust width to fit content
+                            }}
                         />
                     </MentionsInput>
+
+                    {preview && (
+                        <a href={preview.url}
+                            style={{
+                                border: "1px solid #ccc",
+                                borderRadius: "8px",
+                                marginTop: "10px",
+                                padding: "10px",
+                                display: "flex",
+                                gap: "10px",
+                                alignItems: "center",
+                            }}
+                        >
+                            {preview.images ? (
+                                <img
+                                    src={preview.images[0]}
+                                    alt="preview"
+                                    style={{ width: "100px", height: "80px", borderRadius: "6px" }}
+                                />
+                            ) : <img
+                                src={preview.favicon}
+                                alt="preview"
+                                style={{ width: "100px", height: "80px", borderRadius: "6px" }}
+                            />}
+                            <div>
+                                <strong>{preview.title}</strong>
+                                <p style={{ fontSize: "14px", color: "#555" }}>{preview.description}</p>
+                                <a href={preview.url} target="_blank" rel="noopener noreferrer" style={{ color: "blue" }}>
+                                    {preview.url}
+                                </a>
+                            </div>
+                        </a>
+                    )}
+
 
 
                     {/* <textarea class="w-full !text-black placeholder:!text-black !bg-white !border-transparent focus:!border-transparent focus:!ring-transparent !font-normal !text-xl   dark:!text-white dark:placeholder:!text-white dark:!bg-slate-800" name="" id="" onChange={(e) => setContent(e.target.value)} value={content} placeholder="What do you have in mind?"></textarea> */}
@@ -439,20 +518,48 @@ export const FileViewTweet = ({ tweetId, isOpen, onClose, onSubmit }) => {
 
     if (!isOpen) return null;
 
-    return userDetails && tweet && <div class="uk-modal lg:p-20 max-lg:!items-start uk-open" id="preview_modal" uk-modal="">
+    return userDetails && tweet && <div class="uk-modal bg-white dark:bg-dark1 max-lg:!items-start uk-open" id="preview_modal" uk-modal="">
 
-        <div class="uk-modal-dialog tt relative mx-auto overflow-hidden shadow-xl rounded-lg lg:flex items-center ax-w-[86rem] w-full lg:h-[80vh]">
+        <div class="uk-modal-dialog tt relative mx-auto overflow-hidden rounded-lg lg:flex items-center ax-w-[86rem] w-full lg:h-[100vh]">
 
 
-            <div class="lg:h-full lg:w-[calc(100vw-400px)] w-full h-96 flex justify-center items-center relative">
-
-                {/* <div class="relative z-10 w-full h-full">
-                    <img src="assets/images/post/post-1.jpg" alt="" class="w-full h-full object-cover absolute" />
-                </div> */}
+            <div class="lg:h-full lg:w-[calc(100vw-400px)] w-full h-100vh flex justify-center items-center relative">
 
 
 
 
+                {tweet.preview && (
+                    <a href={tweet.preview.url}
+                        style={{
+                            border: "1px solid #ccc",
+                            borderRadius: "8px",
+                            marginTop: "10px",
+                            padding: "10px",
+                            display: "flex",
+                            gap: "10px",
+                            alignItems: "center",
+                        }}
+                    >
+                        {tweet.preview.images ? (
+                            <img
+                                src={tweet.preview.images[0]}
+                                alt="preview"
+                                style={{ width: "100px", height: "80px", borderRadius: "6px" }}
+                            />
+                        ) : <img
+                            src={tweet.preview.favicon}
+                            alt="preview"
+                            style={{ width: "100px", height: "80px", borderRadius: "6px" }}
+                        />}
+                        <div>
+                            <strong>{tweet.preview.title}</strong>
+                            <p style={{ fontSize: "14px", color: "#555" }}>{tweet.preview.description}</p>
+                            <a href={tweet.preview.url} target="_blank" rel="noopener noreferrer" style={{ color: "blue" }}>
+                                {tweet.preview.url}
+                            </a>
+                        </div>
+                    </a>
+                )}
                 <div class="relative z-10 w-full h-full" >
 
                     <div class="relative" tabindex="-1" uk-slideshow="animation: push">
@@ -498,7 +605,7 @@ export const FileViewTweet = ({ tweetId, isOpen, onClose, onSubmit }) => {
             </div>
 
 
-            <div class="lg:w-[400px] w-full bg-white h-full relative  overflow-y-auto shadow-xl dark:bg-dark2 flex flex-col justify-between">
+            <div class="lg:w-[400px] w-full bg-white h-full relative  overflow-y-auto dark:bg-dark2 flex flex-col justify-between">
 
                 <div>
                     {tweet.parent !== 'original' && <RetweetView id={tweet.parent} type={'full'} />}

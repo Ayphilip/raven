@@ -1,8 +1,8 @@
-import { 
-    db, doc, getDoc, setDoc, updateDoc, collection, getDocs, query, where, orderBy, serverTimestamp,
-    arrayUnion
+import {
+  db, doc, getDoc, setDoc, updateDoc, collection, getDocs, query, where, orderBy, serverTimestamp,
+  arrayUnion
 } from "../config/firebaseConfig.js";
-import { searchFirestore } from "../util.js";
+import { getUrlMetaData, searchFirestore } from "../util.js";
 
 /**
  * Perform a search across multiple Firestore collections
@@ -39,3 +39,14 @@ export const searchAcrossCollections = async (req, res) => {
   }
 };
 
+export const searchUrl = async (req, res) => {
+  try {
+    const { url } = req.query;
+    const response = await getUrlMetaData(url, req)
+    // console.log(response)
+    return res.status(200).json(response);
+  } catch (error) {
+    console.error("Search error:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+}

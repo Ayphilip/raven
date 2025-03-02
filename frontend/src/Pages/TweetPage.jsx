@@ -132,6 +132,39 @@ function TweetPage() {
                                         <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails ? userDetails : '')}</p>
                                     </div>
 
+                                    {tweet.preview && (
+                                        <a href={tweet.preview.url}
+                                            style={{
+                                                border: "1px solid #ccc",
+                                                borderRadius: "8px",
+                                                marginTop: "10px",
+                                                padding: "10px",
+                                                display: "flex",
+                                                gap: "10px",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            {tweet.preview.images ? (
+                                                <img
+                                                    src={tweet.preview.images[0]}
+                                                    alt="preview"
+                                                    style={{ width: "100px", height: "80px", borderRadius: "6px" }}
+                                                />
+                                            ) : <img
+                                                src={tweet.preview.favicon}
+                                                alt="preview"
+                                                style={{ width: "100px", height: "80px", borderRadius: "6px" }}
+                                            />}
+                                            <div>
+                                                <strong>{tweet.preview.title}</strong>
+                                                <p style={{ fontSize: "14px", color: "#555" }}>{tweet.preview.description}</p>
+                                                <a href={tweet.preview.url} target="_blank" rel="noopener noreferrer" style={{ color: "blue" }}>
+                                                    {tweet.preview.url}
+                                                </a>
+                                            </div>
+                                        </a>
+                                    )}
+
 
                                     <div className={`grid gap-1 sm:gap-3 max-w-xl mx-auto overflow-hidden
     ${tweet.media.length === 1 ? 'grid-cols-1' : ''}
@@ -166,7 +199,7 @@ function TweetPage() {
 
 
                                         <div class="flex items-center gap-3">
-                                            <button type="button" class="button-icon bg-slate-200/70 dark:bg-slate-700"> <ion-icon class="text-lg" name="chatbubble-ellipses"></ion-icon> </button>
+                                            <button type="button" onClick={() => { setType(1); setId(tweet) }} class="button-icon bg-slate-200/70 dark:bg-slate-700"> <ion-icon class="text-lg" name="chatbubble-ellipses"></ion-icon> </button>
 
                                             <motion.span
                                                 key={tweet?.comments?.length} // Key ensures animation triggers on change
@@ -204,7 +237,7 @@ function TweetPage() {
                                                                 </div>
                                                             </div>}
                                                     </label>
-                                                    <label uk-toggle="target: #create-status" onClick={() => { setType(2); setId(tweet) }}>
+                                                    <label onClick={() => { setType(2); setId(tweet) }}>
                                                         <div class=" relative flex items-center justify-between cursor-pointer rounded-md p-2 px-3 hover:bg-secondery peer-checked:[&_.active]:block dark:bg-dark3">
                                                             <div>
                                                                 <ion-icon name="write"></ion-icon>
@@ -266,7 +299,7 @@ function TweetPage() {
                                     </div>
 
 
-                                    
+
 
 
 
@@ -282,6 +315,39 @@ function TweetPage() {
                                                             <a href={"/timeline/" + use.id} class="text-black font-medium inline-block dark:text-white"> {use.name} </a>
 
                                                             <p class="font-normal">{renderContentWithMentions(comms.content, users, userDetails ? userDetails : '')}</p>
+
+                                                            {comms.preview && (
+                                                                <a href={comms.preview.url}
+                                                                    style={{
+                                                                        border: "1px solid #ccc",
+                                                                        borderRadius: "8px",
+                                                                        marginTop: "10px",
+                                                                        padding: "10px",
+                                                                        display: "flex",
+                                                                        gap: "10px",
+                                                                        alignItems: "center",
+                                                                    }}
+                                                                >
+                                                                    {comms.preview.images ? (
+                                                                        <img
+                                                                            src={comms.preview.images[0]}
+                                                                            alt="preview"
+                                                                            style={{ width: "100px", height: "80px", borderRadius: "6px" }}
+                                                                        />
+                                                                    ) : <img
+                                                                        src={comms.preview.favicon}
+                                                                        alt="preview"
+                                                                        style={{ width: "100px", height: "80px", borderRadius: "6px" }}
+                                                                    />}
+                                                                    <div>
+                                                                        <strong>{comms.preview.title}</strong>
+                                                                        <p style={{ fontSize: "14px", color: "#555" }}>{comms.preview.description}</p>
+                                                                        <a href={comms.preview.url} target="_blank" rel="noopener noreferrer" style={{ color: "blue" }}>
+                                                                            {comms.preview.url}
+                                                                        </a>
+                                                                    </div>
+                                                                </a>
+                                                            )}
 
                                                         </div>
                                                     </div>

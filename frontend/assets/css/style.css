@@ -214,6 +214,11 @@
   .uk-slider-items , .uk-slideshow-items { 
     -webkit-touch-callout: none;
   } 
+
+  .mentions__suggestions__list {
+    max-height: 100px;
+    overflow-y: auto;
+  }
   
   /* ========================================================================
       Component: Slideshow

@@ -16,7 +16,7 @@ const MediaViewer = ({ fileUrl }) => {
             Your browser does not support the video tag.
         </video>
     ) : (
-        <img src={fileUrl} alt="Uploaded" className="w-1 rounded-lg" />
+        <img src={fileUrl} alt="Uploaded" className="w-1 rounded-lg object-cover" />
     );
 
 }

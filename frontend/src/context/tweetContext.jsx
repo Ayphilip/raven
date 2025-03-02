@@ -57,6 +57,7 @@ export const TweetProvider = ({ children }) => {
                 userId: data.userId,
                 content: data.content,
                 media: data.media,
+                preview: data.preview,
                 parent: data.parent,
                 visibility: data.visibility,
                 mentions: data.mentions,

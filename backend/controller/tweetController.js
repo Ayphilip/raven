@@ -22,7 +22,7 @@ import { genId, sendNotification } from "../util.js";
 export const createTweet = async (req, res) => {
     try {
         const initId = await genId(req);
-        const { userId, content, media, mentions, parent, visibility, type } = req.body;
+        const { userId, preview, content, media, mentions, parent, visibility, type } = req.body;
         const tweetRef = doc(db, "tweets", initId);
 
         if ((type == 1 || type === 2) && parent) {
@@ -50,6 +50,7 @@ export const createTweet = async (req, res) => {
             comments: [],
             bookmarks: [],
             type: type,
+            preview: preview,
             mentions: Array.isArray(mentions) ? mentions : [],
             parent: parent || 'original',
             visibility: visibility,

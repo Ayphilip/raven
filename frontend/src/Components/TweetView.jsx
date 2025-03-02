@@ -11,6 +11,7 @@ import { Tooltip } from 'react-tooltip';
 import { renderContentWithMentions } from './CapsuleInstance';
 import { Mention, MentionsInput } from 'react-mentions';
 import CommentModal, { FileViewTweet } from './Modal';
+import { useNavigate } from 'react-router-dom';
 
 
 function TweetView({ tweets }) {
@@ -29,6 +30,7 @@ function TweetView({ tweets }) {
     const [itemViewId, setItemViewId] = useState(null)
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const navigate = useNavigate()
 
     const justClick = () => {
         alert('Clicked')
@@ -106,12 +108,46 @@ function TweetView({ tweets }) {
 
 
                 <div style={{ cursor: 'pointer', padding: '10px' }}>
-                    <a href={'/tweet/' + tweet.id}>
+                    <p onClick={() => navigate('/tweet/' + tweet.id)}>
 
                         <div class="sm:px-4 p-2.5 pt-0">
                             <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails ? userDetails : '')}</p>
                         </div>
-                    </a>
+                    </p>
+
+                    {tweet.preview && (
+                        <a href={tweet.preview.url}
+                            style={{
+                                border: "1px solid #ccc",
+                                borderRadius: "8px",
+                                marginTop: "10px",
+                                padding: "10px",
+                                display: "flex",
+                                gap: "10px",
+                                alignItems: "center",
+                            }}
+                        >
+                            {tweet.preview.images ? (
+                                <img
+                                    src={tweet.preview.images[0]}
+                                    alt="preview"
+                                    style={{ width: "100px", height: "80px", borderRadius: "6px" }}
+                                />
+                            ) : <img
+                                src={tweet.preview.favicon}
+                                alt="preview"
+                                style={{ width: "100px", height: "80px", borderRadius: "6px" }}
+                            />}
+                            <div>
+                                <strong>{tweet.preview.title}</strong>
+                                <p style={{ fontSize: "14px", color: "#555" }}>{tweet.preview.description}</p>
+                                <a href={tweet.preview.url} target="_blank" rel="noopener noreferrer" style={{ color: "blue" }}>
+                                    {tweet.preview.url}
+                                </a>
+                            </div>
+                        </a>
+                    )}
+
 
                     <div className={`grid gap-1 sm:gap-3 max-w-xl mx-auto overflow-hidden
     ${tweet.media.length === 1 ? 'grid-cols-1' : ''}
@@ -121,16 +157,16 @@ function TweetView({ tweets }) {
 
                         {tweet.media.map((med, index) => (
                             <span key={index} className={`relative w-full h-full overflow-hidden rounded-lg 
-            ${tweet.media.length === 1 ? 'max-h-[70vh]' : 'aspect-[16/9]'}`}>
+            ${tweet.media.length === 1 ? 'max-h-[10vh]' : 'aspect-[16/9]'}`}>
 
                                 <a
-                                    className="block w-full h-full"
+                                    className="block w-full max-h-[200px] overflow-hidden"
                                     onClick={() => setItemViewId(tweet.tweetId)}
                                     data-caption={tweet.content}
                                 >
                                     <MediaViewer
                                         fileUrl={med}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-cover rounded-lg"
                                     />
                                 </a>
                             </span>

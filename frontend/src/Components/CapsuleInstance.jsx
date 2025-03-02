@@ -5,10 +5,12 @@ import CryptoJS from 'crypto-js';
 import { useUsers } from "../context/userContext";
 // import { useUsers } from "../context/userContext";
 import Logo from '../asset/images/logo.png'
+import { useNavigate } from "react-router-dom";
 
 
 const renderContentWithMentions = (text, users, me) => {
   const mentionRegex = /\[@([^\]]+)\]\((0x[a-fA-F0-9]+)\)/g;
+  
   const { userList, addUser, modifyUser, addFollow } = useUsers();
 
   return text.split(mentionRegex).map((part, index, arr) => {
@@ -21,7 +23,7 @@ const renderContentWithMentions = (text, users, me) => {
       if (!user) return userId; // Fallback to raw text if user not found
 
       return (
-        <div key={userId} className="mention inline-flex items-center z-200000">
+        <div key={userId} className="mention inline-flex items-center z-[100]">
           <span
             className="text-blue-500 font-medium cursor-pointer hover:underline"
             data-tooltip-id={`mention-${userId}`}
@@ -69,10 +71,10 @@ const renderContentWithMentions = (text, users, me) => {
                     : firstFour.join(", ");
                 })()}
               </p>
-              <button class="button bg-primary w-100 flex items-center gap-2 text-white py-2 px-1.5 max-sm:flex-1">
+              <a href={`/timeline/${user.username}`} class="button bg-primary w-100 flex items-center gap-2 text-white py-2 px-1.5 max-sm:flex-1">
                 <ion-icon name="add-circle" class="text-sm"></ion-icon>
                 <span class="text-sm"> View Profile  </span>
-              </button>
+              </a>
             </div>
           </div>
         </div>

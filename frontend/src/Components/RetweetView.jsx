@@ -63,6 +63,38 @@ function RetweetView({ id, type }) {
                         <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails ? userDetails : '')}</p>
                     </div>
                 </a>
+                {tweet.preview && (
+                    <a href={tweet.preview.url}
+                        style={{
+                            border: "1px solid #ccc",
+                            borderRadius: "8px",
+                            marginTop: "10px",
+                            padding: "10px",
+                            display: "flex",
+                            gap: "10px",
+                            alignItems: "center",
+                        }}
+                    >
+                        {tweet.preview.images ? (
+                            <img
+                                src={tweet.preview.images[0]}
+                                alt="preview"
+                                style={{ width: "100px", height: "80px", borderRadius: "6px" }}
+                            />
+                        ) : <img
+                            src={tweet.preview.favicon}
+                            alt="preview"
+                            style={{ width: "100px", height: "80px", borderRadius: "6px" }}
+                        />}
+                        <div>
+                            <strong>{tweet.preview.title}</strong>
+                            <p style={{ fontSize: "14px", color: "#555" }}>{tweet.preview.description}</p>
+                            <a href={tweet.preview.url} target="_blank" rel="noopener noreferrer" style={{ color: "blue" }}>
+                                {tweet.preview.url}
+                            </a>
+                        </div>
+                    </a>
+                )}
 
                 <div className={`grid gap-1 sm:gap-3 max-w-xl mx-auto overflow-hidden
     ${tweet.media.length === 1 ? 'grid-cols-1' : ''}
