@@ -126,14 +126,17 @@ function TweetPage() {
                                         </div>
                                     </div>
 
-
-
-                                    <div class="sm:px-4 p-2.5 pt-0">
-                                        <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails ? userDetails : '')}</p>
+                                    <div style={{
+                                        cursor: 'pointer', padding: '10px', overflow: "hidden", whiteSpace: "normal",  // Allows text to wrap to the next line
+                                        wordWrap: "break-word"
+                                    }}>
+                                        <div class="sm:px-4 p-2.5 pt-0">
+                                            <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails ? userDetails : '')}</p>
+                                        </div>
                                     </div>
 
                                     {tweet.preview && (
-                                        <a href={tweet.preview.url}
+                                        <div
                                             style={{
                                                 border: "1px solid #ccc",
                                                 borderRadius: "8px",
@@ -142,27 +145,56 @@ function TweetPage() {
                                                 display: "flex",
                                                 gap: "10px",
                                                 alignItems: "center",
+                                                maxWidth: "500px", // Constrains width
+                                                overflow: "hidden", // Prevents content overflow
+                                                whiteSpace: "nowrap", // Avoids text breaking out
                                             }}
                                         >
+                                            {/* Image (Uses preview image or favicon) */}
                                             {tweet.preview.images ? (
                                                 <img
                                                     src={tweet.preview.images[0]}
                                                     alt="preview"
-                                                    style={{ width: "100px", height: "80px", borderRadius: "6px" }}
+                                                    style={{
+                                                        width: "80px",
+                                                        height: "80px",
+                                                        borderRadius: "6px",
+                                                        objectFit: "cover", // Ensures image fits
+                                                        flexShrink: 0 // Prevents image from resizing
+                                                    }}
                                                 />
-                                            ) : <img
-                                                src={tweet.preview.favicon}
-                                                alt="preview"
-                                                style={{ width: "100px", height: "80px", borderRadius: "6px" }}
-                                            />}
-                                            <div>
-                                                <strong>{tweet.preview.title}</strong>
-                                                <p style={{ fontSize: "14px", color: "#555" }}>{tweet.preview.description}</p>
-                                                <a href={tweet.preview.url} target="_blank" rel="noopener noreferrer" style={{ color: "blue" }}>
+                                            ) : (
+                                                <img
+                                                    src={tweet.preview.favicon}
+                                                    alt="preview"
+                                                    style={{
+                                                        width: "80px",
+                                                        height: "80px",
+                                                        borderRadius: "6px",
+                                                        objectFit: "contain",
+                                                        flexShrink: 0
+                                                    }}
+                                                />
+                                            )}
+
+                                            {/* Text Content */}
+                                            <div style={{ overflow: "hidden", flex: 1 }}>
+                                                <strong style={{ display: "block", fontSize: "14px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                                    {tweet.preview.title}
+                                                </strong>
+                                                <p style={{ fontSize: "12px", color: "#555", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                                    {tweet.preview.description}
+                                                </p>
+                                                <a
+                                                    href={tweet.preview.url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    style={{ color: "blue", fontSize: "12px", wordBreak: "break-all" }}
+                                                >
                                                     {tweet.preview.url}
                                                 </a>
                                             </div>
-                                        </a>
+                                        </div>
                                     )}
 
 
@@ -314,10 +346,16 @@ function TweetPage() {
                                                         <div class="flex-1">
                                                             <a href={"/timeline/" + use.id} class="text-black font-medium inline-block dark:text-white"> {use.name} </a>
 
-                                                            <p class="font-normal">{renderContentWithMentions(comms.content, users, userDetails ? userDetails : '')}</p>
+                                                            <div style={{
+                                                                cursor: 'pointer', padding: '10px', overflow: "hidden", whiteSpace: "normal",  // Allows text to wrap to the next line
+                                                                wordWrap: "break-word"
+                                                            }}>
+
+                                                                <p class="font-normal">{renderContentWithMentions(comms.content, users, userDetails ? userDetails : '')}</p>
+                                                            </div>
 
                                                             {comms.preview && (
-                                                                <a href={comms.preview.url}
+                                                                <div
                                                                     style={{
                                                                         border: "1px solid #ccc",
                                                                         borderRadius: "8px",
@@ -326,27 +364,56 @@ function TweetPage() {
                                                                         display: "flex",
                                                                         gap: "10px",
                                                                         alignItems: "center",
+                                                                        maxWidth: "500px", // Constrains width
+                                                                        overflow: "hidden", // Prevents content overflow
+                                                                        whiteSpace: "nowrap", // Avoids text breaking out
                                                                     }}
                                                                 >
+                                                                    {/* Image (Uses preview image or favicon) */}
                                                                     {comms.preview.images ? (
                                                                         <img
                                                                             src={comms.preview.images[0]}
                                                                             alt="preview"
-                                                                            style={{ width: "100px", height: "80px", borderRadius: "6px" }}
+                                                                            style={{
+                                                                                width: "80px",
+                                                                                height: "80px",
+                                                                                borderRadius: "6px",
+                                                                                objectFit: "cover", // Ensures image fits
+                                                                                flexShrink: 0 // Prevents image from resizing
+                                                                            }}
                                                                         />
-                                                                    ) : <img
-                                                                        src={comms.preview.favicon}
-                                                                        alt="preview"
-                                                                        style={{ width: "100px", height: "80px", borderRadius: "6px" }}
-                                                                    />}
-                                                                    <div>
-                                                                        <strong>{comms.preview.title}</strong>
-                                                                        <p style={{ fontSize: "14px", color: "#555" }}>{comms.preview.description}</p>
-                                                                        <a href={comms.preview.url} target="_blank" rel="noopener noreferrer" style={{ color: "blue" }}>
+                                                                    ) : (
+                                                                        <img
+                                                                            src={comms.preview.favicon}
+                                                                            alt="preview"
+                                                                            style={{
+                                                                                width: "80px",
+                                                                                height: "80px",
+                                                                                borderRadius: "6px",
+                                                                                objectFit: "contain",
+                                                                                flexShrink: 0
+                                                                            }}
+                                                                        />
+                                                                    )}
+
+                                                                    {/* Text Content */}
+                                                                    <div style={{ overflow: "hidden", flex: 1 }}>
+                                                                        <strong style={{ display: "block", fontSize: "14px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                                                            {comms.preview.title}
+                                                                        </strong>
+                                                                        <p style={{ fontSize: "12px", color: "#555", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                                                            {comms.preview.description}
+                                                                        </p>
+                                                                        <a
+                                                                            href={comms.preview.url}
+                                                                            target="_blank"
+                                                                            rel="noopener noreferrer"
+                                                                            style={{ color: "blue", fontSize: "12px", wordBreak: "break-all" }}
+                                                                        >
                                                                             {comms.preview.url}
                                                                         </a>
                                                                     </div>
-                                                                </a>
+                                                                </div>
                                                             )}
 
                                                         </div>

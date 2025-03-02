@@ -88,9 +88,6 @@ export default function CommentModal({ isOpen, onClose, type, item }) {
         onClose()
 
     }
-
-    if (!isOpen) return null;
-
     useEffect(() => {
 
         const match = content.match(urlRegex);
@@ -104,6 +101,9 @@ export default function CommentModal({ isOpen, onClose, type, item }) {
 
         }
     }, [content])
+
+    if (!isOpen) return null;
+
 
     return (
 
@@ -133,7 +133,8 @@ export default function CommentModal({ isOpen, onClose, type, item }) {
                 {item && type == 1 &&
                     <div class="p-5 flex justify-between items-center">
                         {users.filter(use => item.userId === use.username).map(use =>
-                            <div style={{ flexDirection: 'row', display: 'flex' }}>
+                            <div style={{ flexDirection: 'row', display: 'flex', overflow: "hidden", whiteSpace: "normal",  // Allows text to wrap to the next line
+                                            wordWrap: "break-word" }}>
                                 <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-10 h-10 rounded-full shadow" />
 
                                 <div style={{ flexDirection: 'column', display: 'flex' }}>
@@ -142,7 +143,10 @@ export default function CommentModal({ isOpen, onClose, type, item }) {
                                         <strong>{use.name}<span
                                             class='text-xs font-medium gap-2 gap-y-0.5 p-2 mt-2'
                                         >@{userDetails.username.slice(0, 6)}...{userDetails.username.slice(-4)}</span></strong>
-                                        <p class="font-normal">{renderContentWithMentions(item.content, users, userDetails ? userDetails : '')}</p>
+                                        
+
+                                            <p class="font-normal">{renderContentWithMentions(item.content, users, userDetails ? userDetails : '')}</p>
+                                        
                                     </div>
 
                                     <p className='mt-5' class='text-xs font-medium gap-2 gap-y-0.5 p-2 mt-2'><span>Replying to @{userDetails.username.slice(0, 6)}...{userDetails.username.slice(-4)}</span></p>
