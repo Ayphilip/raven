@@ -126,6 +126,12 @@ function Sidbar({ ps }) {
                                         <span> Treasure Hunt </span>
                                     </a>
                                 </li>
+                                <li class={ps == 7 && "active"}>
+                                    <a href="/swap" className='text-xl'>
+                                    <ion-icon name="swap-vertical-outline"></ion-icon>
+                                        <span> Raven Swap </span>
+                                    </a>
+                                </li>
 
                                 <li>
                                     <a onClick={logoutUser} className='text-xl'>

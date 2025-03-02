@@ -19,6 +19,7 @@ import PremiumPage from './Pages/PremiumPage'
 import QuestDetails from './Pages/QuestDetails'
 import BookmarkPage from './Pages/Bookmark'
 import SearchPage from './Pages/SearchPage'
+import Swap from './Pages/Swap'
 
 function App() {
   const { address, isLoading, isLoginError, login, logout, revalidate } = useAddress();
@@ -179,6 +180,7 @@ function App() {
               <Route path="/search" Component={SearchPage} />
               <Route path="/chat" Component={MessagesPage} />
               <Route path="/premium" Component={Premium} />
+              <Route path="/swap" Component={Swap} />
               <Route path="/premiumpage" Component={PremiumPage} />
               <Route path="/ravenhunt" Component={Hunt} />
               <Route path="/ravenhunt/quest/:id" Component={QuestDetails} />
