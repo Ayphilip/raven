@@ -210,7 +210,7 @@ function viewFollowing(userDetails, user, users, onback) {
               <div style={{ padding: '20px' }}>
 
                 <h1 class="page-title"> {user.name} </h1>
-                <h5>@{user.username}</h5>
+                <h5>@{user.username.slice(0, 6)}...{user.username.slice(-4)}</h5>
               </div>
             </div>
 
@@ -287,7 +287,7 @@ function viewFollowing(userDetails, user, users, onback) {
                     <div class="card-media sm:aspect-[2/1.7] h-40">
                       <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" />
                       <div class="card-overly"></div>
-                    </div>
+                    </div >
                   </a>
                   <div class="card-body">
                     <a href={"/timeline/" + use.username}> <h4 class="card-title"> {use.name} {use?.verified && <ion-icon name="shield-checkmark-outline" class="text-blue-500 font-medium text-xl"></ion-icon>} </h4> </a>
