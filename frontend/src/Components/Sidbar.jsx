@@ -214,8 +214,7 @@ function Sidbar({ ps }) {
                                     <img src={userDetails?.profilePicture ? avatars[parseInt(userDetails.profilePicture)] : avatars[0]} alt="" class="w-15 h-10 rounded-full shadow" />
                                     <div class="flex-1">
                                         <h6 class="text-sm font-small text-black">{userDetails.name} {userDetails?.verified && <ion-icon name="shield-checkmark-outline" class="text-blue-500 font-medium text-xl"></ion-icon>}</h6>
-                                        <div class="text-sm mt-1 text-blue-600 font-light dark:text-white/70">{userDetails.username.slice(0, 6)}...
-                                            {userDetails.username.slice(-4)}</div>
+                                        <div class="text-sm mt-1 text-blue-600 font-light dark:text-white/70">{userDetails.username.slice(0, 6)}...{userDetails.username.slice(-4)}</div>
                                         <div class="text-sm mt-1 text-blue-600 font-light dark:text-white/70">{tokenBal} {ptoken}</div>
                                     </div>
                                 </div>

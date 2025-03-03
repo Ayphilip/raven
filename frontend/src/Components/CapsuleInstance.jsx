@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 const renderContentWithMentions = (text, users, me) => {
   const mentionRegex = /\[@([^\]]+)\]\((0x[a-fA-F0-9]+)\)/g;
-  
+
   const { userList, addUser, modifyUser, addFollow } = useUsers();
 
   return text.split(mentionRegex).map((part, index, arr) => {
@@ -179,4 +179,139 @@ function getTopWords(tweets) {
   return sortedWords;
 }
 
-export { renderContentWithMentions, encryptText, LoadingView, getTopWords };
+function viewFollowing(userDetails, user, users, onback) {
+  const { addFollow } = useUsers();
+
+  const saveFollow = (userId, user2Id) => {
+
+    var hive = addFollow(userId, user2Id)
+    if (hive) {
+      // setStat(true)
+    } else {
+      // setStat(false)
+    }
+  }
+
+
+  return (
+
+
+    <div class="flex max-lg:flex-col 2xl:gap-12 gap-10 2xl:max-w-[1220px] max-w-[1065px] mx-auto" id="js-oversized">
+
+      <div class="flex-1">
+
+        <div class="max-w-[680px] w-full mx-auto">
+
+          <div class="page-heading">
+            <div style={{ flexDirection: 'row', display: 'flex', alignItems: 'center' }}>
+
+
+              <button onClick={onback}><ion-icon name="arrow-back-outline" class="text-xl"></ion-icon></button>
+              <div style={{ padding: '20px' }}>
+
+                <h1 class="page-title"> {user.name} </h1>
+                <h5>@{user.username}</h5>
+              </div>
+            </div>
+
+            <nav class="nav__underline">
+
+              <ul class="group" uk-switcher="connect: #page-tabs ; animation: uk-animation-slide-right-medium, uk-animation-slide-left-medium">
+
+                <li> <a href="#"> Verified Followers  </a> </li>
+                <li> <a href="#"> Followers </a> </li>
+                <li> <a href="#"> Following </a> </li>
+
+              </ul>
+
+            </nav>
+
+          </div>
+
+          <div id="page-tabs" class="uk-switcher mt-10">
+
+
+
+            <div class="grid sm:grid-cols-3 grid-cols-2 gap-3 w-[500px]" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
+
+              {users.filter(use => use.verified && user.followers.some(fol => fol === use.username)).map(use =>
+                <div class="card">
+                  <a href={"/timeline/" + use.username}>
+                    <div class="card-media sm:aspect-[2/1.7] h-40">
+                      <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" />
+                      <div class="card-overly"></div>
+                    </div>
+                  </a>
+                  <div class="card-body">
+                    <a href={"/timeline/" + use.username}> <h4 class="card-title"> {use.name} {use?.verified && <ion-icon name="shield-checkmark-outline" class="text-blue-500 font-medium text-xl"></ion-icon>} </h4> </a>
+                    <p class="card-text">{use.followers.length} Following</p>
+                    {use.followers.includes(userDetails?.username) ?
+                      <button type="button" class="button bg-black text-white">Unfollow</button>
+                      : <button onClick={() => saveFollow(use.username, userDetails?.username)} type="button" class="button bg-primary text-white">Follow</button>
+                    }
+                  </div>
+                </div>)}
+            </div>
+
+
+
+            <div class="grid sm:grid-cols-3 grid-cols-2 gap-3 w-[500px]" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
+
+              {users.filter(use => user.followers.some(fol => fol === use.username)).map(use =>
+                <div class="card">
+                  <a href={"/timeline/" + use.username}>
+                    <div class="card-media sm:aspect-[2/1.7] h-40">
+                      <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" />
+                      <div class="card-overly"></div>
+                    </div>
+                  </a>
+                  <div class="card-body">
+                    <a href={"/timeline/" + use.username}> <h4 class="card-title"> {use.name} {use?.verified && <ion-icon name="shield-checkmark-outline" class="text-blue-500 font-medium text-xl"></ion-icon>} </h4> </a>
+                    <p class="card-text">{use.followers.length} Following</p>
+                    {use.followers.includes(userDetails?.username) ?
+                      <button type="button" class="button bg-black text-white">Unfollow</button>
+                      : <button onClick={() => saveFollow(use.username, userDetails?.username)} type="button" class="button bg-primary text-white">Follow</button>
+                    }
+                  </div>
+                </div>)}
+            </div>
+
+
+
+
+            <div class="grid sm:grid-cols-3 grid-cols-2 gap-3 w-[500px]" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
+
+              {users.filter(use => user.following.some(fol => fol === use.username)).map(use =>
+                <div class="card">
+                  <a href={"/timeline/" + use.username}>
+                    <div class="card-media sm:aspect-[2/1.7] h-40">
+                      <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" />
+                      <div class="card-overly"></div>
+                    </div>
+                  </a>
+                  <div class="card-body">
+                    <a href={"/timeline/" + use.username}> <h4 class="card-title"> {use.name} {use?.verified && <ion-icon name="shield-checkmark-outline" class="text-blue-500 font-medium text-xl"></ion-icon>} </h4> </a>
+                    <p class="card-text">{use.followers.length} Following</p>
+                    {use.followers.includes(userDetails?.username) ?
+                      <button type="button" class="button bg-black text-white">Unfollow</button>
+                      : <button onClick={() => saveFollow(use.username, userDetails?.username)} type="button" class="button bg-primary text-white">Follow</button>
+                    }
+                  </div>
+                </div>)}
+            </div>
+
+          </div>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+
+  )
+
+}
+
+export { renderContentWithMentions, encryptText, LoadingView, getTopWords, viewFollowing };
