@@ -112,69 +112,74 @@ function Sid2bar({ ps }) {
     return (
         <>
             <nav className="fixed bottom-0 left-0 w-full bg-white dark:bg-dark1 border-t border-gray-200 dark:border-gray-700 
-                        flex justify-around items-center py-3 md:hidden z-50">
+                flex justify-around items-center py-3 md:hidden z-50">
 
+                {/* Home Button */}
                 <button
                     onClick={() => navigate('/')}
-                    className={`flex flex-col items-center
-                               ${ps == 1 ? "text-blue-500 dark:text-blue-400" : ""}`}
+                    className={`relative flex flex-col items-center ${ps === 1 ? "text-blue-500 dark:text-blue-400" : ""}`}
                 >
                     <ion-icon name="home-outline" class="text-xl"></ion-icon>
                     <span className="text-xs">Home</span>
                 </button>
+
+                {/* Search Button */}
                 <button
                     onClick={() => navigate('/search')}
-                    className={`flex flex-col items-center
-                               ${ps == 10 ? "text-blue-500 dark:text-blue-400" : ""}`}
+                    className={`relative flex flex-col items-center ${ps === 10 ? "text-blue-500 dark:text-blue-400" : ""}`}
                 >
                     <ion-icon name="search-outline" class="text-xl"></ion-icon>
                     <span className="text-xs">Search</span>
                 </button>
+
+                {/* Notifications Button */}
                 <button
                     onClick={() => navigate('/notifications')}
-                    className={`flex flex-col items-center
-                               ${ps == 3 ? "text-blue-500 dark:text-blue-400" : ""}`}
+                    className={`relative flex flex-col items-center ${ps === 3 ? "text-blue-500 dark:text-blue-400" : ""}`}
                 >
                     <ion-icon name="notifications-outline" class="text-xl"></ion-icon>
                     <span className="text-xs">Notifications</span>
-                    {notification.filter(chat => !chat.isRead).length > 0 && (
-                        <span style={{ position: 'absolute', top: '0', alignSelf: 'flex-end', display: 'flex', fontSize: '10px', borderRadius: '6px' }} className='p-2.5'><b>
-                            {notification.filter(chat => !chat.isRead).length}
-                        </b></span>
+
+                    {/* Unread Notification Count Badge */}
+                    {notification.filter(n => !n.isRead).length > 0 && (
+                        <span className="absolute top-1 right-1 bg-blue-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                            {notification.filter(n => !n.isRead).length}
+                        </span>
                     )}
                 </button>
+
+                {/* Chat Button */}
                 <button
                     onClick={() => navigate('/chat')}
-                    className={`flex flex-col items-center
-                               ${ps == 2 ? "text-blue-500 dark:text-blue-400" : ""}`}
+                    className={`relative flex flex-col items-center ${ps === 2 ? "text-blue-500 dark:text-blue-400" : ""}`}
                 >
                     <ion-icon name="mail-outline" class="text-xl"></ion-icon>
-                    <span className="text-xs">Chat</span>
-                    {allChats && allChats?.filter(chat =>
-                        chat.messages.some(message => message.receiverId === userDetails?.username && message.status === 'sent')
-                    ).length > 0 && <span style={{ position: 'absolute', top: '0', alignSelf: 'flex-end', display: 'flex', fontSize: '10px', borderRadius: '6px' }} className='p-2.5'><b>
+                    <span className="text-xs">Messages</span>
 
-                        {allChats.filter(chat =>
-                            chat.messages.some(message => message.receiverId === userDetails?.username && message.status === 'sent')
-                        ).length}
-
-                    </b></span>
-                    }
+                    {/* Unread Messages Count Badge */}
+                    {allChats && allChats.filter(chat =>
+                        chat.messages.some(msg => msg.receiverId === userDetails?.username && msg.status === 'sent')
+                    ).length > 0 && (
+                            <span className="absolute top-1 right-1 bg-blue-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                                {allChats.filter(chat =>
+                                    chat.messages.some(msg => msg.receiverId === userDetails?.username && msg.status === 'sent')
+                                ).length}
+                            </span>
+                        )}
                 </button>
+
+                {/* Mint Button */}
                 <button
                     onClick={handleMint}
                     disabled={!isMintAvailable}
-
-                    className={`flex flex-col items-center 
-                               ${isMintAvailable ? "text-blue-500 dark:text-blue-400" : ""}`}
+                    className={`relative flex flex-col items-center ${isMintAvailable ? "text-blue-500 dark:text-blue-400" : ""}`}
                 >
                     <ion-icon name="diamond-outline" class="text-xl"></ion-icon>
                     <span className="text-xs">{isMintAvailable ? `Mint ${ptoken}` : `${timeLeft}`}</span>
                 </button>
 
-
-
             </nav>
+
             <div class="hidden lg:block 2xl:w-[380px] lg:w-[330px] w-full">
 
                 <div class="lg:space-y-4 lg:pb-8 max-lg:grid sm:grid-cols-2 max-lg:gap-6"
