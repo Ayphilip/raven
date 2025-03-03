@@ -36,7 +36,7 @@ function Sidbar({ ps }) {
 
     return (
         authenticate && <>
-            <header class="sticky z-[100] h-[--m-top] fixed top-0 left-0 w-full flex items-center bg-white/80 sky-50 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 block md:hidden">
+            <header class="sticky z-[100] h-[--m-top] fixed top-0 left-0 w-full flex items-center bg-white/80 sky-50 backdrop-blur-xl border-b border-slate-200 dark:bg-dark2 dark:border-slate-800 block md:hidden">
 
                 <div class="flex items-center w-full xl:px-6 px-2 max-lg:gap-10">
 
@@ -68,87 +68,87 @@ function Sidbar({ ps }) {
             </header>
             <div>
                 <div id="site__sidebar"
-                    style={{ maxWidth: '300px'}}
+                style={{maxWidth: '400px'}}
                     class="fixed top-0 left-0 z-[100] transition-transform xl:duration-500 max-xl:w-[400px] max-xl:-translate-x-full">
+                
 
+                <img src={Logo} style={{ width: '20%' }} />
 
-                    <img src={Logo} style={{ width: '20%' }} />
+                <div class="max-xl:bg-white shadow-sm 2xl:w-72 sm:w-64 w-[80%] h-screen sticky z-30 max-lg:border-r dark:max-xl:!bg-slate-700 dark:border-slate-700">
 
-                    <div class="max-xl:bg-white shadow-sm 2xl:w-72 sm:w-64 w-[80%] h-screen sticky z-30 max-lg:border-r dark:max-xl:!bg-slate-700 dark:border-slate-700">
+                    <div class="pr-4">
 
-                        <div class="pr-4">
+                        <nav id="side"
+                            style={{ position: 'sticky', height: '80vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+                        >
 
-                            <nav id="side"
-                                style={{ position: 'sticky', height: '80vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
-                            >
-
-                                <ul>
-                                    <li class={ps == 1 && "active"}>
-                                        <a href="/" className='text-xl'>
-                                            {/* <img src={fly1} alt="feeds" class="w-6" /> */}
-                                            <ion-icon name="home-outline"></ion-icon>
-                                            <span> Feed </span>
-                                        </a>
-                                    </li>
-                                    <li class={ps == 2 && "active"}>
-                                        <a href="/chat" className='text-xl'>
-                                            <ion-icon name="mail-outline"></ion-icon>
-                                            <span> messages </span>
-                                            {allChats && allChats?.filter(chat =>
-                                                chat.messages.some(message => message.receiverId === userDetails?.username && message.status === 'sent')
-                                            ).length > 0 && <span style={{ background: '#3396FF' }} className='p-1 rounded-full border border-white dark:border-slate-800'>{allChats.filter(chat =>
-                                                chat.messages.some(message => message.receiverId === userDetails?.username && message.status === 'sent')
-                                            ).length}</span>}
-                                        </a>
-                                    </li>
-                                    <li class={ps == 3 && "active"}>
-                                        <a href="/notifications" className='text-xl'>
-                                            <ion-icon name="notifications-outline"></ion-icon>
-                                            <span> Notification </span>
-                                            {notification.filter(chat => !chat.isRead).length > 0 && (
-                                                <span style={{ background: '#3396FF' }} className='p-1 rounded-full border border-white dark:border-slate-800'>
-                                                    {notification.filter(chat => !chat.isRead).length}
-                                                </span>
-                                            )}
-                                        </a>
-                                    </li>
-                                    <li class={ps == 4 && "active"}>
-                                        <a href="/premium" className='text-xl'>
-                                            <ion-icon name="checkmark-done-circle-outline"></ion-icon>
-                                            <span> Premium </span>
-                                        </a>
-                                    </li>
-                                    <li class={ps == 5 && "active"}>
-                                        <a href="/bookmarks" className='text-xl'>
-                                            <ion-icon name="bookmark-outline"></ion-icon>
-                                            <span> Bookmarks </span>
-                                        </a>
-                                    </li>
-                                    <li class={ps == 6 && "active"}>
-                                        <a href="/ravenhunt" className='text-xl'>
-                                            <ion-icon name="flame-outline"></ion-icon>
-                                            <span> Treasure Hunt </span>
-                                        </a>
-                                    </li>
-                                    {/* <li class={ps == 7 && "active"}>
+                            <ul>
+                                <li class={ps == 1 && "active"}>
+                                    <a href="/" className='text-xl'>
+                                        {/* <img src={fly1} alt="feeds" class="w-6" /> */}
+                                        <ion-icon name="home-outline"></ion-icon>
+                                        <span> Feed </span>
+                                    </a>
+                                </li>
+                                <li class={ps == 2 && "active"}>
+                                    <a href="/chat" className='text-xl'>
+                                        <ion-icon name="mail-outline"></ion-icon>
+                                        <span> messages </span>
+                                        {allChats && allChats?.filter(chat =>
+                                            chat.messages.some(message => message.receiverId === userDetails?.username && message.status === 'sent')
+                                        ).length > 0 && <span style={{ background: '#3396FF' }} className='p-1 rounded-full border border-white dark:border-slate-800'>{allChats.filter(chat =>
+                                            chat.messages.some(message => message.receiverId === userDetails?.username && message.status === 'sent')
+                                        ).length}</span>}
+                                    </a>
+                                </li>
+                                <li class={ps == 3 && "active"}>
+                                    <a href="/notifications" className='text-xl'>
+                                        <ion-icon name="notifications-outline"></ion-icon>
+                                        <span> Notification </span>
+                                        {notification.filter(chat => !chat.isRead).length > 0 && (
+                                            <span style={{ background: '#3396FF' }} className='p-1 rounded-full border border-white dark:border-slate-800'>
+                                                {notification.filter(chat => !chat.isRead).length}
+                                            </span>
+                                        )}
+                                    </a>
+                                </li>
+                                <li class={ps == 4 && "active"}>
+                                    <a href="/premium" className='text-xl'>
+                                        <ion-icon name="checkmark-done-circle-outline"></ion-icon>
+                                        <span> Premium </span>
+                                    </a>
+                                </li>
+                                <li class={ps == 5 && "active"}>
+                                    <a href="/bookmarks" className='text-xl'>
+                                        <ion-icon name="bookmark-outline"></ion-icon>
+                                        <span> Bookmarks </span>
+                                    </a>
+                                </li>
+                                <li class={ps == 6 && "active"}>
+                                    <a href="/ravenhunt" className='text-xl'>
+                                        <ion-icon name="flame-outline"></ion-icon>
+                                        <span> Treasure Hunt </span>
+                                    </a>
+                                </li>
+                                {/* <li class={ps == 7 && "active"}>
                                         <a href="/swap" className='text-xl'>
                                             <ion-icon name="swap-vertical-outline"></ion-icon>
                                             <span> Raven Swap </span>
                                         </a>
                                     </li> */}
 
-                                    <li>
-                                        <a onClick={logoutUser} className='text-xl'>
-                                            <ion-icon name="exit-outline"></ion-icon>
-                                            <span> Logout </span>
-                                        </a>
-                                    </li>
+                                <li>
+                                    <a onClick={logoutUser} className='text-xl'>
+                                        <ion-icon name="exit-outline"></ion-icon>
+                                        <span> Logout </span>
+                                    </a>
+                                </li>
 
 
 
 
-                                </ul>
-                                {/* <div class="p-1 py-2 flex items-center gap-4" style={{cursor: 'pointer'}} onClick={
+                            </ul>
+                            {/* <div class="p-1 py-2 flex items-center gap-4" style={{cursor: 'pointer'}} onClick={
                                 () => {
                                     if(localStorage.theme === 'dark'){
                                         localStorage.theme = 'light'
@@ -169,18 +169,18 @@ function Sidbar({ ps }) {
                             </div> */}
 
 
-                                <select value={tkn} onChange={(e) => {
-                                    setTkn(e.target.value)
-                                    Cookies.set("ptoken", e.target.value);
-                                    window.location.reload()
-                                }} class="p-1 py-2 flex items-center gap-4">
-                                    <option>Select Preferred Token</option>
-                                    {token.map(tkn =>
-                                        <option value={tkn.id}>{tkn.name}({tkn.symbol})</option>
-                                    )}
-                                </select>
+                            <select value={tkn} onChange={(e) => {
+                                setTkn(e.target.value)
+                                Cookies.set("ptoken", e.target.value);
+                                window.location.reload()
+                            }} class="p-1 py-2 flex items-center gap-4">
+                                
+                                {token.map(tkn =>
+                                    <option value={tkn.id}>{tkn.name}({tkn.symbol})</option>
+                                )}
+                            </select>
 
-                                {/* <div className="relative w-64">
+                            {/* <div className="relative w-64">
                                 {token.filter(tkn => tkn.id === ptoken).map(selectedToken =>
                                     <button className="w-full flex items-center justify-between p-3 bg-gray-200 rounded-lg">
                                         <img src={selectedToken?.image} alt={selectedToken.name} className="w-6 h-6 mr-2" />
@@ -208,35 +208,35 @@ function Sidbar({ ps }) {
 
 
 
-                                {userDetails && <a href={"/timeline/" + userDetails.username}>
+                            {userDetails && <a href={"/timeline/" + userDetails.username}>
 
-                                    <div class="p-1 py-2 flex items-center gap-4">
-                                        <img src={userDetails?.profilePicture ? avatars[parseInt(userDetails.profilePicture)] : avatars[0]} alt="" class="w-15 h-10 rounded-full shadow" />
-                                        <div class="flex-1">
-                                            <h6 class="text-sm font-small text-black">{userDetails.name} {userDetails?.verified && <ion-icon name="shield-checkmark-outline" class="text-blue-500 font-medium text-xl"></ion-icon>}</h6>
-                                            <div class="text-sm mt-1 text-blue-600 font-light dark:text-white/70">{userDetails.username.slice(0, 6)}...
-                                                {userDetails.username.slice(-4)}</div>
-                                            <div class="text-sm mt-1 text-blue-600 font-light dark:text-white/70">{tokenBal} {ptoken}</div>
-                                        </div>
+                                <div class="p-1 py-2 flex items-center gap-4">
+                                    <img src={userDetails?.profilePicture ? avatars[parseInt(userDetails.profilePicture)] : avatars[0]} alt="" class="w-15 h-10 rounded-full shadow" />
+                                    <div class="flex-1">
+                                        <h6 class="text-sm font-small text-black">{userDetails.name} {userDetails?.verified && <ion-icon name="shield-checkmark-outline" class="text-blue-500 font-medium text-xl"></ion-icon>}</h6>
+                                        <div class="text-sm mt-1 text-blue-600 font-light dark:text-white/70">{userDetails.username.slice(0, 6)}...
+                                            {userDetails.username.slice(-4)}</div>
+                                        <div class="text-sm mt-1 text-blue-600 font-light dark:text-white/70">{tokenBal} {ptoken}</div>
                                     </div>
-                                </a>}
+                                </div>
+                            </a>}
 
 
 
-                            </nav>
+                        </nav>
 
 
 
-                        </div>
-
-                    </div>
-                    <div id="site__sidebar__overly"
-                        class="absolute top-0 left-0 w-screen h-screen lg:hidden xl:hidden backdrop-blur-sm"
-                        uk-toggle="target: #site__sidebar ; cls :!-translate-x-0">
                     </div>
 
                 </div>
-            </div >
+                <div id="site__sidebar__overly"
+                    class="absolute top-0 left-0 w-screen h-screen lg:hidden xl:hidden backdrop-blur-sm"
+                    uk-toggle="target: #site__sidebar ; cls :!-translate-x-0">
+                </div>
+
+            </div>
+        </div >
         </>
     )
 }
