@@ -140,7 +140,7 @@ function Profile2() {
                 <Sidbar />
 
 
-                <main id="site__main" class="2xl:ml-[--w-side]  xl:ml-[--w-side-sm] p-2.5 h-[calc(100vh)]">
+                <main id="site__main" class="2xl:ml-[--w-side]  xl:ml-[--w-side-sm] h-[calc(100vh)]">
 
                     <div class="flex max-lg:flex-col 2xl:gap-12 gap-10 2xl:max-w-[1220px] max-w-[1065px] mx-auto" id="js-oversized">
 
@@ -148,7 +148,7 @@ function Profile2() {
 
                         <div class="mx-auto">
 
-                            <div class="page-heading">
+                            <div class="page-heading p-2.5">
                                 <div style={{ flexDirection: 'row', display: 'flex', alignItems: 'center' }}>
                                     <button onClick={() => navigate(-1)}><ion-icon name="arrow-back-outline" class="text-xl"></ion-icon></button>
                                     <div className='p-3'>
@@ -277,7 +277,11 @@ function Profile2() {
 
 
 
-                                <div class="gap-3" uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true">
+                                <div
+                                    style={{ maxWidth: '100vw' }}
+                                    className="gap-3 w-full max-w-[500px] md:max-w-none"
+                                    uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true"
+                                >
 
                                     {!tweets.filter(tweet => tweet.userId === userInfo.username || (tweet.retweets.includes(userInfo.username))).length && <div>No Post or Tweet</div>}
 

@@ -178,7 +178,7 @@ function Welcome() {
             <Sidbar ps={1} />
 
 
-            <main id="site__main" class="2xl:ml-[--w-side] z-[100]  xl:ml-[--w-side-sm] p-2.5 h-[calc(100vh)]">
+            <main id="site__main" class="2xl:ml-[--w-side] z-[100] xl:ml-[--w-side-sm] p-2.5 h-[calc(100vh)]">
 
 
                 <div class="lg:flex 2xl:gap-16 gap-12 max-w-[1065px] mx-auto" id="js-oversized">

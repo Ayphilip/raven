@@ -108,7 +108,7 @@ function TweetView({ tweets }) {
 
 
                 <div style={{
-                    cursor: 'pointer', padding: '10px', maxWidth: '500px', overflow: "hidden", whiteSpace: "normal",  // Allows text to wrap to the next line
+                    cursor: 'pointer', padding: '10px', overflow: "hidden", whiteSpace: "normal",  // Allows text to wrap to the next line
                     wordWrap: "break-word"
                 }}>
                     <p onClick={() => navigate('/tweet/' + tweet.id)}>
