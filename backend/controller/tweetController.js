@@ -32,16 +32,17 @@ export const createTweet = async (req, res) => {
             if (!tweetSnapshot.exists()) {
                 return res.status(404).json({ error: "Tweet not found" });
             }
+            const tweetData = tweetSnapshot.data();
 
             if (type == 1) {
                 await updateDoc(tweetRefOriginal, { comments: arrayUnion(initId) });
-                await sendNotification([tweetSnapshot.userId], tweetSnapshot.tweetId, userId, 3, req)
+                await sendNotification([tweetData.userId], tweetData.tweetId, userId, 3, req)
             } else {
                 await updateDoc(tweetRefOriginal, { retweets: arrayUnion(initId) });
-                await sendNotification([tweetSnapshot.userId], tweetSnapshot.tweetId, userId, 3, req)
+                await sendNotification([tweetData.userId], tweetData.tweetId, userId, 3, req)
             }
         }
-        
+
         const tweetData = {
             tweetId: initId,
             userId: userId,
