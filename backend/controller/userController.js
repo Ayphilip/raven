@@ -1,5 +1,5 @@
 import { db, doc, getDoc, setDoc, updateDoc, collection, getDocs, query, where, arrayRemove, arrayUnion, serverTimestamp } from "../config/firebaseConfig.js";
-import { genId } from "../util.js";
+import { genId, sendNotification } from "../util.js";
 
 // CREATE User
 export const checkUser = async (req, res) => {
@@ -85,6 +85,8 @@ export const addFollower = async (req, res) => {
 
         await updateDoc(userRef, { followers: arrayUnion(user2Id) });
         await updateDoc(userRef2, { following: arrayUnion(userId) });
+
+        await sendNotification([userId], user2Id, '', 2, req)
 
         return res.status(200).json({ message: "Follower added successfully" });
     } catch (error) {

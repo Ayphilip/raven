@@ -56,7 +56,7 @@ export const createQuest = async (req, res) => {
         if (userSnapshot.exists()) {
             const userData = userSnapshot.data();
 
-            await sendNotification(userData.notificationList, creator, questId, 1)
+            await sendNotification(userData.notificationList, questId, '', 1, req)
         }
 
         // Notify subscribers about the new quest

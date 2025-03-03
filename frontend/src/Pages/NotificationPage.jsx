@@ -8,6 +8,7 @@ import Sid2bar from '../Components/Sid2bar';
 import Sidbar from '../Components/Sidbar';
 import { useOthers } from '../context/otherContext';
 import RetweetView from '../Components/RetweetView';
+import { avatars } from '../Components/avatars';
 
 function NotificationPage() {
     const { tweets, likeTweet, retweetTweet, addTweet, fetchTweet } = useTweets();
@@ -19,7 +20,7 @@ function NotificationPage() {
 
     // const fileInputRef = useRef(null);
 
-    
+
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate, useBookmark } = useLoginService();
 
     const navigate = useNavigate()
@@ -59,7 +60,7 @@ function NotificationPage() {
     }, []);
     return (
         <div id='wrapper'>
-            <Sidbar ps={3}/>
+            <Sidbar ps={3} />
 
             <main id="site__main" class="2xl:ml-[--w-side]  xl:ml-[--w-side-sm] p-2.5 h-[calc(100vh)]">
 
@@ -92,11 +93,37 @@ function NotificationPage() {
                         <div id="ttabs" class="uk-switcher">
 
                             <div>
+
                                 {!notification.length && <div class="flex items-center justify-between text-black dark:text-white py-3 mt-10">
-                                    <h3 class="text-xl font-semibold">  </h3>
+                                    <h3 class="text-xl font-semibold">No Notifications found</h3>
                                 </div>}
-                                {notification && notification?.map(nots =>
-                                    nots.type == 0 && <RetweetView id={nots.message} type={'full'} />
+                                {notification && [...notification].reverse(0)?.map(nots => <>
+
+                                    {nots.type == 0 && <RetweetView id={nots.message} type={'full'} />}
+                                    {nots.type == 2 && users.filter(use => use.username === nots.message).map(use => <div class="bg-white z-[20] shadow-sm text-sm font-medium border1 dark:bg-dark1 p-2.5" href={"/timeline/" + use.id}>
+                                        <a href={"/timeline/" + use.id}> <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-9 h-9 rounded-full" /> </a>
+                                        {/* <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="h-full w-full object-cover inset-0"/> */}
+                                        <p>{use.name} followed you.</p>
+                                    </div>)}
+                                    {nots.type == 3 && <div class="bg-white z-[20] shadow-sm text-sm font-medium border1 dark:bg-dark1 p-2.5">{users.filter(use => use.username === nots.user).map(use => <div href={"/timeline/" + use.id}>
+                                        <a href={"/timeline/" + use.id}> <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-9 h-9 rounded-full" /> </a>
+                                        {/* <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="h-full w-full object-cover inset-0"/> */}
+                                        <p>{use.name} retweet your post.</p>
+                                    </div>)
+                                    }
+                                        <RetweetView id={nots.message} type={'full'} />
+                                    </div>}
+                                    {nots.type == 4 && <div class="bg-white z-[20] shadow-sm text-sm font-medium border1 dark:bg-dark1 p-2.5">{users.filter(use => use.username === nots.user).map(use => <div href={"/timeline/" + use.id}>
+                                        <a href={"/timeline/" + use.id}> <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="w-9 h-9 rounded-full" /> </a>
+                                        {/* <img src={use?.profilePicture ? avatars[parseInt(use.profilePicture)] : avatars[0]} alt="" class="h-full w-full object-cover inset-0"/> */}
+                                        <p>{use.name} liked your post.</p>
+                                    </div>)
+                                    }
+                                        <RetweetView id={nots.message} type={'full'} />
+                                    </div>}
+
+                                </>
+
                                 )}
                             </div>
 
@@ -129,7 +156,7 @@ function NotificationPage() {
 
                         </div>
                     </div>
-                    <Sid2bar ps={3}/>
+                    <Sid2bar ps={3} />
 
                 </div>
 

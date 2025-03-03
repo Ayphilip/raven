@@ -21,7 +21,7 @@ function Sid2bar({ ps }) {
     const { address, isLoading, isLoginError, logout, revalidate } = useAddress();
     const { userDetails, initiateLoginUser, userlogoutService, loading, authenticate } = useLoginService();
 
-    const { ptoken, mintToken } = useOthers()
+    const { ptoken, mintToken, notification } = useOthers()
 
     const [searchWord, setSearchWord] = useState('')
 
@@ -137,6 +137,11 @@ function Sid2bar({ ps }) {
                 >
                     <ion-icon name="notifications-outline" class="text-xl"></ion-icon>
                     <span className="text-xs">Notifications</span>
+                    {notification.filter(chat => !chat.isRead).length > 0 && (
+                        <span style={{ position: 'absolute', top: '0', alignSelf: 'flex-end', display: 'flex', fontSize: '10px', borderRadius: '6px' }} className='p-2.5'><b>
+                            {notification.filter(chat => !chat.isRead).length}
+                        </b></span>
+                    )}
                 </button>
                 <button
                     onClick={() => navigate('/chat')}
@@ -145,6 +150,16 @@ function Sid2bar({ ps }) {
                 >
                     <ion-icon name="mail-outline" class="text-xl"></ion-icon>
                     <span className="text-xs">Chat</span>
+                    {allChats && allChats?.filter(chat =>
+                        chat.messages.some(message => message.receiverId === userDetails?.username && message.status === 'sent')
+                    ).length > 0 && <span style={{ position: 'absolute', top: '0', alignSelf: 'flex-end', display: 'flex', fontSize: '10px', borderRadius: '6px' }} className='p-2.5'><b>
+
+                        {allChats.filter(chat =>
+                            chat.messages.some(message => message.receiverId === userDetails?.username && message.status === 'sent')
+                        ).length}
+
+                    </b></span>
+                    }
                 </button>
                 <button
                     onClick={handleMint}

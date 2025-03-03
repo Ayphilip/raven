@@ -140,10 +140,13 @@ export const getUrlMetaDataOracle = async (url, req) => {
 };
 
 
-export const sendNotification = async (users, message, type, req) => {
+export const sendNotification = async (users, message, user, type, req) => {
     try {
         //type 0 = Tweet Notification
         //type 1 = Quest Notification
+        //type 2 = Follow Notification
+        //type 3 = Retweet Notification
+        //type 4 = Like notification
         await Promise.all(users.map(async (use) => {
 
             const initId = await genId(req);
@@ -151,15 +154,16 @@ export const sendNotification = async (users, message, type, req) => {
                 id: initId,
                 message,
                 type,
+                user: user,
                 isRead: false,
                 timestamp: Timestamp.now()
             };
 
-            console.log('Im here')
+            // console.log('Im here')
 
             const userNotifRef = doc(db, "notifications", use);
             const userNotifDoc = await getDoc(userNotifRef);
-            console.log(use)
+            // console.log(use)
 
             if (!userNotifDoc.exists()) {
                 await setDoc(userNotifRef, { use, notifications: [notificationData] });

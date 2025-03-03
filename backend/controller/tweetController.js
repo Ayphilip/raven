@@ -35,8 +35,10 @@ export const createTweet = async (req, res) => {
 
             if (type == 1) {
                 await updateDoc(tweetRefOriginal, { comments: arrayUnion(initId) });
+                await sendNotification([tweetSnapshot.userId], tweetSnapshot.tweetId, userId, 3, req)
             } else {
                 await updateDoc(tweetRefOriginal, { retweets: arrayUnion(initId) });
+                await sendNotification([tweetSnapshot.userId], tweetSnapshot.tweetId, userId, 3, req)
             }
         }
         
@@ -71,7 +73,7 @@ export const createTweet = async (req, res) => {
             }
         }
 
-        await sendNotification(notificationList, initId, 0, req)
+        await sendNotification(notificationList, initId, '', 0, req)
 
         return res.status(201).json({ message: "Tweet created successfully" });
     } catch (error) {
@@ -140,6 +142,7 @@ export const likeTweet = async (req, res) => {
             await updateDoc(tweetRef, { likes: arrayRemove(userId) });
         } else {
             await updateDoc(tweetRef, { likes: arrayUnion(userId) });
+            await sendNotification([tweetData.userId], tweetData.tweetId, userId, 4, req)
         }
 
         return res.status(200).json({ message: "Like status updated successfully" });
@@ -165,6 +168,7 @@ export const retweetTweet = async (req, res) => {
             await updateDoc(tweetRef, { retweets: arrayRemove(userId) });
         } else {
             await updateDoc(tweetRef, { retweets: arrayUnion(userId) });
+            await sendNotification([tweetData.userId], tweetData.tweetId, userId, 3, req)
         }
 
         return res.status(200).json({ message: "Retweet status updated successfully" });
