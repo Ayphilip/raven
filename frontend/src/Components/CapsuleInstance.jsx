@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Tooltip } from "react-tooltip";
 import { avatars } from "./avatars";
 import CryptoJS from 'crypto-js';
@@ -313,5 +313,82 @@ function viewFollowing(userDetails, user, users, onback) {
   )
 
 }
+
+function tweetSuggester() {
+  const [suggestedTweet, setSuggestedTweet] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchTweetSuggestion();
+  }, []);
+
+  const fetchTweetSuggestion = async () => {
+    setLoading(true);
+    try {
+      const weather = await fetchWeather();
+      const timeOfDay = getTimeOfDay();
+      const season = getSeason();
+
+      const response = await axios.post("https://api.openai.com/v1/chat/completions", {
+        model: "gpt-4",
+        messages: [
+          { role: "system", content: "You are a helpful AI that suggests tweets based on weather, time of day, and season." },
+          { role: "user", content: `Suggest a tweet for weather: ${weather}, time of day: ${timeOfDay}, season: ${season}` }
+        ],
+        temperature: 0.7
+      }, {
+        headers: { Authorization: `Bearer YOUR_OPENAI_API_KEY` }
+      });
+
+      setSuggestedTweet(response.data.choices[0].message.content);
+    } catch (error) {
+      console.error("Error fetching tweet suggestion", error);
+    }
+    setLoading(false);
+  };
+
+  const fetchWeather = async () => {
+    try {
+      const response = await axios.get("https://api.weatherapi.com/v1/current.json", {
+        params: { key: "YOUR_WEATHER_API_KEY", q: "auto:ip" }
+      });
+      return response.data.current.condition.text;
+    } catch (error) {
+      console.error("Error fetching weather data", error);
+      return "Unknown weather";
+    }
+  };
+
+  const getTimeOfDay = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "morning";
+    if (hour < 18) return "afternoon";
+    return "evening";
+  };
+
+  const getSeason = () => {
+    const month = new Date().getMonth();
+    if (month >= 2 && month <= 4) return "Spring";
+    if (month >= 5 && month <= 7) return "Summer";
+    if (month >= 8 && month <= 10) return "Autumn";
+    return "Winter";
+  };
+
+  return (
+    <Card className="p-4 m-4 max-w-lg">
+      <CardContent>
+        <h2 className="text-xl font-bold mb-4">AI Tweet Suggestion</h2>
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <p className="mb-4">{suggestedTweet || "No suggestion available."}</p>
+        )}
+        <Button onClick={fetchTweetSuggestion} disabled={loading}>
+          Generate New Suggestion
+        </Button>
+      </CardContent>
+    </Card>
+  );
+};
 
 export { renderContentWithMentions, encryptText, LoadingView, getTopWords, viewFollowing };

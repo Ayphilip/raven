@@ -276,10 +276,6 @@ function Welcome() {
                                     )}
 
 
-
-
-
-
                                 </div>
 
                                 <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -318,9 +314,6 @@ function Welcome() {
                                             onChange={handleFileChange}
                                         />
                                     </label>
-
-
-
 
                                 </div>
 
