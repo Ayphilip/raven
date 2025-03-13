@@ -59,7 +59,7 @@ function TweetView({ tweets }) {
     return (<>
         {tweets.map(tweet =>
 
-            <div class="bg-white z-[20] shadow-sm text-sm font-medium border1 dark:bg-dark1">
+            <div class="bg-white z-[20] shadow-sm text-sm font-medium border1 dark:bg-dark1 2xl:w-[580px] lg:w-[580px]">
 
                 {tweet.retweets.includes(userDetails?.username) ? (
                     <span style={{ fontSize: '12px', padding: '3px', alignItems: 'center', justifyContent: 'center' }} className='p-1'>

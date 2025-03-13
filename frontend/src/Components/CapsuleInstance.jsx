@@ -391,4 +391,4 @@ function tweetSuggester() {
   );
 };
 
-export { renderContentWithMentions, encryptText, LoadingView, getTopWords, viewFollowing };
+export { renderContentWithMentions, encryptText, LoadingView, getTopWords, viewFollowing, tweetSuggester };

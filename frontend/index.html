@@ -16,6 +16,18 @@
   <!-- <link rel="stylesheet" href="/assets/css/bootstrap.min.css"> -->
   <link rel="stylesheet" href="assets/css/tailwind.css">
   <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    @media (min-width: 1024px) {
+
+      /* Applies only on large screens and above */
+      #root {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+      }
+    }
+  </style>
   <!-- <link rel="stylesheet" href="assets/css/uikit.min.css"> -->
 
   <script>
@@ -62,6 +74,9 @@
 
 <body>
   <div id="root"></div>
+
+
+
   <div id="alertPopup"
     style="display: none; position: fixed; top: 10px; right: 10px; background: green; color: white; padding: 10px; border-radius: 5px;">
     Copied!

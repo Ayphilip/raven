@@ -67,7 +67,7 @@ function BookmarkPage() {
         }
     }, [tweets, retweetTweet])
     return (
-        !tweet ? <LoadingView/> : <div>
+        !tweet ? <LoadingView /> : <div>
             <div>
 
 
@@ -105,11 +105,33 @@ function BookmarkPage() {
 
 
 
-                            <div class="md:max-w-[580px] mx-auto flex-1">
+                            <div class="md:max-w-[580px] 2xl:w-[580px] lg:w-[580px] mx-auto flex-1">
 
                                 {tweets.length && <TweetView tweets={tweets.filter(tweet => userDetails?.bookmark.includes(tweet.tweetId))} />}
 
-                                {!tweets.filter(tweet => userDetails?.bookmark.includes(tweet.tweetId)).length && <div>No Bookmarks</div>}
+                                {!tweets.filter(tweet => userDetails?.bookmark.includes(tweet.tweetId)).length &&
+                                    <div className="flex flex-col items-center justify-center h-80 bg-gray-100 rounded-lg shadow-md p-6">
+                                        {/* Empty document icon */}
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="w-16 h-16 text-gray-400 mb-4"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M7 4h10M7 4v16M7 20h10M17 4v16M7 12h10"
+                                            />
+                                        </svg>
+                                        <h2 className="text-lg font-semibold text-gray-600">No Bookmarks</h2>
+                                        <p className="text-gray-500 text-sm mb-4">
+                                            {/* Be the first to share something! */}
+                                        </p>
+                                    </div>
+                                }
 
 
                             </div>

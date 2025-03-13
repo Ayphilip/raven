@@ -75,7 +75,7 @@ function NotificationPage() {
 
                             <nav class="nav__underline">
 
-                                <ul class="group w-full justify-between" uk-switcher="connect: #ttabs ; animation: uk-animation-slide-right-medium, uk-animation-slide-left-medium">
+                                <ul class="group w-full justify-between 2xl:w-[580px] lg:w-[580px]" uk-switcher="connect: #ttabs ; animation: uk-animation-slide-right-medium, uk-animation-slide-left-medium">
 
                                     <li> <a href="#">  All   </a> </li>
                                     <li> <a href="#"> Verified </a> </li>
@@ -139,6 +139,33 @@ function NotificationPage() {
                                             ) && <RetweetView key={nots.message} id={nots.message} type="full" />
                                         )
                                 }
+                                {notification &&
+                                    !notification
+                                        .filter(nots => nots.type === 0 && tweets.some(tweet =>
+                                            tweet.tweetId === nots.message &&
+                                            users.some(user => user.username === tweet.userId && user.verified)
+                                        )).length && <div className="flex flex-col items-center justify-center h-80 bg-gray-100 rounded-lg shadow-md p-6">
+                                        {/* Empty document icon */}
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="w-16 h-16 text-gray-400 mb-4"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M7 4h10M7 4v16M7 20h10M17 4v16M7 12h10"
+                                            />
+                                        </svg>
+                                        <h2 className="text-lg font-semibold text-gray-600">No Verified notifications</h2>
+                                        <p className="text-gray-500 text-sm mb-4">
+                                            {/* Be the first to share something! */}
+                                        </p>
+                                    </div>
+                                }
                             </div>
                             <div>
 
@@ -151,6 +178,33 @@ function NotificationPage() {
                                                 tweet.content.includes(userDetails?.username)
                                             ) && <RetweetView key={nots.message} id={nots.message} type="full" />
                                         )
+                                }
+                                {notification &&
+                                    !notification
+                                        .filter(nots => nots.type === 0 && tweets.some(tweet =>
+                                            tweet.tweetId === nots.message &&
+                                            tweet.content.includes(userDetails?.username)
+                                        )).length && <div className="flex flex-col items-center justify-center h-80 bg-gray-100 rounded-lg shadow-md p-6">
+                                        {/* Empty document icon */}
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="w-16 h-16 text-gray-400 mb-4"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M7 4h10M7 4v16M7 20h10M17 4v16M7 12h10"
+                                            />
+                                        </svg>
+                                        <h2 className="text-lg font-semibold text-gray-600">No Post or comment mentions</h2>
+                                        <p className="text-gray-500 text-sm mb-4">
+                                            {/* Be the first to share something! */}
+                                        </p>
+                                    </div>
                                 }
                             </div>
 

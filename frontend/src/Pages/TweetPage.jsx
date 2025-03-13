@@ -91,7 +91,7 @@ function TweetPage() {
 
 
 
-                            <div class="md:max-w-[580px] mx-auto flex-1">
+                            <div class="md:w-max-[580px] mx-auto flex-1 2xl:w-[580px] lg:w-[580px]">
 
                                 {tweet.parent !== 'original' && <RetweetView id={tweet.parent} type={'full'} />}
 
@@ -132,7 +132,9 @@ function TweetPage() {
                                     }}>
                                         <div class="sm:px-4 p-2.5 pt-0">
                                             <p class="font-normal">{renderContentWithMentions(tweet.content, users, userDetails ? userDetails : '')}</p>
+
                                         </div>
+
                                     </div>
 
                                     {tweet.preview && (
@@ -221,11 +223,6 @@ function TweetPage() {
                                             </span>
                                         ))}
                                     </div>
-
-
-
-
-
 
                                     <div style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }} class="sm:p-4 p-2.5 flex items-center gap-4 text-xs font-semibold">
 

@@ -175,7 +175,7 @@ function Welcome() {
         <div id="wrapper">
 
 
-            <Sidbar ps={1} />
+                    <Sidbar ps={1} />
 
 
             <main id="site__main" class="2xl:ml-[--w-side] z-[100] xl:ml-[--w-side-sm] p-2.5 h-[calc(100vh)]">
@@ -189,7 +189,7 @@ function Welcome() {
                         <div class="mx-auto flex-1">
 
 
-                            <div class="bg-white shadow-sm md:p-4 p-2 h-[100vh] space-y-4 text-sm font-medium border1 dark:bg-dark1">
+                            <div class="bg-white shadow-sm md:p-4 p-2 h-[100vh] space-y-4 text-sm font-medium border1 dark:bg-dark1 2xl:w-[580px] lg:w-[580px]">
 
                                 <div class="space-y-5 mt-3 p-2">
                                     <div>

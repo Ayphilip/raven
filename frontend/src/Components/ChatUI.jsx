@@ -70,7 +70,7 @@ function ChatUI({ chats, userDetails, userInfo }) {
 
     return (
         <>
-            <div class="flex-1">
+            <div class="flex-1 2xl:w-[580px] lg:w-[580px]">
 
 
                 <div class="flex items-center justify-between gap-2 w- px-6 py-3.5 z-10 border-b dark:border-slate-700 uk-animation-slide-top-medium">
