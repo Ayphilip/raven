@@ -239,7 +239,7 @@ function Profile2() {
                                         <h1 className='text-xl '><strong>{userInfo.name} {userInfo?.verified && <ion-icon name="shield-checkmark-outline" class="text-blue-500 font-medium text-xl"></ion-icon>}</strong></h1>
                                         <span className='text-sm '><kdb>{userDetails.username.slice(0, 6)}...{userDetails.username.slice(-4)}</kdb> <span onClick={copyToClipboard} ><ion-icon name="copy-outline"></ion-icon></span></span>
                                         <p>{!userInfo.bio && <button class="button bg-black flex items-center gap-2 text-white py-2 px-3.5 max-md:flex-1">Add bio</button>}{userInfo.bio}</p>
-                                        <p><h6><a style={{cursor: 'pointer'}} onClick={()=>setViewFollow(true)}>{userInfo.followers.length} Followers | {userInfo.following.length} Following</a></h6></p>
+                                        <p><h6><a style={{ cursor: 'pointer' }} onClick={() => setViewFollow(true)}>{userInfo.followers.length} Followers | {userInfo.following.length} Following</a></h6></p>
                                         <p>
                                             Followed by {(() => {
                                                 const filteredUsers = users.filter(user =>
@@ -292,7 +292,30 @@ function Profile2() {
                                         uk-scrollspy="target: > div; cls: uk-animation-scale-up; delay: 100 ;repeat: true"
                                     >
 
-                                        {!tweets.filter(tweet => tweet.userId === userInfo.username || (tweet.retweets.includes(userInfo.username))).length && <div>No Post or Tweet</div>}
+                                        {!tweets.filter(tweet => tweet.userId === userInfo.username || (tweet.retweets.includes(userInfo.username))).length > 0 && <div class="rounded-xl shadow-sm p-4 space-y-4 bg-slate-200/40 animate-pulse border1 dark:bg-dark2">
+
+                                            <div class="flex gap-3">
+                                                <div class="w-9 h-9 rounded-full bg-slate-300/20"></div>
+                                                <div class="flex-1 space-y-3">
+                                                    <div class="w-40 h-5 rounded-md bg-slate-300/20"></div>
+                                                    <div class="w-24 h-4 rounded-md bg-slate-300/20"></div>
+                                                </div>
+                                                <div class="w-6 h-6 rounded-full bg-slate-300/20"></div>
+                                            </div>
+
+                                            <div class="w-full h-52 rounded-lg bg-slate-300/10 my-3"> </div>
+
+                                            <div class="flex gap-3">
+
+                                                <div class="w-16 h-5 rounded-md bg-slate-300/20"></div>
+
+                                                <div class="w-14 h-5 rounded-md bg-slate-300/20"></div>
+
+                                                <div class="w-6 h-6 rounded-full bg-slate-300/20 ml-auto"></div>
+                                                <div class="w-6 h-6 rounded-full bg-slate-300/20  "></div>
+                                            </div>
+
+                                        </div>}
 
 
                                         {tweets.filter(tweet => tweet.userId === userInfo.username || (tweet.retweets.includes(userInfo.username))).map(tweet =>
